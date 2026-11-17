@@ -1,0 +1,149 @@
+{
+ "note": "Holdout fictional companies written after tuning; matcher was NOT tuned on these.",
+ "companies": [
+  {
+   "id": "nl-food-processor",
+   "description": "Fictional Dutch medium food processor planning rooftop solar panels and an energy-efficient cooling system",
+   "profile": {
+    "country": "NL",
+    "size": "medium",
+    "sectors": [
+     "Agriculture & food"
+    ],
+    "signals": [
+     "solar panels",
+     "energy-efficient cooling"
+    ]
+   },
+   "expected": {
+    "must_include": [
+     "EIA",
+     "MKB_EBL"
+    ],
+    "must_exclude": [
+     "VOEB_BINNENVAART",
+     "GSTIP_NRW",
+     "NIKI"
+    ],
+    "relevant_but_not_open": []
+   }
+  },
+  {
+   "id": "de-berlin-medtech-startup",
+   "description": "Fictional Berlin start-up developing AI diagnostic software for medical devices, small team doing research and development",
+   "profile": {
+    "country": "DE",
+    "region": "Berlin",
+    "size": "small",
+    "sectors": [
+     "Health & life sciences",
+     "Digital, AI & ICT"
+    ],
+    "signals": [
+     "AI software",
+     "medical devices",
+     "research and development",
+     "start-up"
+    ]
+   },
+   "expected": {
+    "must_include": [
+     "FZULG",
+     "PROFIT_BERLIN",
+     "KMU_MEDTECH"
+    ],
+    "must_exclude": [
+     "GSTIP_NRW",
+     "BAYVFP",
+     "VOEB_BINNENVAART"
+    ],
+    "relevant_but_not_open": []
+   }
+  },
+  {
+   "id": "nl-sea-shipping",
+   "description": "Fictional Dutch medium shipping company retrofitting a sea-going vessel to a methanol energy line",
+   "profile": {
+    "country": "NL",
+    "size": "medium",
+    "sectors": [
+     "Transport & maritime"
+    ],
+    "signals": [
+     "sea-going vessel",
+     "methanol retrofit"
+    ]
+   },
+   "expected": {
+    "must_include": [
+     "VOEB_ZEESCHEPEN"
+    ],
+    "must_exclude": [
+     "VOEB_BINNENVAART",
+     "SOPV",
+     "GSTIP_NRW"
+    ],
+    "relevant_but_not_open": []
+   }
+  },
+  {
+   "id": "de-bavaria-ai-collab",
+   "description": "Fictional Bavarian SME running a collaborative AI research and development project with a university",
+   "profile": {
+    "country": "DE",
+    "region": "Bavaria",
+    "size": "small",
+    "sectors": [
+     "Digital, AI & ICT"
+    ],
+    "signals": [
+     "AI",
+     "collaborative research and development",
+     "university partner"
+    ]
+   },
+   "expected": {
+    "must_include": [
+     "BAYVFP",
+     "FZULG"
+    ],
+    "must_exclude": [
+     "GRW_SN_RIGA",
+     "PROFIT_BERLIN",
+     "GSTIP_NRW"
+    ],
+    "relevant_but_not_open": []
+   }
+  },
+  {
+   "id": "nl-hydrogen-industry",
+   "description": "Fictional large Dutch industrial company planning a hydrogen electrolyser and a large decarbonisation investment",
+   "profile": {
+    "country": "NL",
+    "size": "large",
+    "sectors": [
+     "Industry & manufacturing",
+     "Energy & climate"
+    ],
+    "signals": [
+     "hydrogen electrolyser",
+     "large decarbonisation investment"
+    ]
+   },
+   "expected": {
+    "must_include": [
+     "NIKI",
+     "VEKI"
+    ],
+    "must_exclude": [
+     "INT_WASSERSTOFF",
+     "MKB_EBL",
+     "BMKB"
+    ],
+    "relevant_but_not_open": [
+     "EU_HYDROGEN_BANK"
+    ]
+   }
+  }
+ ]
+}

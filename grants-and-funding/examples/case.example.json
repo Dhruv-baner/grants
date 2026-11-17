@@ -1,0 +1,16 @@
+{
+ "case_id": "demo-001",
+ "created_at": "2026-11-17T09:00:00Z",
+ "company": {"name": "Example Software B.V. (fictional)", "website": "https://example.invalid", "country": "NL", "size": "small",
+  "sectors": ["Digital, AI & ICT"], "activities": "Builds an AI product with an in-house development team.",
+  "rd_signals": ["in-house developers working on a new AI product"], "planned_investments": [], "profile_confidence": "medium"},
+ "matches": [
+  {"scheme_id": "WBSO", "fit": "high", "score": 0.9, "reasons": ["Dutch company with own R&D staff", "Tax scheme with no deadline for entitlement"],
+   "blocking_issues": [], "status_clean": "rolling", "next_deadline": "", "data_confidence": "Verified",
+   "questions_for_consultant": ["How many R&D hours are planned per project?"]}
+ ],
+ "evidence": {"documents": [{"name": "Annual accounts 2025", "kind": "annual_accounts", "status": "received"}],
+  "gaps": [{"scheme_id": "WBSO", "requirement": "R&D project description", "state": "unknown"}]},
+ "notes": "Illustrative record; not a real company.",
+ "audit": {"data_version": "1.0.0", "data_as_of": "2026-11-17", "models_used": [], "cost_usd": 0}
+}

@@ -1,0 +1,5 @@
+{
+ "_note": "Fill these from Anthropic's pricing page before relying on cost figures. Left empty on purpose: current prices for these models were not verified.",
+ "claude-haiku-5-5": {"input_per_mtok_usd": null, "output_per_mtok_usd": null},
+ "claude-sonnet-5-5": {"input_per_mtok_usd": null, "output_per_mtok_usd": null}
+}
