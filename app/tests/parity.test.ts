@@ -5,7 +5,7 @@ import { buildBrief } from "@/lib/explainer";
 import { SCHEMES, BY_ID } from "@/lib/data";
 import type { Profile } from "@/lib/types";
 
-const slim = (l: any[]) => l.map((e) => ({ scheme_id: e.scheme_id, score: e.score, fit: e.fit ?? null, reasons: e.reasons, flags: e.flags }));
+const slim = (l: any[]) => l.map((e) => ({ scheme_id: e.scheme_id, score: e.score, fit: e.fit ?? null, reasons: e.reasons, flags: e.flags, breakdown: e.breakdown }));
 const gslim = (l: any[]) => l.map((e) => ({ ...e, fit: e.fit ?? null }));
 
 describe("TypeScript matcher equals the Python matcher", () => {

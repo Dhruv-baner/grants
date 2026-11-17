@@ -15,5 +15,6 @@ export interface Profile {
 export interface MatchEntry {
   scheme_id: string; name: string; score: number; reasons: string[]; flags: string[]; status_clean: string; next_deadline: string;
   data_confidence: string; type_group: string; questions_for_consultant: string[]; fit?: "high" | "medium" | "low";
+  breakdown: { sector: number; themes: number; size: number; data: number; status: number; adjustments: { label: string; points: number }[] };
 }
 export interface MatchResult { matches: MatchEntry[]; not_open: MatchEntry[]; check_manually: MatchEntry[]; excluded: Record<string, number>; }

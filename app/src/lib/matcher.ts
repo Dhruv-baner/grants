@@ -72,14 +72,17 @@ export function match(profile: Profile, rows: Scheme[]): MatchResult {
     const ver = ({ Verified: 10, "Verified (framework)": 7, Partial: 3, Candidate: 0 } as Record<string, number>)[r.verification] ?? 0;
     const st = r.status_clean;
     const stPts = ({ open: 10, rolling: 10, opening_soon: 10, between_rounds: 5 } as Record<string, number>)[st] ?? 0;
+    const adj: { label: string; points: number }[] = [];
+    if (regionPen) adj.push({ label: "Regional scheme, company location not given", points: -regionPen });
     let score = secPts + conPts + sizePts + ver + stPts - regionPen;
-    if (r.type_group === "Tax incentive") { score += 10; reasons.push("tax incentive: no competition for funds"); }
-    if (CONSORTIUM_RE.test(((r.consortium ?? "") + " " + (r.applicants ?? "")).toLowerCase()) && !pConc.has("consortium_crossborder")) { score -= 15; flags.push("requires a consortium or partners the company has not mentioned"); }
+    if (r.type_group === "Tax incentive") { score += 10; reasons.push("tax incentive: no competition for funds"); adj.push({ label: "Tax incentive: no competition for funds", points: 10 }); }
+    if (CONSORTIUM_RE.test(((r.consortium ?? "") + " " + (r.applicants ?? "")).toLowerCase()) && !pConc.has("consortium_crossborder")) { score -= 15; flags.push("requires a consortium or partners the company has not mentioned"); adj.push({ label: "Needs a consortium the company has not mentioned", points: -15 }); }
     if (secPts === 0 && !shared.size) { excl("no sector or theme fit"); continue; }
     if (secPts <= 20 && !shared.size && !rs.has("All sectors")) { excl("no theme fit"); continue; }
     if (rs.has("All sectors") && !shared.size) { excl("generic scheme without a theme match"); continue; }
     const entry: MatchEntry = { scheme_id: r.id, name: r.name, score, reasons, flags, status_clean: st, next_deadline: r.closes_date, data_confidence: r.verification,
-      type_group: r.type_group, questions_for_consultant: (r.call_questions ?? "").split(/\?\s*/).map((q) => q.trim()).filter(Boolean).slice(0, 3) };
+      type_group: r.type_group, questions_for_consultant: (r.call_questions ?? "").split(/\?\s*/).map((q) => q.trim()).filter(Boolean).slice(0, 3),
+      breakdown: { sector: secPts, themes: conPts, size: sizePts, data: ver, status: stPts, adjustments: adj } };
     if (r.verification === "Partial" || r.verification === "Candidate") entry.flags.push(`data confidence ${r.verification}: verify before quoting`);
     if (st === "between_rounds") entry.flags.push("current round closed; next window" + (r.closes_date ? ` ends ${r.closes_date}` : " date unknown"));
     if (r.before_start_flag === "yes" || r.before_start_flag === "at_application") entry.flags.push(r.before_start_flag === "yes" ? "do not start the project before applying" : "project may start once the application is filed");

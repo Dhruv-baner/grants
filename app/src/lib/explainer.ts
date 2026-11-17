@@ -1,10 +1,12 @@
 // Template brief (no AI): port of the template mode in pipeline/explainer.py.
 import type { MatchEntry, MatchResult, Profile, Scheme, Source } from "./types";
+import { clean, visibleSources } from "./ui";
 export const BANNER = "Indicative screening only. Consultant review required. Not legal or financial advice.";
 export const FACT_FIELDS = ["funding_rate", "caps", "window", "before_start", "status"] as const;
 export interface BriefItem {
   scheme_id: string; name: string; fit: string; score: number; status_clean: string; next_deadline: string; data_confidence: string; type_group: string;
   why_it_fits: string; watch_outs: string[]; questions: string[]; key_terms: Record<string, string>; as_of: string; sources: Source[];
+  breakdown: MatchEntry["breakdown"];
 }
 export interface Brief {
   company: Profile; data_as_of: string; banner: string; matches: BriefItem[];
@@ -30,7 +32,7 @@ export function buildBrief(profile: Profile, result: MatchResult, by: Record<str
       const row = by[m.scheme_id]; const [why, watch] = templateProse(m, row);
       return { scheme_id: m.scheme_id, name: row.name, fit: m.fit ?? "low", score: m.score, status_clean: m.status_clean, next_deadline: m.next_deadline,
         data_confidence: m.data_confidence, type_group: m.type_group, why_it_fits: why, watch_outs: watch, questions: questionsFor(m, row),
-        key_terms: Object.fromEntries(FACT_FIELDS.map((k) => [k, String(row[k] ?? "").slice(0, 300)])), as_of: row.as_of, sources: row.sources.slice(0, 4) };
+        key_terms: Object.fromEntries(FACT_FIELDS.map((k) => [k, String(row[k] ?? "").slice(0, 300)])), as_of: row.as_of, sources: visibleSources(row.sources).slice(0, 4), breakdown: m.breakdown };
     }),
   };
 }
@@ -43,8 +45,8 @@ export function renderMarkdown(b: Brief): string {
   b.matches.forEach((m, i) => {
     L.push(`### ${i + 1}. ${m.name}  (${m.fit} fit, score ${m.score})`, `${BADGE[m.data_confidence] ?? m.data_confidence} | ${m.type_group} | status: ${m.status_clean}${m.next_deadline ? ", next deadline " + m.next_deadline : ""}`, "",
       `**Why it may fit:** ${m.why_it_fits}`, "", `**Key terms (copied from the data, as of ${m.as_of}):**`);
-    for (const [k, v] of Object.entries(m.key_terms)) if (v) L.push(`- ${k.replaceAll("_", " ")}: ${v}`);
-    L.push(""); if (m.watch_outs.length) L.push("**Watch-outs:**", ...m.watch_outs.map((w) => `- ${w}`), "");
+    for (const [k, v] of Object.entries(m.key_terms)) if (clean(v)) L.push(`- ${k.replaceAll("_", " ")}: ${clean(v)}`);
+    L.push(""); if (m.watch_outs.length) L.push("**Watch-outs:**", ...m.watch_outs.filter((w) => clean(w)).map((w) => `- ${clean(w)}`), "");
     if (m.questions.length) L.push("**Questions for the consultant:**", ...m.questions.map((q) => `- ${q}`), "");
     L.push("**Sources:** " + m.sources.map((s) => `${s.tier}: ${s.url}`).join("; "), "");
   });

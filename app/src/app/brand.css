@@ -1,0 +1,12 @@
+/* BRAND TOKENS. Provisional values: replace with Ignite Group's real colours and fonts (see docs/design-brief.md).
+   Everything in the interface reads from these variables, so a re-brand means editing this file only. */
+:root {
+  --paper: #F2EDE4; --paper-2: #E8E1D4; --sheet: #FBF8F2;
+  --ink: #15120F; --ink-2: #4B443B; --ink-3: #6B6358;
+  --rule: #CFC6B5;
+  --ember: #E8470F; --ember-deep: #B33208; --spark: #F7B63B;
+  --char: #1A1612; --char-2: #2A231C; --cream: #F2EDE4; --cream-2: #B9AE9C;
+  --f-display: "Instrument Serif", "Iowan Old Style", "Times New Roman", serif;
+  --f-body: "Schibsted Grotesk Variable", "Schibsted Grotesk", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
