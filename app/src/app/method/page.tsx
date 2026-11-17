@@ -30,7 +30,7 @@ export default function Method() {
       <div className="sec-head"><span className="mono">Method</span><span className="mono muted">How fit is judged</span></div>
       <div className="method-grid"><h1 style={{ fontSize: "var(--t-3xl)" }}>Fit is a score you can <em>read.</em></h1>
         <div><p style={{ fontSize: 21, lineHeight: 1.45 }}>Fit is not a model&apos;s opinion. It is a fixed set of rules, applied the same way every time. The same company description always gives the same ranking, and every match shows how many points came from where.</p>
-          <p className="muted">Claude is never used to decide a match. When live mode is on it can reword the short explanations, and any number it writes that is not in the data is thrown away.</p></div></div>
+          <p className="muted">Claude is never used to decide a match. When live mode is on, the curated AI brief uses it to write the short explanations, and any number it writes that is not in the data is thrown away.</p></div></div>
 
       <section className="section-tight"><div className="sec-head"><span className="mono">Step 1</span><span className="mono">Filter</span></div>
         <div className="method-grid"><h2>What cannot apply is removed.</h2><ul style={{ margin: 0, paddingLeft: 20, fontSize: 18, lineHeight: 1.6 }}>
@@ -45,7 +45,7 @@ export default function Method() {
 
       <section className="section-tight"><div className="sec-head"><span className="mono">Step 3</span><span className="mono">Score</span></div>
         <div className="method-grid"><h2>Points are added, then adjusted.</h2>
-          <div><table className="pts"><thead><tr><th>Component</th><th>Points</th><th>Rule</th></tr></thead><tbody>{ROWS.map(([a, b, c, neg]) => <tr key={a}><td><b style={{ fontFamily: "var(--f-display)", fontWeight: 400, fontSize: 21 }}>{a}</b></td><td className={"p num" + (neg ? " neg" : "")}>{b}</td><td>{c}</td></tr>)}</tbody></table>
+          <div><table className="pts"><thead><tr><th>Component</th><th>Points</th><th>Rule</th></tr></thead><tbody>{ROWS.map(([a, b, c, neg]) => <tr key={a}><td><b style={{ fontFamily: "var(--f-display)", fontWeight: 700, fontSize: 18 }}>{a}</b></td><td className={"p num" + (neg ? " neg" : "")}>{b}</td><td>{c}</td></tr>)}</tbody></table>
             <p className="faint" style={{ marginTop: 14, fontSize: 14 }}>The best possible score is 110. Scores can pass 100 because of the tax bonus.</p></div></div></section>
 
       <section className="section-tight"><div className="sec-head"><span className="mono">Step 4</span><span className="mono">Rank and show</span></div>

@@ -63,7 +63,7 @@ export default function Screen() {
           <div className="field"><span className="lbl" id="sec-l">Sectors</span><div className="tog-group" role="group" aria-labelledby="sec-l">{SECTORS.map((s) => <button key={s} className="tog" aria-pressed={f.sectors.includes(s)} onClick={() => toggle(s)}>{s}</button>)}</div></div>
           <div className="field"><label htmlFor="sg">Signals, one per line</label><textarea id="sg" value={f.signals} onChange={(e) => set("signals", e.target.value)} placeholder={"own R&D staff\nplanned new production site"} /></div>
           <div className="field"><label htmlFor="ds">What the company does</label><textarea id="ds" value={f.description} onChange={(e) => set("description", e.target.value)} /></div>
-          {status?.live && <><button className="btn alt" disabled={busy !== "" || !brief.matches.length} onClick={runProse}>{busy === "prose" ? "Writing" : "Rewrite explanations with Claude"}</button><p className="faint" style={{ fontSize: 13.5, marginTop: 10 }}>Optional. Claude only rewords the short explanations. Rates, caps and sources stay copied from the data, and any generated number not in the data is discarded.</p></>}
+          {status?.live && <><button className="btn alt" disabled={busy !== "" || !brief.matches.length} onClick={runProse}>{busy === "prose" ? "Curating" : "Curated AI brief"}</button><p className="faint" style={{ fontSize: 13.5, marginTop: 10 }}>Optional. Claude writes the short explanations for each match. Rates, caps and sources stay copied from the data, and any generated number not in the data is discarded.</p></>}
         </aside>
         <div className="plate" style={{ gridArea: "plate", padding: "26px 26px 20px" }}>
             <DotField lit={lit} rings={rings} onPick={onPick} label={`${n.lit} schemes lit for this company, ${n.ring} relevant but not open`} />
@@ -71,7 +71,7 @@ export default function Screen() {
         </div>
         <div style={{ gridArea: "results", minWidth: 0 }}>
           {picked && <section className="dossier" style={{ borderTopStyle: "solid" }}><div className="toolbar" style={{ marginBottom: 16 }}><h3>{picked.name}</h3><button className="btn alt" onClick={() => setPicked(null)}>Close</button></div><p className="note">Not among the matches for this company: it did not pass the filters or the theme check. Terms below are for reference.</p><SchemeDetail s={picked} /></section>}
-          {prose && <div className="note noprint">Explanations below were written by Claude and checked against the data{prose.tokens ? ` (${prose.tokens} tokens)` : ""}. {prose.notes.map((x) => <div key={x}>{x}</div>)}</div>}
+          {prose && <div className="note noprint">Curated AI brief: the explanations below were written by Claude and checked against the data{prose.tokens ? ` (${prose.tokens} tokens)` : ""}. {prose.notes.map((x) => <div key={x}>{x}</div>)}</div>}
           <BriefView brief={brief} excluded={result.excluded} />
         </div>
       </div>

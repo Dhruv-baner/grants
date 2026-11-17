@@ -6,7 +6,8 @@
   --rule: #CFC6B5;
   --ember: #E8470F; --ember-deep: #B33208; --spark: #F7B63B;
   --char: #1A1612; --char-2: #2A231C; --cream: #F2EDE4; --cream-2: #B9AE9C;
-  --f-display: "Instrument Serif", "Iowan Old Style", "Times New Roman", serif;
+  --f-display: "Archivo Variable", "Archivo", system-ui, sans-serif;
+  --w-display: 800;
   --f-body: "Schibsted Grotesk Variable", "Schibsted Grotesk", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 }

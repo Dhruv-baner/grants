@@ -16,7 +16,7 @@ export default function Home() {
         <div className="mono muted" style={{ marginBottom: 28 }}>Funding screening · Netherlands · Germany · EU</div>
         <Rise text="Which funding can this company actually *apply for?*" />
         <div className="hero-stage">
-          <div className="plate"><HeroField /><div className="legend mono"><span><i className="cold" />127 schemes and calls</span><span>Move over the field. Screen a company to light up its matches.</span></div></div>
+          <div className="plate"><HeroField /><div className="legend mono"><span><i className="beat" />Beating ember: closing within 35 days</span><span>Move over the field and click to send a ripple. Screen a company to light up its matches.</span></div></div>
           <div className="overlap">
             <p className="hero-sub">Match a company against {META.rows} sourced Dutch, German and EU schemes and calls. Every match comes with its score, its terms and the source of each fact.</p>
             <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}><Magnetic><Link className="btn" href="/screen">Screen a company <span className="arr">→</span></Link></Magnetic><Link className="link-u" href="/method">How fit is judged</Link></div>
