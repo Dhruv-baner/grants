@@ -1,0 +1,20 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Grants and Funding dataset",
+ "type": "object",
+ "required": [
+  "meta",
+  "schemes"
+ ],
+ "properties": {
+  "meta": {
+   "type": "object"
+  },
+  "schemes": {
+   "type": "array",
+   "items": {
+    "$ref": "scheme.schema.json"
+   }
+  }
+ }
+}
