@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SCHEMES } from "@/lib/data";
 
-const PAGES = [{ href: "/screen", label: "Screen a company" }, { href: "/programmes", label: "Programmes" }, { href: "/deadlines", label: "Deadlines" }, { href: "/method", label: "How fit is judged" }];
+const PAGES = [{ href: "/screen", label: "Screen a company" }, { href: "/programmes", label: "Programmes" }, { href: "/deadlines", label: "Deadlines" }, { href: "/assistant", label: "Ask the consultant" }, { href: "/method", label: "How fit is judged" }];
 
 function Palette({ onClose }: { onClose: () => void }) {
   const router = useRouter(); const [q, setQ] = useState(""); const [sel, setSel] = useState(0); const inp = useRef<HTMLInputElement>(null);
@@ -41,7 +41,7 @@ export default function Nav() {
     <>
       <header className="nav"><div className="wrap">
         <Link href="/" className="brand" aria-label="Grants and Funding, home">Grants <b>and</b> Funding</Link>
-        <nav className="nav-links mono" aria-label="Main">{PAGES.map((p) => <Link key={p.href} href={p.href} aria-current={path === p.href ? "page" : undefined}>{p.label.replace("How fit is judged", "Method")}</Link>)}</nav>
+        <nav className="nav-links mono" aria-label="Main">{PAGES.map((p) => <Link key={p.href} href={p.href} aria-current={path === p.href ? "page" : undefined}>{p.label.replace("How fit is judged", "Method").replace("Ask the consultant", "Ask")}</Link>)}</nav>
         {live && <span className="live mono">Live</span>}
         <button className="kbd mono" onClick={openPal} aria-label="Search (Ctrl or Command K)">Search <span style={{ opacity: .6 }}>⌘K</span></button>
         <button className="menu-btn mono" onClick={() => setMenu(true)} aria-expanded={menu}>Menu</button>

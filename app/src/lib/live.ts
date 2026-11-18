@@ -9,6 +9,8 @@ import { buildProfile } from "./profiler";
 import { llmProse } from "./prose";
 import { fetchCompany, type Site } from "./site";
 import { UnsafeUrl } from "./ssrf";
+import { askAbout } from "./assistant/followup";
+import { inScope } from "./assistant/knowledge";
 import type { Profile } from "./types";
 
 export interface Deps { llm?: Llm; fetchSite?: (url: string) => Promise<Site>; limiter: Limiter; accessCode?: string; cacheNow?: () => number; }
@@ -60,4 +62,13 @@ export async function handleProse(req: Request, d: Deps) {
   if (!matches.length) return json({ prose: {}, notes: ["No matches to describe."], usage: { in: 0, out: 0 } });
   try { const r = await llmProse(profile, matches, BY_ID, d.llm!); d.limiter.addTokens(r.usage.in + r.usage.out); return json(r); }
   catch (e: any) { if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not generate text." }, 502); }
+}
+
+export async function handleAsk(req: Request, d: Deps) {
+  const g = await guard(req, d); if (g instanceof Response) return g;
+  const id = String(g.body?.programme_id ?? ""); const q = String(g.body?.question ?? "").trim().slice(0, 300);
+  if (!inScope(id)) return json({ error: "That programme is not covered yet." }, 400);
+  if (q.length < 3) return json({ error: "Ask a question about the programme." }, 400);
+  try { const r = await askAbout(id, q, d.llm!); d.limiter.addTokens(r.usage.in + r.usage.out); return json(r); }
+  catch (e: any) { if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not answer that." }, 502); }
 }

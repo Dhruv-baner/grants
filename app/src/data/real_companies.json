@@ -1,0 +1,146 @@
+{
+ "meta": {
+  "as_of": "2026-11-18",
+  "note": "Real companies, profiled from their own annual reports, websites and published interviews, checked on 18 Nov 2026. Illustration only: no connection to these companies, and the results do not say they are eligible or that they applied."
+ },
+ "companies": [
+  {
+   "id": "nedap",
+   "name": "Nedap",
+   "summary": "Electronic systems and software · Groenlo, Netherlands",
+   "country": "NL",
+   "region": "Gelderland",
+   "size": "large",
+   "sectors": [
+    "Digital, AI & ICT",
+    "Industry & manufacturing"
+   ],
+   "signals": [
+    "develops electronic systems and software",
+    "manufactures electronic equipment"
+   ],
+   "description": "Develops and manufactures electronic systems and software for healthcare, identification (RFID), light controls and livestock management. Listed on Euronext Amsterdam. Headquartered in Groenlo, Gelderland, with 1,077 employees at the end of 2025.",
+   "sources": [
+    {
+     "label": "Nedap annual report 2025 (employees, headquarters)",
+     "url": "https://filings.xbrl.org/724500X4WAS3V33MVX37/2025-12-31/ESEF/NL/0/724500X4WAS3V33MVX37-2025-12-31-1-en/reports/7724500X4WAS3V33MVX37-2025-12-31-1-en.xhtml"
+    },
+    {
+     "label": "BCC Research company profile (business units)",
+     "url": "https://www.bccresearch.com/company-index/profile/nedap-nv"
+    }
+   ]
+  },
+  {
+   "id": "alfen",
+   "name": "Alfen",
+   "summary": "Smart grids, energy storage and EV charging · Almere, Netherlands",
+   "country": "NL",
+   "region": "Flevoland",
+   "size": "large",
+   "sectors": [
+    "Energy & climate",
+    "Industry & manufacturing"
+   ],
+   "signals": [
+    "designs, develops and produces energy storage systems",
+    "EV charging equipment",
+    "smart grid solutions"
+   ],
+   "description": "Designs, develops, produces and services smart grid solutions, energy storage systems and electric vehicle charging equipment. Listed on Euronext Amsterdam. Headquartered in Almere, with around 1,000 employees.",
+   "sources": [
+    {
+     "label": "Alfen annual report 2025 (activities)",
+     "url": "https://eu-assets.contentstack.com/v3/assets/blt08d332658a89f766/blt5a730a1862105091/698b732ef7607f82a821efe0/Alfen_Annual_Report_2025.pdf"
+    },
+    {
+     "label": "Company data (about 1,050 employees)",
+     "url": "https://stockanalysis.com/quote/fra/703/company"
+    }
+   ]
+  },
+  {
+   "id": "avantium",
+   "name": "Avantium",
+   "summary": "Renewable and circular chemistry · Amsterdam, Netherlands",
+   "country": "NL",
+   "region": "North Holland",
+   "size": "large",
+   "sectors": [
+    "Circular economy & environment",
+    "Industry & manufacturing"
+   ],
+   "signals": [
+    "renewable and circular chemistry",
+    "plant-based plastic PEF",
+    "first commercial plant for FDCA in Delfzijl"
+   ],
+   "description": "Chemical technology company developing renewable and circular polymers and chemistry. Its first commercial plant for FDCA, the building block of the plant-based plastic PEF, in Delfzijl was partly commissioned in 2025. Headquartered in Amsterdam, 259 FTE at the end of 2025. Listed on Euronext Amsterdam.",
+   "sources": [
+    {
+     "label": "Avantium annual report 2025",
+     "url": "https://avantium.com/wp-content/uploads/2026/03/Avantium-2025-Annual-report.pdf"
+    },
+    {
+     "label": "Avantium 2025 filing (259 FTE)",
+     "url": "https://filings.xbrl.org/724500E5WW4731JJ4G46/2025-12-31/ESEF/NL/0/avantium-2025-12-31-en/reports/avantium-2025-12-31-en.xhtml"
+    }
+   ]
+  },
+  {
+   "id": "sunfire",
+   "name": "Sunfire",
+   "summary": "Green hydrogen electrolysers · Dresden, Germany",
+   "country": "DE",
+   "region": "Saxony",
+   "size": "large",
+   "sectors": [
+    "Energy & climate",
+    "Industry & manufacturing"
+   ],
+   "signals": [
+    "industrial hydrogen electrolysers",
+    "R&D centre in Dresden",
+    "power-to-liquids"
+   ],
+   "description": "Develops and manufactures industrial electrolysers for green hydrogen (alkaline and solid oxide) and power-to-liquids. Headquarters and production in Dresden, with production in Solingen and Magdeburg. Over 700 employees. Is investing about EUR 30 million in an R&D centre at its Dresden site.",
+   "sources": [
+    {
+     "label": "Sunfire: about the company",
+     "url": "https://sunfire.de/en/about/"
+    },
+    {
+     "label": "Sunfire: R&D centre in Dresden",
+     "url": "https://sunfire.de/en/news/sunfire-starts-the-construction-of-its-research-and-development-center/"
+    }
+   ]
+  },
+  {
+   "id": "haerterei-reese",
+   "name": "Härterei Reese (group)",
+   "summary": "Heat treatment of steel components · four sites in Germany",
+   "country": "DE",
+   "region": "",
+   "size": "unknown",
+   "sectors": [
+    "Industry & manufacturing"
+   ],
+   "signals": [
+    "heat treatment of steel components",
+    "over 200 furnace installations",
+    "energy-saving projects and investments planned"
+   ],
+   "description": "Family-owned heat-treatment group (hardening, nitriding and annealing of steel components) with four sites in Germany: Bochum, Brackenheim, Weimar and Chemnitz. Headcount is reported as roughly 240 to 280 depending on the source, with about EUR 40 million turnover. It runs over 200 heat-treatment installations and reports several projects and investments planned to save energy, including a building permit for a new surface-hardening shop.",
+   "sources": [
+    {
+     "label": "IHK Bochum: profile of Härterei Reese",
+     "url": "https://www.ihk.de/bochum/hauptnavigation/wirtschaft-im-revier/deep-dive-haerterei-reese-6436900"
+    },
+    {
+     "label": "Interview with the managing director of the Chemnitz site (group size and turnover)",
+     "url": "https://www.european-business.com/en/interviews/hrterei-reese-chemnitz-gmbh-cokg/steel-hard-performance"
+    }
+   ]
+  }
+ ]
+}

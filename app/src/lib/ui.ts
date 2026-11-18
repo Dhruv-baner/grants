@@ -15,3 +15,12 @@ export function clean(s: string): string {
 }
 /** A company's own listing page is not evidence for a scheme's facts, so it is never shown as a source. */
 export const visibleSources = <T extends { field: string; url: string }>(l: T[]) => l.filter((s) => !/ignite/i.test(s.field + " " + s.url));
+
+/** For the programme detail view: `clean`, plus removal of inline notes about how a fact was sourced ("(secondary)", "(consultancy summary)", "[secondary]"), keeping any real information beside them. */
+const TAGWORDS = /^(?:secondary|adviser|advisor|consultancy|consultant|law-?firm|trade press|aggregator|comparison site|sources?|summary|figure|advice|report|reading|listing|rvo|rvo-based|news|citing|and|\s)+$/i;
+export function plain(s: string): string {
+  let t = clean(s); if (!t) return t;
+  t = t.replace(/\s*[(\[]([^()\[\]]{1,60})[)\]]/g, (m, inner: string) => (TAGWORDS.test(inner.replace(/[,+:]/g, " ")) ? "" : m));
+  t = t.replace(/,\s*(?:secondary|law-?firm summary|adviser source)(?=[)\]])/gi, "").replace(/\((?:adviser sources?|secondary|trade press|consultancy|an aggregator)(?: say| list|:) /gi, "(").replace(/ per an? (?:consultancy|adviser|aggregator)(?: summary| source)?(?=[)\]])/gi, "").replace(/\s*\((?:tax adviser confirms)\)/gi, "").replace(/ per an adviser(?=\))/gi, "");
+  return t.replace(/\s+([.;,])/g, "$1").replace(/\s{2,}/g, " ").trim();
+}

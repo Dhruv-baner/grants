@@ -9,7 +9,7 @@ import { Limiter } from "@/lib/limits";
 import { LlmError, type Llm } from "@/lib/llm";
 import { match } from "@/lib/matcher";
 import { buildProfile, PROFILE_SYSTEM, sanitizeProfile } from "@/lib/profiler";
-import { llmProse } from "@/lib/prose";
+import { llmProse, parseItems } from "@/lib/prose";
 import { extractText, fetchCompany, pickLinks, robotsAllows } from "@/lib/site";
 import { httpGet, isPublicIp, safeLookup, UnsafeUrl, validateUrl } from "@/lib/ssrf";
 
@@ -113,6 +113,20 @@ describe("prose with grounding", () => {
   it("ignores schemes that were not matched, and survives unreadable output", async () => {
     const r = await llmProse(prof, matches, BY_ID, new FakeLlm([JSON.stringify([{ scheme_id: "NIKI", why_it_fits: "Fine.", watch_outs: [] }])])); expect(r.prose["NIKI"]).toBeUndefined();
     const u = await llmProse(prof, matches, BY_ID, new FakeLlm(["not json"])); expect(u.prose).toEqual({}); expect(u.notes.length).toBe(1);
+  });
+});
+
+describe("reading the model's reply", () => {
+  const item = (id: string) => `{"scheme_id": "${id}", "why_it_fits": "Fits.", "watch_outs": ["Check [this]."]}`;
+  it("reads a clean array", () => expect(parseItems(`[${item("A")}, ${item("B")}]`).map((x) => x.scheme_id)).toEqual(["A", "B"]));
+  it("reads an array inside code fences with commentary", () => expect(parseItems("Here you go:\n```json\n[" + item("A") + "]\n```\nHope that helps.").map((x) => x.scheme_id)).toEqual(["A"]));
+  it("keeps the complete objects when the reply is cut off", () => expect(parseItems(`[${item("A")}, ${item("B")}, {"scheme_id": "C", "why_it_fi`).map((x) => x.scheme_id)).toEqual(["A", "B"]));
+  it("reads objects wrapped in another object", () => expect(parseItems(`{"items": [${item("A")}]}`).map((x) => x.scheme_id)).toEqual(["A"]));
+  it("returns nothing for text with no usable objects", () => expect(parseItems("Sorry, I cannot do that.")).toEqual([]));
+  it("explains an unreadable reply in the notes, including how it stopped", async () => {
+    const prof = { country: "NL" as const, size: "medium" as const, sectors: ["Industry & manufacturing"], signals: ["LED lighting"], description: "Dutch manufacturer planning energy-saving investments" };
+    const matches = match(prof, SCHEMES).matches; const l = { async complete() { return { text: "I'd be happy to help, but first", inputTokens: 10, outputTokens: 5, stopReason: "max_tokens" }; } };
+    const r = await llmProse(prof, matches, BY_ID, l); expect(r.notes[0]).toContain("max_tokens"); expect(r.notes[0]).toContain("I'd be happy to help");
   });
 });
 

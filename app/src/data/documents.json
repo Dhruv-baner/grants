@@ -1,0 +1,2060 @@
+{
+ "meta": {
+  "as_of": "2026-11-17",
+  "note": "Document checklists recorded from public sources. Requirements change per call: check the source before relying on a list."
+ },
+ "schemes": {
+  "WBSO": {
+   "status": "recorded",
+   "channel": "Online application portal of RVO, login with eHerkenning level 3",
+   "documents": [
+    {
+     "item": "eHerkenning level 3 login with an 'RVO services level 3' authorisation",
+     "required": "required",
+     "note": "An intermediary needs a chain authorisation (ketenmachtiging) to act for you.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces"
+    },
+    {
+     "item": "Company registration numbers (KVK number and RSIN)",
+     "required": "required",
+     "note": "A BV in formation has no KVK number yet and applies by email to wbso@rvo.nl instead.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces"
+    },
+    {
+     "item": "Project form (projectformulier), one per S&O project",
+     "required": "required",
+     "note": "Filled in per project and uploaded at step 5 (Projects) of the application, not added as an attachment. Not needed for projects continued from earlier applications.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces"
+    },
+    {
+     "item": "Key project dates",
+     "required": "required",
+     "note": "Start and end of each project. Apply before the project starts.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces"
+    },
+    {
+     "item": "BSN numbers of your S&O employees",
+     "required": "conditional",
+     "note": "Needed if you received an S&O statement two years ago, so RVO can work out the average S&O hourly wage.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces"
+    },
+    {
+     "item": "Estimate of S&O costs or expenditure up to 31 December",
+     "required": "conditional",
+     "note": "Needed if you are an employer applying for actual costs and expenditure.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces"
+    },
+    {
+     "item": "S&O administration: hours per person, per project",
+     "required": "after approval",
+     "note": "Must support your realised hours; RVO can check by site visit or desk review. Based on RVO's control page and an older handbook, so check the current rules.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/wbso/na-uw-aanvraag/controle"
+    },
+    {
+     "item": "Realisation statement (WBSO-realisatiemelding) with realised hours, costs and employee BSNs",
+     "required": "after approval",
+     "note": "Due after the calendar year; an adviser gives 31 March, so confirm the date on RVO's page.",
+     "source_url": "https://www.rvo.nl/subsidie-en-financieringswijzer/wbso/na-uw-aanvraag/realisatie-melden"
+    }
+   ],
+   "notes": "Apply before the project starts. For a 1 January 2027 start, employers must apply by 20 December 2026 (RVO news). Employers can file up to four applications per calendar year; RVO usually decides within about three months (adviser source).",
+   "sources": [
+    {
+     "label": "RVO WBSO application process",
+     "url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO WBSO news (2027 start)",
+     "url": "https://www.rvo.nl/subsidie-en-financieringswijzer/wbso",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO WBSO checks",
+     "url": "https://www.rvo.nl/subsidies-financiering/wbso/na-uw-aanvraag/controle",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO WBSO realisation statement",
+     "url": "https://www.rvo.nl/subsidie-en-financieringswijzer/wbso/na-uw-aanvraag/realisatie-melden",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO WBSO FAQ",
+     "url": "https://www.rvo.nl/subsidies-financiering/wbso/aanvraagproces/veelgestelde-vragen",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser guide to the five steps",
+     "url": "https://www.hezelburcht.com/subsidies/wbso-subsidie/wbso-aanvraagproces/",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "INNOVATIEBOX": {
+   "status": "recorded",
+   "channel": "No application: you elect the innovation box in your corporate income tax return",
+   "documents": [
+    {
+     "item": "Corporate income tax liability",
+     "required": "required",
+     "note": "The company pays vennootschapsbelasting, for example a BV or NV.",
+     "source_url": "https://ondernemersplein.overheid.nl/subsidies-en-regelingen/innovatiebox/"
+    },
+    {
+     "item": "S&O statement (from WBSO) for the work that created the asset",
+     "required": "required",
+     "note": "Smaller taxpayers need this. Larger taxpayers need it plus a patent or equivalent.",
+     "source_url": "https://ondernemersplein.overheid.nl/subsidies-en-regelingen/innovatiebox/"
+    },
+    {
+     "item": "Patent, breeder's right or medicine marketing authorisation",
+     "required": "conditional",
+     "note": "Needed in addition to the S&O statement for larger taxpayers.",
+     "source_url": "https://ondernemersplein.overheid.nl/subsidies-en-regelingen/innovatiebox/"
+    },
+    {
+     "item": "Administration showing how the benefits of the intangible asset are determined",
+     "required": "required",
+     "note": "Smaller taxpayers also keep evidence that they meet the extra conditions.",
+     "source_url": "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/winst/vennootschapsbelasting/innovatiebox"
+    },
+    {
+     "item": "Election of the innovation box in the tax return",
+     "required": "required",
+     "note": "Can also be made later, as long as the assessment for that year is not final.",
+     "source_url": "https://ondernemersplein.overheid.nl/subsidies-en-regelingen/innovatiebox/"
+    },
+    {
+     "item": "Box threshold calculation",
+     "required": "conditional",
+     "note": "Benefits enter the box only once the production costs have been offset.",
+     "source_url": "https://rvo.nl/sites/default/files/2024-05/Brochure%20Innovatiebox.pdf"
+    }
+   ],
+   "notes": "This is a tax election run by the Belastingdienst, not a grant application to RVO. The S&O statement comes from a WBSO application.",
+   "sources": [
+    {
+     "label": "Ondernemersplein innovation box",
+     "url": "https://ondernemersplein.overheid.nl/subsidies-en-regelingen/innovatiebox/",
+     "tier": "Official"
+    },
+    {
+     "label": "Belastingdienst innovation box",
+     "url": "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/winst/vennootschapsbelasting/innovatiebox",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO innovation box brochure",
+     "url": "https://rvo.nl/sites/default/files/2024-05/Brochure%20Innovatiebox.pdf",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "EIA": {
+   "status": "recorded",
+   "channel": "RVO application portal (eLoket), login with eHerkenning; then claim the deduction in your tax return",
+   "documents": [
+    {
+     "item": "eHerkenning login with an RVO services authorisation",
+     "required": "required",
+     "note": "RVO's page says to log in with eHerkenning. Adviser sources give level 2+; confirm the level on RVO's page.",
+     "source_url": "https://www.rvo.nl/node/668843"
+    },
+    {
+     "item": "Code of the investment on the Energielijst",
+     "required": "required",
+     "note": "Check before investing that the asset is on the Energielijst for the year of the order.",
+     "source_url": "https://www.rvo.nl/eia"
+    },
+    {
+     "item": "Date of the order or purchase agreement",
+     "required": "required",
+     "note": "This starts the three-month deadline. Not the quote, installation, invoice or payment date.",
+     "source_url": "https://www.rvo.nl/eia"
+    },
+    {
+     "item": "KVK number and company details",
+     "required": "required",
+     "note": "Listed as standard preparation by an adviser.",
+     "source_url": "https://www.bridgefund.nl/kennisbank/belastingen/aftrekposten/energie-investeringsaftrek-eia/"
+    },
+    {
+     "item": "Invoices or order confirmation and specifications of the asset",
+     "required": "conditional",
+     "note": "An adviser lists these as things to have ready; RVO may ask for them.",
+     "source_url": "https://www.bridgefund.nl/kennisbank/belastingen/aftrekposten/energie-investeringsaftrek-eia/"
+    },
+    {
+     "item": "Proof of required permits and certificates",
+     "required": "conditional",
+     "note": "Needed when the Energielijst description of the asset requires them.",
+     "source_url": "https://www.rvo.nl/node/505233"
+    },
+    {
+     "item": "Extra technical documents or photos",
+     "required": "conditional",
+     "note": "RVO sometimes asks for these during assessment (adviser source).",
+     "source_url": "https://www.bridgefund.nl/kennisbank/belastingen/aftrekposten/energie-investeringsaftrek-eia/"
+    },
+    {
+     "item": "EIA claimed in the income or corporate tax return",
+     "required": "after approval",
+     "note": "Keep RVO's confirmation of receipt and the decision for your records (adviser source).",
+     "source_url": "https://www.grantthornton.nl/insights/tax/geldt-de-energie-investeringsaftrek-ook-voor-jouw-investering/"
+    }
+   ],
+   "notes": "Apply within three months of the order; for production costs, within three months after the quarter in which they were incurred. RVO usually decides within eight weeks. Choose the form for the year of the order. An asset that receives ISDE cannot also get EIA.",
+   "sources": [
+    {
+     "label": "RVO EIA for entrepreneurs",
+     "url": "https://www.rvo.nl/eia",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO EIA application",
+     "url": "https://www.rvo.nl/node/668843",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO EIA conditions",
+     "url": "https://www.rvo.nl/node/505233",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO EIA FAQ",
+     "url": "https://www.rvo.nl/node/2000986",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser guide",
+     "url": "https://www.bridgefund.nl/kennisbank/belastingen/aftrekposten/energie-investeringsaftrek-eia/",
+     "tier": "Secondary"
+    },
+    {
+     "label": "adviser steps",
+     "url": "https://www.grantthornton.nl/insights/tax/geldt-de-energie-investeringsaftrek-ook-voor-jouw-investering/",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "MIA_VAMIL": {
+   "status": "recorded",
+   "channel": "RVO application portal (one form for EIA, MIA or Vamil), login with eHerkenning; then claim in your tax return",
+   "documents": [
+    {
+     "item": "eHerkenning level 2+ with the authorisation 'RVO services level 2+' or 'All services level 2+'",
+     "required": "required",
+     "note": "With a RSIN but no KVK number, use the button 'Apply without chain authorisation'.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mia-vamil/mia-en-vamil-voor-ondernemers/aanvragen"
+    },
+    {
+     "item": "Code of the investment on the Milieulijst",
+     "required": "required",
+     "note": "Use the list valid on the day you place the order or sign the purchase agreement.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mia-vamil/ondernemers"
+    },
+    {
+     "item": "Date of the purchase agreement or order",
+     "required": "required",
+     "note": "Starts the three-month deadline. Not the quote, invoice, installation or payment date.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mia-vamil/mia-en-vamil-voor-ondernemers/aanvragen"
+    },
+    {
+     "item": "Minimum investment of EUR 2,500 per application",
+     "required": "required",
+     "note": "As set out in RVO's conditions page.",
+     "source_url": "https://www.rvo.nl/node/171039"
+    },
+    {
+     "item": "Copies of certificates, permits and reports",
+     "required": "conditional",
+     "note": "Needed when the Milieulijst description of the asset requires them. RVO may ask for them after you apply.",
+     "source_url": "https://www.rvo.nl/node/596141"
+    },
+    {
+     "item": "Environmental advice report",
+     "required": "conditional",
+     "note": "Advice costs are applied for together with acquisition or production costs; the advice must recommend your investment and the investment must follow within 24 months.",
+     "source_url": "https://www.rvo.nl/node/171039"
+    },
+    {
+     "item": "MIA and Vamil applied in the tax return",
+     "required": "after approval",
+     "note": "RVO emails a receipt with a reference number within hours, and usually decides within eight weeks of getting all information.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mia-vamil/ondernemers"
+    }
+   ],
+   "notes": "Apply within three months of the purchase agreement (production costs: within three months after the quarter they were incurred). RVO sends a message within 10 working days if it needs more information.",
+   "sources": [
+    {
+     "label": "RVO MIA and Vamil application",
+     "url": "https://www.rvo.nl/subsidies-financiering/mia-vamil/mia-en-vamil-voor-ondernemers/aanvragen",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO MIA and Vamil process",
+     "url": "https://www.rvo.nl/node/596141",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO MIA and Vamil conditions",
+     "url": "https://www.rvo.nl/node/171039",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO MIA and Vamil for entrepreneurs",
+     "url": "https://www.rvo.nl/subsidies-financiering/mia-vamil/ondernemers",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "ISDE": {
+   "status": "recorded",
+   "channel": "RVO eLoket, login with eHerkenning (DigiD only if you have no KVK number). Apply first, then buy",
+   "documents": [
+    {
+     "item": "eHerkenning level 2+ with the 'RVO services level eH2+' authorisation",
+     "required": "required",
+     "note": "Without a KVK number you can use DigiD instead.",
+     "source_url": "https://www.rvo.nl/node/254975"
+    },
+    {
+     "item": "ISDE meldcode of the device (heat pump or solar boiler)",
+     "required": "required",
+     "note": "Taken from the meldcode list of the year you apply. A small wind turbine needs no meldcode.",
+     "source_url": "https://rvo.nl/subsidies-financiering/isde/zakelijke-gebruikers"
+    },
+    {
+     "item": "Product description and technical documentation",
+     "required": "conditional",
+     "note": "Sent in with the application for a small wind turbine, or for a device without a meldcode.",
+     "source_url": "https://rvo.nl/subsidies-financiering/isde/zakelijke-gebruikers"
+    },
+    {
+     "item": "Application filed before you accept a quote, reserve or install",
+     "required": "required",
+     "note": "Applications made afterwards are rejected.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/isde/zakelijke-gebruikers/stappenplan-zakelijk"
+    },
+    {
+     "item": "Invoice and proof of payment for the purchase and installation",
+     "required": "after approval",
+     "note": "Per an adviser: the installation must be done by a building-installation company. RVO's own list for business users was not read in full.",
+     "source_url": "https://www.mkbservicedesk.nl/financiering/subsidies/isde-investeringssubsidie-duurzame-energie-en-energiebesparing"
+    },
+    {
+     "item": "Device in use within 12 months of the decision, and kept for a year",
+     "required": "after approval",
+     "note": "Adviser source: do not sell or remove the device within a year.",
+     "source_url": "https://www.mkbservicedesk.nl/financiering/subsidies/isde-investeringssubsidie-duurzame-energie-en-energiebesparing"
+    }
+   ],
+   "notes": "One application can cover several devices or a collective installation. An adviser says 90% of applications are decided within eight weeks. An asset that gets ISDE cannot also get EIA.",
+   "sources": [
+    {
+     "label": "RVO ISDE for business users",
+     "url": "https://rvo.nl/subsidies-financiering/isde/zakelijke-gebruikers",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO ISDE business steps",
+     "url": "https://www.rvo.nl/subsidies-financiering/isde/zakelijke-gebruikers/stappenplan-zakelijk",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO ISDE login requirements",
+     "url": "https://www.rvo.nl/node/254975",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser summary",
+     "url": "https://www.mkbservicedesk.nl/financiering/subsidies/isde-investeringssubsidie-duurzame-energie-en-energiebesparing",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read, later steps from an adviser",
+   "checked": "2026-11-17"
+  },
+  "SDE_PP": {
+   "status": "recorded",
+   "channel": "RVO digital application environment, login with eHerkenning level 3 (or DigiD); attachments go in the last tab of the form, mandatory ones marked with an asterisk",
+   "documents": [
+    {
+     "item": "eHerkenning level 3 with the 'RVO services level eH3' authorisation (or DigiD)",
+     "required": "required",
+     "note": "Apply for it early: processing takes several working days.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/veelgestelde-vragen/wind"
+    },
+    {
+     "item": "Feasibility study using RVO's 'Model haalbaarheidsstudie SDE++' (Excel)",
+     "required": "required",
+     "note": "Covers the project description, energy or product yield calculation, operating calculation, financing plan and the applicant's equity. An incomplete study means the application is not handled.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/downloads"
+    },
+    {
+     "item": "Most recent annual accounts (jaarrekening) or balance sheet",
+     "required": "required",
+     "note": "A mandatory part of the feasibility study: shows the company is financially healthy and the money is available at the time of investing.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/downloads"
+    },
+    {
+     "item": "Copies of all required permits",
+     "required": "required",
+     "note": "You must already hold the permits when you apply. Which permits depend on the technology.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/downloads"
+    },
+    {
+     "item": "Landowner's consent for the site",
+     "required": "required",
+     "note": "RVO provides a form on its downloads page.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/bijlagen"
+    },
+    {
+     "item": "Documents to show the company is not in difficulty",
+     "required": "required",
+     "note": "The list is on RVO's attachments page; it was not captured in full here.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/downloads"
+    },
+    {
+     "item": "Grid transport indication",
+     "required": "conditional",
+     "note": "Extra attachment for the renewable electricity category.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/downloads"
+    },
+    {
+     "item": "Technique-specific attachments",
+     "required": "conditional",
+     "note": "Examples from RVO guidance: a structural engineer's statement for rooftop solar; a geological report for geothermal; a grid operator statement for larger renewable gas projects (from the 2024 handbook, so check the current one).",
+     "source_url": "https://www.rvo.nl/sites/default/files/2025-07/Informatieblad-toelichting-verklaring-constructeur-2025.pdf"
+    }
+   ],
+   "notes": "Attachments differ by technology; RVO's attachments page lists them per category. The 2026 round opened 27 October 2026.",
+   "sources": [
+    {
+     "label": "RVO SDE++ attachments page",
+     "url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/downloads",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO SDE++ downloads and tools",
+     "url": "https://www.rvo.nl/subsidies-financiering/sde/bijlagen",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO SDE++ application FAQ",
+     "url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/veelgestelde-vragen",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO feasibility study handbook 2025",
+     "url": "https://english.rvo.nl/sites/default/files/2025-08/Handleiding-haalbaarheidsstudie-SDE-2025.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://www.rvo.nl/subsidies-financiering/sde/aanvragen/veelgestelde-vragen/wind",
+     "tier": "Official"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://www.rvo.nl/sites/default/files/2025-07/Informatieblad-toelichting-verklaring-constructeur-2025.pdf",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "VEKI": {
+   "status": "recorded",
+   "channel": "RVO digital application, login with eHerkenning level 3 (an intermediary uses their own eHerkenning); attachments follow RVO's models",
+   "documents": [
+    {
+     "item": "Project plan (RVO model)",
+     "required": "required",
+     "note": "Use RVO's model project plan; the VEKI handbook explains the attachments.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Budget",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Financial substantiation of your own contribution",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "SME statement (mkb-verklaring)",
+     "required": "required",
+     "note": "Filled in on RVO's SME statement page and saved as PDF.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Payback calculation",
+     "required": "required",
+     "note": "Must show the payback time would be more than five years without the subsidy.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Cost-effectiveness and CO2 calculation",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Statement 'VEKI application: no EML measures'",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Statement 'not an undertaking in difficulty', with decision scheme",
+     "required": "required",
+     "note": "The company must not be an undertaking in difficulty as defined in the EU block exemption regulation.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Latest (consolidated) annual report",
+     "required": "required",
+     "note": "Part of the proof that the company is not in difficulty.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    },
+    {
+     "item": "Organisation chart of the legal structure and shareholdings of the group",
+     "required": "required",
+     "note": "Part of the proof that the company is not in difficulty.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/veki"
+    }
+   ],
+   "notes": "Minimum subsidy of EUR 125,000 for a large company or EUR 30,000 for an SME. The 2026 round runs from 7 May 2026 to 28 January 2027. No work may start before you apply.",
+   "sources": [
+    {
+     "label": "RVO VEKI page (checked 10 July 2026)",
+     "url": "https://www.rvo.nl/subsidies-financiering/veki",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO VEKI conditions and attachments",
+     "url": "https://www.rvo.nl/subsidies-financiering/VEKI",
+     "tier": "Official"
+    },
+    {
+     "label": "Ondernemersplein VEKI",
+     "url": "https://ondernemersplein.overheid.nl/versnelde-klimaatinvestering-industrie-veki",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "INNOVATIEKREDIET": {
+   "status": "recorded",
+   "channel": "RVO portal, login with eHerkenning (RVO's application page says level 2+, an adviser says level 3: confirm); start with the optional Quick Scan; applications can be filed all year and are handled in order of completeness",
+   "documents": [
+    {
+     "item": "eHerkenning login with an RVO services authorisation",
+     "required": "required",
+     "note": "RVO's application-process page says level 2+ with the 'RVO services eH2+' authorisation. An adviser, and the earlier scheme row, say level 3, so confirm the level when you register.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces"
+    },
+    {
+     "item": "1. Business plan (free form)",
+     "required": "required",
+     "note": "Market size, competitive position, customer value and revenue model, backed with figures where possible.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "2. Project plan (free form)",
+     "required": "required",
+     "note": "Status of the technology, technical feasibility and what is unique; a systematic plan with measurable milestones, based on a technical risk analysis.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "3. Financing plan (free form): project budget, company finances and cash flow until repayment",
+     "required": "required",
+     "note": "Use RVO's 'Financieel model Innovatiekrediet' Excel file for the project budget.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "4. Evidence of other financing for the project and the company",
+     "required": "required",
+     "note": "For the project period. Examples: signed term sheets, loan agreements, investment agreements and customer agreements.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "5. Latest annual accounts (or opening balance) and financial reporting for the current year",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "6. Outcome of the SME test (mkb-toets)",
+     "required": "required",
+     "note": "Sets the credit percentage; in a partnership the maximum can rise to 50% or 40%.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "7. Legal organisation structure of the whole company",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "8. Chamber of Commerce (KVK) extracts",
+     "required": "required",
+     "note": "For the applying entity and the entities in the direct line of control above it.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "9. UBO statement",
+     "required": "required",
+     "note": "A UBO extract from the KVK or RVO's completed UBO form.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "10. Articles of association (statuten)",
+     "required": "required",
+     "note": "Of the applying entity and the entities in the direct line of control above it.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "11. Decision scheme and statement 'not an undertaking in difficulty'",
+     "required": "required",
+     "note": "Both must be submitted. Use the latest final annual figures, with a balance date no older than 18 months. If you cannot give the statement yet, describe the transactions that will lift the status.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag"
+    },
+    {
+     "item": "Project and hours administration kept for the whole project",
+     "required": "after approval",
+     "note": "RVO's terms of award; agree the detail with your accountant.",
+     "source_url": "https://english.rvo.nl/sites/default/files/2024-07/Innovatiekrediet-Verplichtingen-en-voorwaarden-verlening-versie-juli-2024.pdf"
+    },
+    {
+     "item": "Progress reports, yearly accounts and forecasts during the project",
+     "required": "after approval",
+     "note": "Reports within four weeks after each period; annual accounts yearly; a quarterly profit-and-loss and cash-flow forecast until the credit is repaid.",
+     "source_url": "https://english.rvo.nl/sites/default/files/2024-07/Innovatiekrediet-Verplichtingen-en-voorwaarden-verlening-versie-juli-2024.pdf"
+    },
+    {
+     "item": "Settlement report and audit statement",
+     "required": "after approval",
+     "note": "Due within 13 weeks after the project ends.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/besluit-aanvraag"
+    }
+   ],
+   "notes": "This is a loan, not a grant. The attachments page was checked by RVO on 13 January 2026. The pledge agreement and guarantees are part of RVO's terms of award.",
+   "sources": [
+    {
+     "label": "RVO attachments page (checked 13 Jan 2026)",
+     "url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces/bijlagen-bij-aanvraag",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO Innovatiekrediet application process",
+     "url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/aanvraagproces",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO application handbook 2026",
+     "url": "https://www.rvo.nl/sites/default/files/2026-02/Handleiding%20voor%20aanvraag%20Innovatiekrediet.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO terms of award (July 2024)",
+     "url": "https://english.rvo.nl/sites/default/files/2024-07/Innovatiekrediet-Verplichtingen-en-voorwaarden-verlening-versie-juli-2024.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO decision and settlement",
+     "url": "https://www.rvo.nl/subsidies-financiering/innovatiekrediet/besluit-aanvraag",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser summary",
+     "url": "https://www.mkbservicedesk.nl/financiering/financieringsbronnen/wat-is-het-innovatiekrediet",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official attachments page read in full; only the eHerkenning level differs between sources",
+   "checked": "2026-11-17"
+  },
+  "STUDI": {
+   "status": "recorded",
+   "channel": "RVO application portal, login with eHerkenning (an intermediary uses their own eHerkenning); applications are handled in order of arrival",
+   "documents": [
+    {
+     "item": "Project plan (RVO model, STUDI 2026)",
+     "required": "required",
+     "note": "Maximum 20 pages excluding attachments.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/studi/aanvragen"
+    },
+    {
+     "item": "Budget (RVO model)",
+     "required": "required",
+     "note": "",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/studi/aanvragen"
+    },
+    {
+     "item": "De minimis declaration",
+     "required": "required",
+     "note": "States how much government support the company has received. Up to EUR 300,000 per three years applies to companies in difficulty.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/studi/aanvragen"
+    },
+    {
+     "item": "Decision scheme and statement 'not an undertaking in difficulty'",
+     "required": "required",
+     "note": "Filled in digitally in the form; every participant in a partnership must not be in difficulty. Sign and attach both documents.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/studi/aanvragen"
+    },
+    {
+     "item": "SME statement (mkb-verklaring)",
+     "required": "conditional",
+     "note": "For small and medium-sized companies.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/tse-industrie-studies"
+    },
+    {
+     "item": "Partnership agreement",
+     "required": "conditional",
+     "note": "Relevant when applying as a partnership; RVO sets extra conditions for partnerships (see RVO's page).",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/studi/studies-duurzame-industrie"
+    }
+   ],
+   "notes": "The 2026 round runs from 18 May 2026 to 31 March 2027. The scheme was called TSE Industrie studies until 2026. The data row also lists a management statement or audit report for payout, which this run did not re-check.",
+   "sources": [
+    {
+     "label": "RVO STUDI application page (checked 2 June 2026)",
+     "url": "https://www.rvo.nl/subsidies-financiering/studi/aanvragen",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO STUDI scheme page",
+     "url": "https://www.rvo.nl/subsidies-financiering/studi/studies-duurzame-industrie",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO project plan model",
+     "url": "https://www.rvo.nl/sites/default/files/2026-04/Model%20projectplan%20STUDI.docx",
+     "tier": "Official"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://www.rvo.nl/subsidies-financiering/tse-industrie-studies",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "MKB_EBL": {
+   "status": "recorded",
+   "channel": "RVO online application (button on RVO's page) after the RVO Quickscan; login with eHerkenning level 3",
+   "documents": [
+    {
+     "item": "RVO Quickscan",
+     "required": "required",
+     "note": "Done first: checks company type, energy use, the measures and the amount.",
+     "source_url": "https://www.rvo.nl/form/quickscan-mkb-ebl"
+    },
+    {
+     "item": "eHerkenning level 3 with an 'RVO services' authorisation",
+     "required": "required",
+     "note": "It can take several days to arrange.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Quote for the energy-saving measures, including any extra work needed",
+     "required": "required",
+     "note": "The measures must be on RVO's measures list. Up to 50% of the loan may fund necessary extra work such as demolition.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Most recent annual invoice from your energy supplier",
+     "required": "required",
+     "note": "For electricity and, if you have it, gas. It shows your energy use; the minimum is 10,000 kWh of electricity or 5,000 m3 of gas equivalent a year.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Your two most recent annual accounts",
+     "required": "required",
+     "note": "Lets RVO judge whether you can repay. Start-ups cannot apply yet.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Partnership or general-partnership contract",
+     "required": "conditional",
+     "note": "For a maatschap or VOF with joint authority.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Latest income tax return of owners holding 50% or more",
+     "required": "conditional",
+     "note": "For natural persons who directly or indirectly hold 50% or more of the shares.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Copy of the shareholder register",
+     "required": "conditional",
+     "note": "For a BV with more than one shareholder.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Personal guarantee (borgstelling) from owners holding 50% or more",
+     "required": "conditional",
+     "note": "For a BV: those owners guarantee repayment personally, so everyone involved, including spouses and registered partners, should know before you apply.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    },
+    {
+     "item": "Keep documents and invoices for at least five years",
+     "required": "after approval",
+     "note": "RVO checks that the loan is used correctly.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening"
+    }
+   ],
+   "notes": "Loan of EUR 10,000 to EUR 250,000 per location, up to 7 years at 6.9% in this round. Applications from 1 Oct to 11 Dec 2026 are handled in order of receipt; RVO expects four rounds in total, the second around March 2027. Start the measures within 18 months of approval. A separate application is needed per location. RVO's page was checked on 19 Oct 2026.",
+   "sources": [
+    {
+     "label": "RVO MKB Energiebesparingslening (checked 19 Oct 2026)",
+     "url": "https://www.rvo.nl/subsidies-financiering/mkb-energiebesparingslening",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO Quickscan",
+     "url": "https://www.rvo.nl/form/quickscan-mkb-ebl",
+     "tier": "Official"
+    },
+    {
+     "label": "Ondernemersplein MKB Energiebesparingslening",
+     "url": "https://ondernemersplein.overheid.nl/subsidies-en-regelingen/mkb-energiebesparingslening/",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser summary",
+     "url": "https://www.dezaak.nl/vaste-lasten/energie/mkb-energiebesparingslening-rente-voorwaarden-en-aanvragen/",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official RVO page read in full (checked 19 Oct 2026) and the RVO Quickscan",
+   "checked": "2026-11-17"
+  },
+  "NIKI": {
+   "status": "partly recorded",
+   "channel": "RVO application forms in Mijn RVO, login with eHerkenning level 3; tender, so only complete applications are handled",
+   "documents": [
+    {
+     "item": "eHerkenning level 3 with an RVO services authorisation",
+     "required": "required",
+     "note": "Allow about two weeks to obtain it. An intermediary uses their own eHerkenning.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/niki"
+    },
+    {
+     "item": "'NIKI rekenmodel CO2-emissiereductie' (CO2 reduction calculation model)",
+     "required": "required",
+     "note": "Mandatory. RVO replaced an earlier version that had bugs, so use the one under the attachments.",
+     "source_url": "https://www.rvo.nl/subsidies-financiering/niki"
+    },
+    {
+     "item": "NIKI subsidy calculation sheet",
+     "required": "required",
+     "note": "The second mandatory calculation sheet; the method is set out in the regulation.",
+     "source_url": "https://www.rvo.nl/sites/default/files/2025-06/Instructie%20Projectplan%20en%20Klimaatplan%20NIKI%20%20-25%20juni%20-%20Definitief.docx"
+    },
+    {
+     "item": "Project plan, including a public summary",
+     "required": "required",
+     "note": "An application without the minimum required parts is incomplete and is not handled.",
+     "source_url": "https://www.rvo.nl/sites/default/files/2025-06/Instructie%20Projectplan%20en%20Klimaatplan%20NIKI%20%20-25%20juni%20-%20Definitief.docx"
+    },
+    {
+     "item": "Climate plan",
+     "required": "required",
+     "note": "Described in RVO's instruction for the project plan and climate plan (June 2025 version).",
+     "source_url": "https://www.rvo.nl/sites/default/files/2025-06/Instructie%20Projectplan%20en%20Klimaatplan%20NIKI%20%20-25%20juni%20-%20Definitief.docx"
+    },
+    {
+     "item": "Accountant's work on the data you submit, following the NIKI accountant protocol",
+     "required": "required",
+     "note": "RVO's protocol (COPRO 26030, version of 4 Nov 2026) sets what the accountant must check.",
+     "source_url": "https://www.rvo.nl/sites/default/files/2026-11/Accountantsprotocol%20NIKI%202026_0.pdf"
+    },
+    {
+     "item": "Budget (begroting) covering the total costs of the eligible activities",
+     "required": "required",
+     "note": "The accountant's protocol names the budget included in the application as the object of the accountant's examination.",
+     "source_url": "https://www.rvo.nl/sites/default/files/2026-11/Accountantsprotocol%20NIKI%202026_0.pdf"
+    },
+    {
+     "item": "Accountant's examination of future financial information (standard 3400)",
+     "required": "required",
+     "note": "The accountant follows standard 3400; RVO provides no model report.",
+     "source_url": "https://www.rvo.nl/sites/default/files/2025-07/NIKI%20Concept-Accountantsprotocol%20standaard%203400.docx"
+    },
+    {
+     "item": "Basic engineering finished at the time of applying",
+     "required": "required",
+     "note": "From an adviser: it is the basis for the mandatory CO2 and subsidy calculations. Confirm in RVO's regulation.",
+     "source_url": "https://www.pnoinnovation.com/nl/insights/niki-subsidie-verduurzaming-industrie/"
+    }
+   ],
+   "notes": "The full list of required attachments (for example budget and financing proof) was not captured here; RVO's page lists them under 'Bijlagen'. RVO's page was last checked on 11 June 2026 and still referred to the earlier round, so confirm the 2026 round's details. A search result that listed project plan, budget and own-contribution attachments belonged to a different scheme (VEKI) and was not used. The accountant protocol also says the project must achieve a CO2 reduction of at least 100,000 tonnes against the reference product. RVO's own attachments list for the 2026 round still could not be read in full, so this stays partly recorded.",
+   "sources": [
+    {
+     "label": "RVO NIKI page",
+     "url": "https://www.rvo.nl/subsidies-financiering/niki",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO NIKI accountant protocol (4 Nov 2026)",
+     "url": "https://www.rvo.nl/sites/default/files/2026-11/Accountantsprotocol%20NIKI%202026_0.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO instruction for project plan and climate plan",
+     "url": "https://www.rvo.nl/sites/default/files/2025-06/Instructie%20Projectplan%20en%20Klimaatplan%20NIKI%20%20-25%20juni%20-%20Definitief.docx",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser guide to the tender",
+     "url": "https://www.pnoinnovation.com/nl/insights/niki-subsidie-verduurzaming-industrie/",
+     "tier": "Secondary"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://www.rvo.nl/sites/default/files/2025-07/NIKI%20Concept-Accountantsprotocol%20standaard%203400.docx",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official protocol and instruction documents read; RVO's attachments list for the 2026 round not read in full",
+   "checked": "2026-11-17"
+  },
+  "BMKB": {
+   "status": "partly recorded",
+   "channel": "Not applied for by the company: the accredited lender (bank or other financier) files it with RVO as part of your credit application",
+   "documents": [
+    {
+     "item": "Credit application at an accredited lender",
+     "required": "required",
+     "note": "RVO says the BMKB application coincides with your credit application and the lender decides; you only ask the lender to use the guarantee scheme.",
+     "source_url": "https://www.rvo.nl/node/4608"
+    },
+    {
+     "item": "Recent annual figures, tax return or business-account transaction data",
+     "required": "conditional",
+     "note": "Typical requests from lenders per the Chamber of Commerce; each lender decides what it needs.",
+     "source_url": "https://www.kvk.nl/geldzaken/zo-vraag-je-een-financiering-aan"
+    },
+    {
+     "item": "Business plan with budgets and an opening balance",
+     "required": "conditional",
+     "note": "For a start-up, per the Chamber of Commerce.",
+     "source_url": "https://www.kvk.nl/geldzaken/zo-vraag-je-een-financiering-aan"
+    },
+    {
+     "item": "Quote for the asset, or property details, or debtor data",
+     "required": "conditional",
+     "note": "Depends on the purpose: lease, real estate or factoring.",
+     "source_url": "https://www.kvk.nl/geldzaken/zo-vraag-je-een-financiering-aan"
+    },
+    {
+     "item": "Substantiation of the credit need and, for a BV, an organisation chart of shareholders",
+     "required": "conditional",
+     "note": "From a bank association checklist for the scheme, written for the earlier Covid-era BMKB-C, so treat as indicative.",
+     "source_url": "https://www.nvb.nl/media/3221/nvb-checklist-ondernemers_b.pdf"
+    }
+   ],
+   "notes": "There is no fixed official document list: it varies by lender and purpose. The scheme is reported as extended to 1 July 2027 (adviser source; the dataset row also says open to 30 Jun 2027).",
+   "sources": [
+    {
+     "label": "RVO BMKB application info",
+     "url": "https://www.rvo.nl/node/4608",
+     "tier": "Official"
+    },
+    {
+     "label": "RVO BMKB application page",
+     "url": "https://www.rvo.nl/subsidies-financiering/bmkb/aanvragen",
+     "tier": "Official"
+    },
+    {
+     "label": "Chamber of Commerce: how to apply for financing",
+     "url": "https://www.kvk.nl/geldzaken/zo-vraag-je-een-financiering-aan",
+     "tier": "Official"
+    },
+    {
+     "label": "Dutch banking association checklist B",
+     "url": "https://www.nvb.nl/media/3221/nvb-checklist-ondernemers_b.pdf",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read for the process; document lists are lender-dependent and partly from older or secondary sources",
+   "checked": "2026-11-17"
+  },
+  "MIT_FEAS": {
+   "status": "partly recorded",
+   "channel": "Regional desk of your province or region (portal login with eHerkenning of the applying company); the list below differs by region",
+   "documents": [
+    {
+     "item": "Project plan using the region's model",
+     "required": "required",
+     "note": "The one document required in every region seen. In Gelderland it is the only mandatory attachment.",
+     "source_url": "https://media.gelderland.nl/Veelgestelde_vragenlijst_MIT_Haalbaarheidsprojecten_2026_b0a7fa6271.pdf"
+    },
+    {
+     "item": "SME statement (mkb-verklaring) in the region's format",
+     "required": "conditional",
+     "note": "Mandatory in Noord-Holland and Noord-Nederland; check your region.",
+     "source_url": "https://www.snn.nl/sites/default/files/documents/Preview%20eLoket%20vragen%20MIT%20Haalbaarheid%202024.pdf"
+    },
+    {
+     "item": "De minimis declaration",
+     "required": "conditional",
+     "note": "Mandatory in Noord-Holland.",
+     "source_url": "https://www.noord-holland.nl/productfiles/07238be9-ea97-4d58-8c62-420e8e10cf3a.docx"
+    },
+    {
+     "item": "Organisation chart showing partner and linked companies",
+     "required": "conditional",
+     "note": "Mandatory in Noord-Holland if the SME is part of a holding.",
+     "source_url": "https://www.noord-holland.nl/productfiles/07238be9-ea97-4d58-8c62-420e8e10cf3a.docx"
+    },
+    {
+     "item": "Specification of the budget and planning, and quotes",
+     "required": "conditional",
+     "note": "Listed by Noord-Holland; the southern provinces ask for a budget with the application form.",
+     "source_url": "https://www.noord-holland.nl/productfiles/7c4da5ca-55b1-48e9-a6be-37db14bd2c07.pdf"
+    },
+    {
+     "item": "Chamber of Commerce (KVK) extract",
+     "required": "conditional",
+     "note": "Listed by Noord-Holland.",
+     "source_url": "https://www.noord-holland.nl/productfiles/7c4da5ca-55b1-48e9-a6be-37db14bd2c07.pdf"
+    },
+    {
+     "item": "eHerkenning of the company that carries out the project",
+     "required": "required",
+     "note": "The KVK number on the login must match the applicant; an intermediary needs a chain authorisation.",
+     "source_url": "https://www.noord-holland.nl/productfiles/34c97407-8397-4f89-8d55-ac109c43fb6c.pdf"
+    }
+   ],
+   "notes": "Only one SME may apply per project (two collaborating SMEs cannot apply together). The schemes are usually oversubscribed on opening day, so complete documents on day one matter. South: 'MIT Zuid' application form with project plan model and budget (Stimulus factsheet).",
+   "sources": [
+    {
+     "label": "Gelderland MIT feasibility FAQ 2026",
+     "url": "https://media.gelderland.nl/Veelgestelde_vragenlijst_MIT_Haalbaarheidsprojecten_2026_b0a7fa6271.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "Noord-Holland application form",
+     "url": "https://www.noord-holland.nl/productfiles/07238be9-ea97-4d58-8c62-420e8e10cf3a.docx",
+     "tier": "Official"
+    },
+    {
+     "label": "Noord-Holland application guidance",
+     "url": "https://www.noord-holland.nl/productfiles/7c4da5ca-55b1-48e9-a6be-37db14bd2c07.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "Noord-Holland MIT guide",
+     "url": "https://www.noord-holland.nl/productfiles/34c97407-8397-4f89-8d55-ac109c43fb6c.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "SNN eLoket questions",
+     "url": "https://www.snn.nl/sites/default/files/documents/Preview%20eLoket%20vragen%20MIT%20Haalbaarheid%202024.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "MIT Zuid 2026 factsheet",
+     "url": "https://www.stimulus.nl/mit-zuid/wp-content/uploads/sites/6/2026/01/Factsheet-MIT-Zuid-2026-Haalbaarheidsprojecten-concept-1.pdf",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official regional pages read; lists differ per region and were not read for every region",
+   "checked": "2026-11-17"
+  },
+  "FZULG": {
+   "status": "recorded",
+   "channel": "Two steps: certificate from the BSFZ via its web portal, then the allowance application at your tax office via Mein ELSTER",
+   "documents": [
+    {
+     "item": "Registration at the BSFZ web portal",
+     "required": "required",
+     "note": "Step 1; the application is fully digital.",
+     "source_url": "https://www.bundesfinanzministerium.de/Content/DE/Standardartikel/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage-uebersicht.htmll"
+    },
+    {
+     "item": "ELSTER organisation certificate",
+     "required": "required",
+     "note": "Needed for the BSFZ application, per chamber of commerce sources.",
+     "source_url": "https://www.ihk.de/sbh/unternehmer/innovationundtechnologie/foerderprogramme/steuerliche-forschungsfoerderung-forschungszulage-5009764"
+    },
+    {
+     "item": "Company master data and statistical data",
+     "required": "required",
+     "note": "The only documents the funding database lists.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMBF/zulage-forschung-entwicklung.html"
+    },
+    {
+     "item": "Project description following the BSFZ's outline, cost calculation and project plan",
+     "required": "required",
+     "note": "Per a chamber of commerce source; multiple R&D projects can be bundled in one application.",
+     "source_url": "https://www.ihk.de/sbh/unternehmer/innovationundtechnologie/foerderprogramme/steuerliche-forschungsfoerderung-forschungszulage-5009764"
+    },
+    {
+     "item": "BSFZ certificate (Bescheinigung)",
+     "required": "required",
+     "note": "Issued after step 1 and sent to your tax office directly. It must exist before you apply at the tax office.",
+     "source_url": "https://www.bundesfinanzministerium.de/Content/DE/Standardartikel/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage-uebersicht.htmll"
+    },
+    {
+     "item": "Application for the allowance in Mein ELSTER, one per financial year",
+     "required": "required",
+     "note": "Filed after the end of each financial year. No receipts and not even the BSFZ certificate need to be attached.",
+     "source_url": "https://www.bundesfinanzministerium.de/Content/DE/Standardartikel/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage-uebersicht.htmll"
+    },
+    {
+     "item": "Records of R&D hours per employee and supporting documents",
+     "required": "after approval",
+     "note": "Hours should be recorded systematically so eligible wage costs can be shown if the tax office checks (law firm guidance).",
+     "source_url": "https://kpmg-law.de/wp-content/uploads/2026/02/KPMG_Law_Produktblatt_Forschungszulage_BF_sec.pdf"
+    }
+   ],
+   "notes": "The BSFZ decides on eligibility of the R&D, the tax office on the amount. The BSFZ normally decides within about three months of complete documents (adviser and funding database say up to three months) and does not charge a fee (adviser source).",
+   "sources": [
+    {
+     "label": "Federal Finance Ministry overview",
+     "url": "https://www.bundesfinanzministerium.de/Content/DE/Standardartikel/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage-uebersicht.htmll",
+     "tier": "Official"
+    },
+    {
+     "label": "Federal funding database",
+     "url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMBF/zulage-forschung-entwicklung.html",
+     "tier": "Official"
+    },
+    {
+     "label": "Bayernportal service page",
+     "url": "https://www.bayernportal.de/dokumente/leistung/5136974118295",
+     "tier": "Official"
+    },
+    {
+     "label": "chamber of commerce guide (Heilbronn-Franken)",
+     "url": "https://www.ihk.de/heilbronn-franken/produktmarken/branchen/innovation-technologie/foerdermittel/die-steuerliche-forschungszulage-7007244",
+     "tier": "Secondary"
+    },
+    {
+     "label": "chamber of commerce guide (Schwarzwald-Baar-Heuberg)",
+     "url": "https://www.ihk.de/sbh/unternehmer/innovationundtechnologie/foerderprogramme/steuerliche-forschungsfoerderung-forschungszulage-5009764",
+     "tier": "Secondary"
+    },
+    {
+     "label": "law firm product sheet",
+     "url": "https://kpmg-law.de/wp-content/uploads/2026/02/KPMG_Law_Produktblatt_Forschungszulage_BF_sec.pdf",
+     "tier": "Secondary"
+    },
+    {
+     "label": "tax adviser explainer",
+     "url": "https://reb-steuerberatung.de/insights/forschungszulage-beantragen-zweistufiges-verfahren-fristen-und-warum.html",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official pages read (via search snippets); lists of what the BSFZ form asks for come from chamber sources",
+   "checked": "2026-11-17"
+  },
+  "BIK_M2_TM2_R3": {
+   "status": "recorded",
+   "channel": "Stage I: sketch submitted by the project coordinator to Projektträger Jülich (PtJ) through the easy-Online system; stage II: formal funding application on invitation",
+   "documents": [
+    {
+     "item": "Sketch (Skizze) of at most 15 pages",
+     "required": "required",
+     "note": "Must show the content and formal requirements for funding, in particular the points under section 6.2.2 (3) of the BIK guideline.",
+     "source_url": "https://www.ptj.de/foerdermoeglichkeiten/bik"
+    },
+    {
+     "item": "Submission through easy-Online by the consortium coordinator",
+     "required": "required",
+     "note": "For a joint project the Verbundkoordinator submits. PtJ offers video tutorials for the system.",
+     "source_url": "https://www.ptj.de/foerdermoeglichkeiten/bik"
+    },
+    {
+     "item": "Formal funding application",
+     "required": "after approval",
+     "note": "Stage II, filed after your sketch has been selected.",
+     "source_url": "https://www.ptj.de/foerdermoeglichkeiten/bik"
+    }
+   ],
+   "notes": "Third call: sketches from 19 Oct to 6 Dec 2026. Funding depends on the 2027 federal budget law. The guideline says research institutions, companies, municipal bodies and universities are eligible.",
+   "sources": [
+    {
+     "label": "PtJ BIK Module 2 page",
+     "url": "https://www.ptj.de/foerdermoeglichkeiten/bik",
+     "tier": "Official"
+    },
+    {
+     "label": "PtJ news on the third call",
+     "url": "https://www.ptj.de/veroeffentlichungen/aktuelles/bundesfoerderung-industrie-und-klimaschutz-3-foerderaufruf-startet",
+     "tier": "Official"
+    },
+    {
+     "label": "BMWE press release (14 Oct 2026)",
+     "url": "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Pressemitteilungen/2026/10/20261014-bundesfoerderung-industrie-klimaschutz.html",
+     "tier": "Official"
+    },
+    {
+     "label": "BIK guideline overview (Umweltpakt Bayern)",
+     "url": "https://www.umweltpakt.bayern.de/werkzeuge/foerderfibel/programme/296/f%C3%B6rderrichtlinie-bundesf%C3%B6rderung-industrie-und-klimaschutz---bik",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "BIK_M1_TM3_R3": {
+   "status": "partly recorded",
+   "channel": "Two stages: project sketch and then an application, both online with the project agency KEI (Kompetenzzentrum Klimaschutz in energieintensiven Industrien)",
+   "documents": [
+    {
+     "item": "Project sketch submitted to KEI",
+     "required": "required",
+     "note": "Open from 19 Oct to 6 Dec 2026. KEI's own sketch template and page limit were not captured in this run; check KEI's call page.",
+     "source_url": "https://www.ptj.de/veroeffentlichungen/aktuelles/bundesfoerderung-industrie-und-klimaschutz-3-foerderaufruf-startet"
+    },
+    {
+     "item": "Formal application online at KEI",
+     "required": "after approval",
+     "note": "Stage II, after your sketch is selected.",
+     "source_url": "https://www.ihk.de/halle/ihr-unternehmen-unsere-serviceangebote/finanzierung-und-foerderung/foerderprogramm-des-monats/foerderprogramm-des-monats-april-2025-1--6512956"
+    }
+   ],
+   "notes": "For this research call the funding ceiling per project is up to EUR 35M, according to a chamber source. KEI ran a free online workshop to help applicants prepare sketches for the second call. Funding depends on the 2027 federal budget law.",
+   "sources": [
+    {
+     "label": "PtJ news on the third call",
+     "url": "https://www.ptj.de/veroeffentlichungen/aktuelles/bundesfoerderung-industrie-und-klimaschutz-3-foerderaufruf-startet",
+     "tier": "Official"
+    },
+    {
+     "label": "BMWE press release (14 Oct 2026)",
+     "url": "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Pressemitteilungen/2026/10/20261014-bundesfoerderung-industrie-klimaschutz.html",
+     "tier": "Official"
+    },
+    {
+     "label": "chamber guide to the programme (Halle)",
+     "url": "https://www.ihk.de/halle/ihr-unternehmen-unsere-serviceangebote/finanzierung-und-foerderung/foerderprogramm-des-monats/foerderprogramm-des-monats-april-2025-1--6512956",
+     "tier": "Secondary"
+    },
+    {
+     "label": "chamber note on the second call (Regensburg)",
+     "url": "https://www.ihk.de/regensburg/fachthemen/energie-und-umwelt/nachrichten-energie/bundesfoerderung-industrie-und-klimaschutz-bik-gestartet-6932664",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official news pages read; the sketch template for Module 1 was not captured",
+   "checked": "2026-11-17"
+  },
+  "EBN": {
+   "status": "recorded",
+   "channel": "Online application in the BAFA portal, filed before you sign a contract with the energy adviser",
+   "documents": [
+    {
+     "item": "Online application in the BAFA portal",
+     "required": "required",
+     "note": "Must be filed before a legally binding service contract with the adviser is signed.",
+     "source_url": "https://www.grantbite.com/de/funding/energieberatung-nichtwohngebaeude-ebn"
+    },
+    {
+     "item": "An approved energy adviser from the official expert list",
+     "required": "required",
+     "note": "The adviser must be listed in the category 'Energieberatung für Nichtwohngebäude' on energie-effizienz-experten.de.",
+     "source_url": "https://www.umweltpakt.bayern.de/werkzeuge/foerderfibel/programme/297/energieberatung-f%C3%BCr-nichtwohngeb%C3%A4ude,-anlagen-und-systeme---ebn"
+    },
+    {
+     "item": "Quote from the adviser for the consultation",
+     "required": "conditional",
+     "note": "An adviser source lists choosing an adviser and obtaining a quote as the first step.",
+     "source_url": "https://nexvyra.de/fakten/bafa-energieberatung-mittelstand"
+    },
+    {
+     "item": "Grant decision (Zuwendungsbescheid) before you sign the contract",
+     "required": "required",
+     "note": "Wait for the decision, then conclude the contract with the adviser (adviser source).",
+     "source_url": "https://nexvyra.de/fakten/bafa-energieberatung-mittelstand"
+    },
+    {
+     "item": "Proof of non-cash payment of the full consultancy fee",
+     "required": "after approval",
+     "note": "Uploaded with the proof of use.",
+     "source_url": "https://www.bayernportal.de/dokumente/leistung/5508122298215"
+    },
+    {
+     "item": "Online proof-of-use form and consultation report",
+     "required": "after approval",
+     "note": "Completed in the BAFA portal after the consultation, with the required documents uploaded. An adviser source gives three months after completion; confirm the deadline with BAFA.",
+     "source_url": "https://www.bayernportal.de/dokumente/leistung/5508122298215"
+    }
+   ],
+   "notes": "The guideline runs from 1 Jan 2025 to 31 Dec 2026. Grant of 50% of the eligible adviser fee, with caps by annual energy cost (an adviser and a chamber source give EUR 3,500 maximum below EUR 300,000 annual energy costs). The BAFA transfers the grant after checking the proof of use.",
+   "sources": [
+    {
+     "label": "Bayernportal service page",
+     "url": "https://www.bayernportal.de/dokumente/leistung/5508122298215",
+     "tier": "Official"
+    },
+    {
+     "label": "Umweltpakt Bayern funding guide",
+     "url": "https://www.umweltpakt.bayern.de/werkzeuge/foerderfibel/programme/297/energieberatung-f%C3%BCr-nichtwohngeb%C3%A4ude,-anlagen-und-systeme---ebn",
+     "tier": "Official"
+    },
+    {
+     "label": "BAFA guideline summary (grant database)",
+     "url": "https://www.grantbite.com/de/funding/energieberatung-nichtwohngebaeude-ebn",
+     "tier": "Secondary"
+    },
+    {
+     "label": "adviser summary",
+     "url": "https://nexvyra.de/fakten/bafa-energieberatung-mittelstand",
+     "tier": "Secondary"
+    },
+    {
+     "label": "Chamber of commerce Berlin",
+     "url": "https://www.ihk.de/berlin/nachhaltige-wirtschaft/nh-produkte-services3/foerderung-energieberatung-mittelstand-5120334",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "EEW": {
+   "status": "recorded",
+   "channel": "Grant: electronic application form on the BAFA website (Modules 1 to 4 and 6; Module 5, the transformation plan, goes through VDI/VDE). Credit: through your bank, which applies to KfW (programme 295). Either way, before the measure starts",
+   "documents": [
+    {
+     "item": "Electronic application form",
+     "required": "required",
+     "note": "Covers general company details, the planned measures and spending, and information on de minimis aid.",
+     "source_url": "https://www.ihk.de/berlin/nachhaltige-wirtschaft/nh-produkte-services3/bundesfoerderung-energieeffizienz-wirtschaft-5118868"
+    },
+    {
+     "item": "Application filed before the measure starts",
+     "required": "required",
+     "note": "Possible until 31 Dec 2028 under the guideline of 25 Jan 2024. For the credit route the application goes to your bank first.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMWi/energieeffizienz-u-prozesswaerme-zuschuss-2.html"
+    },
+    {
+     "item": "SME classification: self-declaration (annexes 3 to 5) with the SME definition leaflet",
+     "required": "conditional",
+     "note": "Module 1 is open to SMEs only; the declaration also sets the aid rate.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/%C3%96ffentliche-Einrichtungen/Energie-Versorgung-und-Netze/F%C3%B6rderprodukte/Bundesf%C3%B6rderung-f%C3%BCr-Energie-und-Ressourceneffizienz-%28295%29/"
+    },
+    {
+     "item": "De minimis declaration",
+     "required": "required",
+     "note": "Listed among the forms for the grant.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/%C3%96ffentliche-Einrichtungen/Energie-Versorgung-und-Netze/F%C3%B6rderprodukte/Bundesf%C3%B6rderung-f%C3%BCr-Energie-und-Ressourceneffizienz-%28295%29/"
+    },
+    {
+     "item": "Request for early start of the measure",
+     "required": "conditional",
+     "note": "A BAFA form for when you want to start before the decision.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/F%C3%B6rderprodukte/EE-Abw%C3%A4rme-Zuschuss-(494)/"
+    },
+    {
+     "item": "Data sheet 'Prozesswärme' (process heat)",
+     "required": "conditional",
+     "note": "For Module 2: collects the key data of the project.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/F%C3%B6rderprodukte/EE-Abw%C3%A4rme-Zuschuss-(494)/"
+    },
+    {
+     "item": "Energy-saving concept (online form)",
+     "required": "conditional",
+     "note": "Listed among the forms; relevant to the optimisation module.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/%C3%96ffentliche-Einrichtungen/Energie-Versorgung-und-Netze/F%C3%B6rderprodukte/Bundesf%C3%B6rderung-f%C3%BCr-Energie-und-Ressourceneffizienz-%28295%29/"
+    },
+    {
+     "item": "Manufacturer declaration proving eligibility",
+     "required": "conditional",
+     "note": "Official forms exist for biomass plants, CHP, heat recovery compressors, compressed-air generators, fans and heat pumps. For insulation, a product or material datasheet can serve.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/%C3%96ffentliche-Einrichtungen/Energie-Versorgung-und-Netze/F%C3%B6rderprodukte/Bundesf%C3%B6rderung-f%C3%BCr-Energie-und-Ressourceneffizienz-%28295%29/"
+    },
+    {
+     "item": "Technical minimum requirements for Module 1",
+     "required": "conditional",
+     "note": "Proof follows the criteria in the Module 1 annex, by manufacturer declaration or datasheet.",
+     "source_url": "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-(Inlandsf%C3%B6rderung)/PDF-Dokumente/6000004386_M_295_Anlage_TMA_Modul1.pdf"
+    },
+    {
+     "item": "Waiver declaration (EEG/KWKG) and declaration on contracting, rental or off-site use",
+     "required": "conditional",
+     "note": "Forms listed for the process heat module; they apply when the situation matches.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/%C3%96ffentliche-Einrichtungen/Energie-Versorgung-und-Netze/F%C3%B6rderprodukte/Bundesf%C3%B6rderung-f%C3%BCr-Energie-und-Ressourceneffizienz-%28295%29/"
+    }
+   ],
+   "notes": "The scheme has six modules, and the forms vary by module. This list follows the official forms page and the annexes; module-by-module detail is in the BAFA leaflet, which was not read in full. A measure cannot be funded by BAFA, KfW and the EEW competition at once, and no further public aid may be claimed for the same measure.",
+   "sources": [
+    {
+     "label": "KfW programme 295 page with forms",
+     "url": "https://www.kfw.de/inlandsfoerderung/%C3%96ffentliche-Einrichtungen/Energie-Versorgung-und-Netze/F%C3%B6rderprodukte/Bundesf%C3%B6rderung-f%C3%BCr-Energie-und-Ressourceneffizienz-%28295%29/",
+     "tier": "Official"
+    },
+    {
+     "label": "KfW forms for the process heat module",
+     "url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/F%C3%B6rderprodukte/EE-Abw%C3%A4rme-Zuschuss-(494)/",
+     "tier": "Official"
+    },
+    {
+     "label": "federal funding database, Module 1",
+     "url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMWi/energieeffizienz-u-prozesswaerme-zuschuss-1.html",
+     "tier": "Official"
+    },
+    {
+     "label": "federal funding database, Module 2",
+     "url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMWi/energieeffizienz-u-prozesswaerme-zuschuss-2.html",
+     "tier": "Official"
+    },
+    {
+     "label": "KfW annex with technical minimum requirements for Module 1",
+     "url": "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-(Inlandsf%C3%B6rderung)/PDF-Dokumente/6000004386_M_295_Anlage_TMA_Modul1.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "Berlin chamber of commerce guide",
+     "url": "https://www.ihk.de/berlin/nachhaltige-wirtschaft/nh-produkte-services3/bundesfoerderung-energieeffizienz-wirtschaft-5118868",
+     "tier": "Secondary"
+    },
+    {
+     "label": "KfW leaflet for credit 295 (Dec 2025)",
+     "url": "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-%28Inlandsf%C3%B6rderung%29/PDF-Dokumente/6000004389_M_295_EE_Prozessw%C3%A4rme.pdf",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official KfW forms page, KfW annex and funding database read; BAFA's own module leaflet not read in full",
+   "checked": "2026-11-17"
+  },
+  "BEG_NWG": {
+   "status": "recorded",
+   "channel": "Credit route (KfW 263): through your bank, which applies to KfW. Heating grant route (KfW 522): in the KfW customer portal 'Meine KfW'. Single measures: BAFA. Apply before works or contracts start",
+   "documents": [
+    {
+     "item": "Energy-efficiency expert from the official dena expert list",
+     "required": "required",
+     "note": "Mandatory. The category must be 'Nichtwohngebäude' (for 263: 'Effizienzgebäude'; for 522: 'BEG Nichtwohngebäude'). For single measures a specialist company can do this.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%c3%b6rderprodukte/Bundesf%c3%b6rderung-f%c3%bcr-effiziente-Geb%c3%a4ude-Nichtwohngeb%c3%a4ude-Kredit-(263)/"
+    },
+    {
+     "item": "Commercial confirmation to the application (gBzA) and its 15-character ID",
+     "required": "required",
+     "note": "Created by the expert in KfW's gBzA centre and passed to your financing partner or used in the portal. It includes the planned measures, eligible costs and confirmation of technical minimum requirements.",
+     "source_url": "https://www.kfw.de/522"
+    },
+    {
+     "item": "Documented advisory discussion",
+     "required": "required",
+     "note": "For the credit product, discuss the funding first with your KfW customer advisor; it is recorded on a KfW form.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%c3%b6rderprodukte/Bundesf%c3%b6rderung-f%c3%bcr-effiziente-Geb%c3%a4ude-Nichtwohngeb%c3%a4ude-Kredit-(263)/"
+    },
+    {
+     "item": "Application before the start of works",
+     "required": "required",
+     "note": "Delivery or service contracts and the start of construction count as the start and rule out funding; for a purchase, apply before the first payment.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%c3%b6rderprodukte/Bundesf%c3%b6rderung-f%c3%bcr-effiziente-Geb%c3%a4ude-Nichtwohngeb%c3%a4ude-Kredit-(263)/"
+    },
+    {
+     "item": "Signed supply or service contract, or proof of the tender procedure",
+     "required": "required",
+     "note": "Uploaded with the heating grant application (522).",
+     "source_url": "https://kfw.de/422"
+    },
+    {
+     "item": "Company proofs in 'Meine KfW'",
+     "required": "required",
+     "note": "The documents depend on company type and legal form; KfW lists them on its proofs page for companies.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Meine-KfW/Nachweise-f%C3%BCr-Unternehmen/"
+    },
+    {
+     "item": "Commercial confirmation after completion (gBnD)",
+     "required": "after approval",
+     "note": "Issued by the expert or specialist company; handed to the bank (263) or the KfW portal (522) to release the repayment grant or payout.",
+     "source_url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%c3%b6rderprodukte/Bundesf%c3%b6rderung-f%c3%bcr-effiziente-Geb%c3%a4ude-Nichtwohngeb%c3%a4ude-Kredit-(263)/"
+    },
+    {
+     "item": "Proof that the building permit application is at least five years old",
+     "required": "conditional",
+     "note": "Applies to existing non-residential buildings for the heating grant.",
+     "source_url": "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-(Inlandsf%C3%B6rderung)/PDF-Dokumente/6000005133_M_522.pdf"
+    }
+   ],
+   "notes": "Rules changed in 2026: the BEG single-measures guideline of 17 Aug 2026 took effect on 21 Jul 2026 and the 522 leaflet applies from 24 Sep 2026; KfW adjusted product 263 on 21 Jul 2026. Check the current terms.",
+   "sources": [
+    {
+     "label": "KfW BEG Nichtwohngebäude Kredit 263",
+     "url": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%c3%b6rderprodukte/Bundesf%c3%b6rderung-f%c3%bcr-effiziente-Geb%c3%a4ude-Nichtwohngeb%c3%a4ude-Kredit-(263)/",
+     "tier": "Official"
+    },
+    {
+     "label": "KfW heating grant 522 leaflet (Sep 2026)",
+     "url": "https://www.kfw.de/PDF/Download-Center/F%C3%B6rderprogramme-(Inlandsf%C3%B6rderung)/PDF-Dokumente/6000005133_M_522.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "KfW heating grant 522",
+     "url": "https://www.kfw.de/522",
+     "tier": "Official"
+    },
+    {
+     "label": "KfW online application 522",
+     "url": "https://www.kfw.de/inlandsfoerderung/Meine-KfW/Online-Antrag-Heizungsf%C3%B6rderung-f%C3%BCr-Unternehmen-Nichtwohngeb%C3%A4ude/",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser-run guide to 263",
+     "url": "https://www.foerder-welt.de/content/foerderwelt/de/unternehmen/alle-foerdermittel/kfw-kredit-nichtwohngebaeude_263.html",
+     "tier": "Secondary"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://kfw.de/422",
+     "tier": "Official"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://www.kfw.de/inlandsfoerderung/Meine-KfW/Nachweise-f%C3%BCr-Unternehmen/",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "KMU_MEDTECH": {
+   "status": "partly recorded",
+   "channel": "Two stages: project sketch in German, submitted digitally through the easy-Online sketch tool to the project agency VDI Technologiezentrum; then a formal application in easy-Online on invitation",
+   "documents": [
+    {
+     "item": "Project sketch in German",
+     "required": "required",
+     "note": "Can be sent at any time; assessed only on 15 April and 15 October. A joint project submits one sketch together. Page limit not confirmed: an adviser says 10 pages, a 2013 brochure said 15, so check the current guideline.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMBF/kmu-innovativ-medizintechnik-bund-86930.html"
+    },
+    {
+     "item": "Project sheet (Projektblatt) generated in the portal",
+     "required": "conditional",
+     "note": "Per an adviser, a signed copy goes to the project agency; sister KMU-innovativ lines ask for a scanned copy by email, so confirm for medtech.",
+     "source_url": "https://reb-steuerberatung.de/insights/das-zweistufige-verfahren-bei-kmu-innovativ-projektskizze-stichtage.html"
+    },
+    {
+     "item": "Resubmission with changed sections marked",
+     "required": "conditional",
+     "note": "Allowed after a rejected sketch; changed parts must be marked against the previous version.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMBF/kmu-innovativ-medizintechnik-bund-86930.html"
+    },
+    {
+     "item": "Formal application via easy-Online",
+     "required": "after approval",
+     "note": "Requested after a positive sketch review.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMBF/kmu-innovativ-medizintechnik-bund-86930.html"
+    },
+    {
+     "item": "Project description with exploitation, work and milestone planning",
+     "required": "after approval",
+     "note": "Required with the formal application in the sister KMU-innovativ lines; confirm for medtech.",
+     "source_url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/17432/live/lw_file/kmui_biomedizin_hinweise-zum-einreichen-von-projektskizzen_stand_260414_final.pdf"
+    }
+   ],
+   "notes": "Selection results come about three months after the assessment date; funding is decided about three months after complete documents. Do not start the project before the grant notice (adviser source). The next assessment date is 15 April 2027.",
+   "sources": [
+    {
+     "label": "federal funding database entry",
+     "url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Bund/BMBF/kmu-innovativ-medizintechnik-bund-86930.html",
+     "tier": "Official"
+    },
+    {
+     "label": "PtJ sketch guidance for the sister line KMU-innovativ Biomedizin (April 2026)",
+     "url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/17432/live/lw_file/kmui_biomedizin_hinweise-zum-einreichen-von-projektskizzen_stand_260414_final.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "adviser guide to the two-stage procedure",
+     "url": "https://reb-steuerberatung.de/insights/das-zweistufige-verfahren-bei-kmu-innovativ-projektskizze-stichtage.html",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official funding database read; sketch format details differ across sources and sister programmes",
+   "checked": "2026-11-17"
+  },
+  "GRW_SN_RIGA": {
+   "status": "partly recorded",
+   "channel": "Application to the Sächsische Aufbaubank (SAB) through the SAB funding portal, before the project starts",
+   "documents": [
+    {
+     "item": "SAB application form (Antragsvordruck) with all required documents",
+     "required": "required",
+     "note": "The service text says a detailed list of required documents is in the application form itself; that form was not available in this run.",
+     "source_url": "https://fimportal.de/api/v0/xzufi-services/L100009/6001280/de/pdf"
+    },
+    {
+     "item": "Application filed before the start of the measure",
+     "required": "required",
+     "note": "Starting first rules out the grant.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/Sachsen/gewerbliche-wirtschaft.html"
+    },
+    {
+     "item": "Explanation of how the investment raises the company's adaptability and competitiveness",
+     "required": "required",
+     "note": "The guideline requires this to be set out in the application.",
+     "source_url": "https://www.revosax.sachsen.de/vorschrift/19537.1"
+    },
+    {
+     "item": "Job data: new and retained permanent jobs, and existing jobs at other sites in the same municipality",
+     "required": "required",
+     "note": "The guideline counts the net jobs across the company's sites in the municipality at the time of application.",
+     "source_url": "https://recht.sachsen.de/vorschrift_gesamt/18403/39292.pdf"
+    },
+    {
+     "item": "Commitment to keep the jobs for at least five years and finish the project within three years",
+     "required": "required",
+     "note": "Conditions stated in the funding database.",
+     "source_url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/Sachsen/gewerbliche-wirtschaft.html"
+    }
+   ],
+   "notes": "The full document list is not public outside SAB's form. The guideline is valid to 31 Dec 2030 (funding database). An adviser says special rules on de minimis aid and exclusions apply.",
+   "sources": [
+    {
+     "label": "federal funding database entry for Saxony",
+     "url": "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/Sachsen/gewerbliche-wirtschaft.html",
+     "tier": "Official"
+    },
+    {
+     "label": "service description (fimportal)",
+     "url": "https://fimportal.de/api/v0/xzufi-services/L100009/6001280/de/pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "Saxony guideline GRW RIGA (revosax)",
+     "url": "https://www.revosax.sachsen.de/vorschrift/19537.1",
+     "tier": "Official"
+    },
+    {
+     "label": "earlier consolidated guideline text",
+     "url": "https://recht.sachsen.de/vorschrift_gesamt/18403/39292.pdf",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official funding database and guideline read; the document list sits in a form that was not read",
+   "checked": "2026-11-17"
+  },
+  "GSTIP_NRW": {
+   "status": "recorded",
+   "channel": "Apply through a certified founder network in your region (a Gründungsnetzwerk): ideas paper, jury pitch, then a web form provided with Projektträger Jülich",
+   "documents": [
+    {
+     "item": "Ideas paper (Ideenpapier) submitted to the founder network",
+     "required": "required",
+     "note": "A meaningful ideas paper is the precondition for applying; pick a certified network close to where you live or where the company will be based.",
+     "source_url": "https://www.hwk-do.de/wp-content/uploads/2023/01/FAQ-Gruenderstipendium.pdf"
+    },
+    {
+     "item": "Proof of main residence in NRW and age of at least 18",
+     "required": "required",
+     "note": "Founders must live in NRW and pursue the start-up as their main occupation in NRW.",
+     "source_url": "https://recht.nrw.de/lrmb/verwaltungsvorschrift/01102026-richtlinie-ueber-die-gewaehrung-von-stipendien-zur-foerderung/"
+    },
+    {
+     "item": "Personal pitch to the jury",
+     "required": "required",
+     "note": "Five minutes of presentation plus five minutes of questions, per chamber sources; juries meet on set dates per network.",
+     "source_url": "https://www.ihk.de/koeln/hauptnavigation/gruendung/gruenderstipendium-nrw-5137860"
+    },
+    {
+     "item": "Idea judged on five criteria",
+     "required": "required",
+     "note": "Founder or team, innovativeness, feasibility, customer benefit and need, and economic prospects, per the guideline and an FAQ.",
+     "source_url": "https://recht.nrw.de/lrmb/verwaltungsvorschrift/01102026-richtlinie-ueber-die-gewaehrung-von-stipendien-zur-foerderung/"
+    },
+    {
+     "item": "Web application form via the founder network",
+     "required": "after approval",
+     "note": "Filed after a positive jury recommendation, in a form arranged by the network and provided by Projektträger Jülich.",
+     "source_url": "https://www.ihk.de/koeln/hauptnavigation/gruendung-finanzierung-nachfolge/gruenderstipendium-nrw-5137860"
+    },
+    {
+     "item": "Coaching plan with your network",
+     "required": "after approval",
+     "note": "Coaching is compulsory during the support period.",
+     "source_url": "https://www.ihk.de/duesseldorf/existenzgruendung/foerderprogramme/gruenderstipendium-5711268"
+    }
+   ],
+   "notes": "From 1 October 2026 you apply before the company is formed and found it during the stipend. Example jury dates at one network (IHK Bonn): 29 Oct, 26 Nov and 17 Dec 2026. The Diversität+ supplement is applied for between the 7th and 12th month of the stipend, after formation.",
+   "sources": [
+    {
+     "label": "NRW guideline in force from 1 Oct 2026",
+     "url": "https://recht.nrw.de/lrmb/verwaltungsvorschrift/01102026-richtlinie-ueber-die-gewaehrung-von-stipendien-zur-foerderung/",
+     "tier": "Official"
+    },
+    {
+     "label": "NRW.BANK news on the restart",
+     "url": "https://www.nrwbank.de/de/unternehmen/nrw-bank-innovationspartner/aktuelles/Gruendungsstipendium-NRW-wird-fortgesetzt.html",
+     "tier": "Official"
+    },
+    {
+     "label": "chamber FAQ (Handwerkskammer Dortmund)",
+     "url": "https://www.hwk-do.de/wp-content/uploads/2023/01/FAQ-Gruenderstipendium.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "chamber guide (Köln)",
+     "url": "https://www.ihk.de/koeln/hauptnavigation/gruendung-finanzierung-nachfolge/gruenderstipendium-nrw-5137860",
+     "tier": "Secondary"
+    },
+    {
+     "label": "chamber guide (Düsseldorf)",
+     "url": "https://www.ihk.de/duesseldorf/existenzgruendung/foerderprogramme/gruenderstipendium-5711268",
+     "tier": "Secondary"
+    },
+    {
+     "label": "chamber guide (Bonn)",
+     "url": "https://www.ihk-bonn.de/unternehmensfoerderung/existenzgruendung/gruenderstipendiumnrw",
+     "tier": "Secondary"
+    },
+    {
+     "label": "Cited in the checklist",
+     "url": "https://www.ihk.de/koeln/hauptnavigation/gruendung/gruenderstipendium-nrw-5137860",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "EIC_ACC": {
+   "status": "recorded",
+   "channel": "EIC's online submission platform; three steps: short application, full application, interview with the EIC jury",
+   "documents": [
+    {
+     "item": "Short application form",
+     "required": "required",
+     "note": "Step 1. The EIC's template page describes a 5-page form on the innovation, market and team; two secondary sources say 12 pages, so check the current template.",
+     "source_url": "https://eic.ec.europa.eu/clone-eic-accelerator-new-template_en"
+    },
+    {
+     "item": "Pitch deck of up to 10 slides, as a PDF",
+     "required": "required",
+     "note": "Step 1.",
+     "source_url": "https://eic.ec.europa.eu/clone-eic-accelerator-new-template_en"
+    },
+    {
+     "item": "Video pitch of up to 3 minutes",
+     "required": "required",
+     "note": "Step 1; the core team (up to three people) explains the motivation behind the application.",
+     "source_url": "https://www.gesundheitsindustrie-bw.de/en/database/funding/eic-accelerator/sendPdf/688538"
+    },
+    {
+     "item": "Full application form of 20 pages",
+     "required": "required",
+     "note": "Step 2: expands on the short proposal template.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en"
+    },
+    {
+     "item": "Implementation plan and financial information",
+     "required": "required",
+     "note": "Annexes to the full application.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en"
+    },
+    {
+     "item": "Letters of intent and freedom-to-operate (FTO) analysis",
+     "required": "required",
+     "note": "Annexes to the full application.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en"
+    },
+    {
+     "item": "Updated pitch deck and 3-minute video",
+     "required": "required",
+     "note": "Submitted again with the full application.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en"
+    },
+    {
+     "item": "Interview with the EIC jury",
+     "required": "after approval",
+     "note": "Step 3: a 10-minute presentation and about 35 minutes of questions, per consultancy presentations.",
+     "source_url": "https://pwc.com/il/en/new-2025/eic_2025_new.pdf"
+    }
+   ],
+   "notes": "Short applications can be submitted at any time and results come in roughly 4 to 6 weeks. A full application must follow within 12 months of a positive short-application result, at set cut-off dates. Third-country companies must relocate before the full application to be eligible.",
+   "sources": [
+    {
+     "label": "EIC Accelerator page",
+     "url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en",
+     "tier": "Official"
+    },
+    {
+     "label": "EIC template page",
+     "url": "https://eic.ec.europa.eu/clone-eic-accelerator-new-template_en",
+     "tier": "Official"
+    },
+    {
+     "label": "EIC text on a state funding database",
+     "url": "https://www.gesundheitsindustrie-bw.de/en/database/funding/eic-accelerator/sendPdf/688538",
+     "tier": "Official"
+    },
+    {
+     "label": "consultancy overview of the 2025 changes",
+     "url": "https://pwc.com/il/en/new-2025/eic_2025_new.pdf",
+     "tier": "Secondary"
+    },
+    {
+     "label": "adviser guide",
+     "url": "https://www.hezelburcht.com/en/news/how-to-apply-for-eic-accelerator-grant/",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official page read",
+   "checked": "2026-11-17"
+  },
+  "EIC_STEP": {
+   "status": "recorded",
+   "channel": "EU Funding & Tenders Portal submission; you can submit when ready, with batches evaluated together; eligible applicants are invited to an EIC jury interview",
+   "documents": [
+    {
+     "item": "Full business plan of at most 50 pages",
+     "required": "required",
+     "note": "Covers the company, its ownership and financial structure, and its contribution to the STEP objectives. Pages beyond 50 are excluded from evaluation.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-step-scale-defence_en"
+    },
+    {
+     "item": "Pitch deck of at most 15 pages, as a PDF",
+     "required": "required",
+     "note": "This version is presented to the jury if you are invited to interview.",
+     "source_url": "https://webgate.ec.europa.eu/circabc-ewpp/d/d/workspace/SpacesStore/0eef7461-12d8-42e6-a601-ef53a46d5abc/download"
+    },
+    {
+     "item": "Equity pre-commitment from a single qualified investor, on the official template",
+     "required": "required",
+     "note": "Must cover at least 20% of the total target funding round (for a EUR 100M round, at least EUR 20M). Syndicated pre-commitments are ineligible if no single entity reaches 20%. The 20% portion must be uninvested at the date of the letter.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/step-scale_en"
+    },
+    {
+     "item": "Financial plan, on the EIC template",
+     "required": "required",
+     "note": "The template is on the EIC website.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-step-scale-defence_en"
+    },
+    {
+     "item": "Freedom-to-operate (FTO) analysis and CVs of key employees",
+     "required": "conditional",
+     "note": "Listed by an Austrian funding agency and a consultancy; confirm in the call text.",
+     "source_url": "https://www.ffg.at/en/europa/heu/eic/calls/step_2026"
+    },
+    {
+     "item": "Letters of intent",
+     "required": "conditional",
+     "note": "Listed on the EIC's page for the defence variant of the call; check whether the general call asks for them.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-step-scale-defence_en"
+    },
+    {
+     "item": "Guarantee if the outcome gives direct or indirect control",
+     "required": "conditional",
+     "note": "Named on the defence variant's page.",
+     "source_url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-step-scale-defence_en"
+    }
+   ],
+   "notes": "The pre-commitment investor must have demonstrable experience in the market and technology and is checked by the EIC Fund or EIF. If that investor is not the lead, the EIC Fund's investment usually also depends on a qualified lead investor (EIC FAQ). Equity-only, typically EUR 10M to EUR 30M; the Accelerator needs no pre-commitment.",
+   "sources": [
+    {
+     "label": "EIC STEP Scale Up page",
+     "url": "https://eic.ec.europa.eu/eic-funding-opportunities/step-scale_en",
+     "tier": "Official"
+    },
+    {
+     "label": "EIC STEP Scale Up defence variant page",
+     "url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-step-scale-defence_en",
+     "tier": "Official"
+    },
+    {
+     "label": "EIC FAQ on the STEP Scale Up call",
+     "url": "https://eic.ec.europa.eu/eic-frequently-asked-questions/faqs-eic-strategic-technologies-europe-platform-step-scale-call_en",
+     "tier": "Official"
+    },
+    {
+     "label": "EIC presentation on the call",
+     "url": "https://webgate.ec.europa.eu/circabc-ewpp/d/d/workspace/SpacesStore/0eef7461-12d8-42e6-a601-ef53a46d5abc/download",
+     "tier": "Official"
+    },
+    {
+     "label": "Austrian research agency (FFG) call summary",
+     "url": "https://www.ffg.at/en/europa/heu/eic/calls/step_2026",
+     "tier": "Official"
+    },
+    {
+     "label": "Bavarian research alliance summary",
+     "url": "https://www.bayfor.org/en/eu-funding/research-funding-programmes-for-smes/eic-step-scale-up.html",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official EIC pages and EIC FAQ read; a few items come from the defence variant or agency summaries and are marked",
+   "checked": "2026-11-17"
+  },
+  "HORIZON": {
+   "status": "recorded",
+   "channel": "EU Funding & Tenders Portal submission system; the call's topic page sets the template, deadline and page limits",
+   "documents": [
+    {
+     "item": "EU Login account",
+     "required": "required",
+     "note": "Single sign-on needed to develop and submit a proposal.",
+     "source_url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/display/OM/Electronic+proposal+submission"
+    },
+    {
+     "item": "Participant Identification Code (PIC), 9 digits, for every participant",
+     "required": "required",
+     "note": "All beneficiaries, affiliated entities and associated partners must be registered in the Participant Register before they can be listed. Partners often underestimate how long registration takes.",
+     "source_url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/display/OM/Electronic+proposal+submission"
+    },
+    {
+     "item": "Administrative forms (Part A)",
+     "required": "required",
+     "note": "Completed online in the submission wizard: participants, contact persons, budget, declarations, and ethics questions.",
+     "source_url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/display/OM/Electronic+proposal+submission"
+    },
+    {
+     "item": "Technical description (Part B), uploaded as a PDF",
+     "required": "required",
+     "note": "Written on the template downloaded from the submission system for that call; page limits and formatting rules are set by the call.",
+     "source_url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/spaces/OM/pages/1867927/Submit+a+proposal+%E2%80%94+Electronic+Submission+System"
+    },
+    {
+     "item": "Annexes and supporting documents required by the call",
+     "required": "conditional",
+     "note": "Examples named by guides: CVs and letters of commitment. Each call states what it requires.",
+     "source_url": "https://www.emdesk.com/horizon-2020-horizon-europe-basics-guide/eu-funding-tenders-portal-guide-2"
+    },
+    {
+     "item": "Ethics and security self-assessment",
+     "required": "required",
+     "note": "Applicants answer questions and give a self-assessment on ethical and security issues of the proposed research.",
+     "source_url": "https://www.hrb.ie/funding/funding-opportunities/eu-funding-support/horizon-europe-information/guide-for-researchers/horizon-europe-guide-for-researchers-step-4/"
+    },
+    {
+     "item": "Consortium of the minimum size set by the topic",
+     "required": "conditional",
+     "note": "Collaborative actions typically need three legal entities from three EU or associated countries; the topic page governs.",
+     "source_url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/display/OM/Electronic+proposal+submission"
+    }
+   ],
+   "notes": "Submit before the call deadline: the system accepts proposals only until then, and the portal checks for missing mandatory information. The portal wording on minimum consortium size was not in this run's sources; the row in the data says typically three legal entities from three countries.",
+   "sources": [
+    {
+     "label": "Portal manual: electronic proposal submission",
+     "url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/display/OM/Electronic+proposal+submission",
+     "tier": "Official"
+    },
+    {
+     "label": "Portal manual: submission system",
+     "url": "https://webgate.ec.europa.eu/funding-tenders-opportunities/spaces/OM/pages/1867927/Submit+a+proposal+%E2%80%94+Electronic+Submission+System",
+     "tier": "Official"
+    },
+    {
+     "label": "Irish Health Research Board guide to Horizon Europe applications",
+     "url": "https://www.hrb.ie/funding/funding-opportunities/eu-funding-support/horizon-europe-information/guide-for-researchers/horizon-europe-guide-for-researchers-step-4/",
+     "tier": "Secondary"
+    },
+    {
+     "label": "adviser guide to the portal",
+     "url": "https://www.emdesk.com/horizon-2020-horizon-europe-basics-guide/eu-funding-tenders-portal-guide-2",
+     "tier": "Secondary"
+    }
+   ],
+   "confidence": "official portal manual pages read; call-specific attachments vary",
+   "checked": "2026-11-17"
+  },
+  "INT_WASSERSTOFF": {
+   "status": "recorded",
+   "channel": "Stage 1: project sketch uploaded to the federal easy-Online portal using PtJ's template (Module 1: BMWE; Module 2: BMFTR); stage 2: formal application on invitation",
+   "documents": [
+    {
+     "item": "Module 1 project sketch on PtJ's template, at most 25 pages",
+     "required": "required",
+     "note": "Font size 11, plus cover sheet and annexes. It must take a position on the funding conditions (section 7 of the guideline) and on the contents the guideline names as binding (section 10.3.1).",
+     "source_url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/13402/live/lw_file/skizze_template_modul1.docx"
+    },
+    {
+     "item": "Partner overview table in the template",
+     "required": "required",
+     "note": "Lists each partner's type (large company, SME, university or research institute), contact, project role and whether it requests funding.",
+     "source_url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/13402/live/lw_file/skizze_template_modul1.docx"
+    },
+    {
+     "item": "Submission through easy-Online by 17 Dec 2026",
+     "required": "required",
+     "note": "Choose ministry BMWE, funding measure international hydrogen projects, Module 1, outline stage, and upload the template. PtJ offers advice before you submit.",
+     "source_url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/28043/live/lw_file/20261015_pr-C3-A4sentation_f-C3-B6rderverfahren_web.pdf"
+    },
+    {
+     "item": "Evidence of high German and European value creation",
+     "required": "required",
+     "note": "Named as a requirement on the BMWE call page.",
+     "source_url": "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Wasserstoff/Foerderung-International-Beispiele/33-aufruf-internationale-h2-projekte.html"
+    },
+    {
+     "item": "Evidence of preparing import routes for hydrogen or derivatives to Germany",
+     "required": "required",
+     "note": "Named as a requirement on the BMWE call page.",
+     "source_url": "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Wasserstoff/Foerderung-International-Beispiele/33-aufruf-internationale-h2-projekte.html"
+    },
+    {
+     "item": "Module 2 sketch of at most 12 pages",
+     "required": "conditional",
+     "note": "Only for research that accompanies a Module 1 project: font size 12, excluding annexes, submitted through easy-Online on PtJ's template.",
+     "source_url": "https://www.ptj.de/foerdermoeglichkeiten/internationale-wasserstoffprojekte-modul2"
+    },
+    {
+     "item": "Formal application",
+     "required": "after approval",
+     "note": "Requested after the sketches have been reviewed against the criteria in section 10.3.2 of the guideline.",
+     "source_url": "https://www.ptj.de/en/project-funding/international-hydrogen-projects-bmwe-module-1"
+    }
+   ],
+   "notes": "Third call: sketch deadline 17 Dec 2026. Applicants are companies with a site in Germany and research institutions. PtJ states that the subsidy rules are expected to change from 2027. Funding depends on the 2027 federal budget. The guideline text (BAnz AT 15.11.2024 B1) governs details.",
+   "sources": [
+    {
+     "label": "PtJ page for Module 1 (third call)",
+     "url": "https://www.ptj.de/en/project-funding/international-hydrogen-projects-bmwe-module-1",
+     "tier": "Official"
+    },
+    {
+     "label": "PtJ sketch template for Module 1",
+     "url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/13402/live/lw_file/skizze_template_modul1.docx",
+     "tier": "Official"
+    },
+    {
+     "label": "PtJ information-day slides (15 Oct 2026)",
+     "url": "https://www.ptj.de/lw_resource/datapool/systemfiles/cbox/28043/live/lw_file/20261015_pr-C3-A4sentation_f-C3-B6rderverfahren_web.pdf",
+     "tier": "Official"
+    },
+    {
+     "label": "PtJ page for Module 2",
+     "url": "https://www.ptj.de/foerdermoeglichkeiten/internationale-wasserstoffprojekte-modul2",
+     "tier": "Official"
+    },
+    {
+     "label": "BMWE call page",
+     "url": "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Wasserstoff/Foerderung-International-Beispiele/33-aufruf-internationale-h2-projekte.html",
+     "tier": "Official"
+    },
+    {
+     "label": "BMWE press release (24 Sep 2026)",
+     "url": "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Pressemitteilungen/2026/09/20260924-foerderung-internat-wasserstoffprojekte.html",
+     "tier": "Official"
+    }
+   ],
+   "confidence": "official PtJ page, PtJ sketch template and PtJ information-day slides read",
+   "checked": "2026-11-17"
+  }
+ }
+}

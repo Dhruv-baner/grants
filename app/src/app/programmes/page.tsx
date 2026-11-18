@@ -4,7 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import DotField, { SOON_COUNT } from "@/components/DotField";
 import SchemeDetail from "@/components/SchemeDetail";
 import { Status } from "@/components/Marks";
-import { BY_ID, DEMOS, META, SCHEMES } from "@/lib/data";
+import { BY_ID, META, REAL, SCHEMES } from "@/lib/data";
 import { match } from "@/lib/matcher";
 import { clean, countryGroup, daysBetween, fmtDate, LABEL, SECTORS } from "@/lib/ui";
 
@@ -13,10 +13,10 @@ const COUNTRIES = ["NL", "DE", "EU", "Cross-border"].filter((c) => uniq(countryG
 const TYPES = uniq((s) => s.type_group).sort();
 const RANK: Record<string, number> = { open: 0, opening_soon: 1, rolling: 2, between_rounds: 3, varies: 4, paused: 5, unknown: 6, closed: 7 };
 const STATUSES = Object.keys(RANK).filter((x) => uniq((s) => s.status_clean).includes(x));
-/** Reverse lookup: which of the sample companies each scheme fits, using the real matcher. */
+/** Reverse lookup: which of the companies on the Screen page each scheme fits, using the same matcher. */
 const FITS: Record<string, { id: string; name: string; score: number }[]> = (() => {
   const m: Record<string, { id: string; name: string; score: number }[]> = {};
-  for (const d of DEMOS) for (const x of match({ ...d, signals: d.signals ?? [], description: d.description }, SCHEMES).matches) (m[x.scheme_id] ||= []).push({ id: d.id, name: d.name.replace(" (fictional)", ""), score: x.score });
+  for (const d of REAL) for (const x of match({ ...d, signals: d.signals ?? [], description: d.description }, SCHEMES).matches) (m[x.scheme_id] ||= []).push({ id: d.id, name: d.name, score: x.score });
   for (const k of Object.keys(m)) m[k].sort((a, b) => b.score - a.score);
   return m;
 })();
@@ -65,8 +65,8 @@ export default function Programmes() {
           <div className="prow-detail" id={"d-" + s.id} role="region" aria-label={s.name} {...(open === s.id ? {} : { inert: true })}>
             <div><div className="detail-in"><SchemeDetail s={s} />
               <div>
-                <div className="lbl">Sample companies this fits</div>
-                {fits.length ? <ul className="srcs">{fits.map((f) => <li key={f.id}><Link href={`/screen#${f.id}`}>{f.name}</Link><span className="mono faint num">{f.score} points</span></li>)}</ul> : <p className="faint" style={{ fontSize: 15 }}>None of the ten sample companies fits this scheme.</p>}
+                <div className="lbl">Companies on the Screen page this fits</div>
+                {fits.length ? <ul className="srcs">{fits.map((f) => <li key={f.id}><Link href={`/screen#${f.id}`}>{f.name}</Link><span className="mono faint num">{f.score} points</span></li>)}</ul> : <p className="faint" style={{ fontSize: 15 }}>None of the five companies on the Screen page fits this scheme.</p>}
                 <dl className="dl" style={{ gridTemplateColumns: "120px minmax(0,1fr)", alignContent: "start", marginTop: 24 }}>
                   {([["Authority", s.authority], ["Legal basis", s.legal_basis], ["Period", clean(String(s["programme_period"] ?? ""))], ["Level", s.level], ["Region", s.region]] as [string, string][]).filter(([, v]) => v).map(([k, v]) => <Fragment key={k}><dt>{k}</dt><dd>{v}</dd></Fragment>)}
                   {s.official_url && <><dt>Official page</dt><dd><a href={s.official_url} target="_blank" rel="noopener noreferrer">Open the source page</a></dd></>}
