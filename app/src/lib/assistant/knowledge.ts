@@ -44,3 +44,12 @@ function build(): AliasEntry[] {
 export const ALIASES: AliasEntry[] = build();
 export const ALIAS_LIST = ALIASES.map((e) => ({ key: e.key, alias: e.alias }));
 export const KIND_OF = new Map(ALIASES.map((e) => [e.key + "|" + e.alias, e.kind]));
+
+/** A readable name for any source page used in an answer: the programme's own source labels first, the web address as a fallback. */
+const URL_LABELS = new Map<string, string>();
+for (const id of IN_SCOPE) {
+  const r = BY_ID[id]; if (r.official_url) URL_LABELS.set(r.official_url, `${labelOf(id)}: official page`);
+  for (const x of CHECKLISTS[id].sources) if (!URL_LABELS.has(x.url)) URL_LABELS.set(x.url, `${labelOf(id)}: ${x.label}`);
+}
+export const hostOf = (url: string) => { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url; } };
+export const labelForUrl = (url: string) => URL_LABELS.get(url) ?? hostOf(url);

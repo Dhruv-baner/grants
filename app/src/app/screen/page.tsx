@@ -25,6 +25,12 @@ export default function Screen() {
   const [prose, setProse] = useState<Prose | null>(null); const [picked, setPicked] = useState<Scheme | null>(null);
   useEffect(() => { const h = window.location.hash.slice(1); if (h && REAL.some((d) => d.id === h)) { setSel(h); setF(fromReal(h)); } }, []);
   useEffect(() => { fetch("/api/status").then((r) => r.json()).then(setStatus).catch(() => setStatus({ live: false, needsCode: false })); }, []);
+  useEffect(() => { // a company handed over from the Notes page
+    try { const raw = sessionStorage.getItem("gf-screen-prefill"); if (!raw) return; sessionStorage.removeItem("gf-screen-prefill"); const d = JSON.parse(raw);
+      setSel(""); setF({ name: String(d.name ?? "").slice(0, 120), country: ["NL", "DE", "EU", "OTHER"].includes(d.country) ? d.country : "", region: String(d.region ?? "").slice(0, 80), size: ["micro", "small", "medium", "large", "unknown"].includes(d.size) ? d.size : "unknown",
+        sectors: Array.isArray(d.sectors) ? d.sectors.filter((x: unknown) => typeof x === "string" && SECTORS.includes(x)) : [], signals: String(d.signals ?? "").slice(0, 600), description: String(d.description ?? "").slice(0, 2000) });
+    } catch { /* ignore a bad hand-over */ }
+  }, []);
   const ready = f.country !== "";
   const profile: Profile = useMemo(() => ({ name: f.name, country: (f.country || "NL") as Country, region: f.region, size: f.size, sectors: f.sectors, signals: f.signals.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean), description: f.description, activities: f.description }), [f]);
   useEffect(() => { setProse(null); setPicked(null); }, [profile]);

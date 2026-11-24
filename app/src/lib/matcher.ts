@@ -26,7 +26,7 @@ export function conceptsIn(text: string | undefined): Set<string> {
   for (const [k, re] of CONCEPT_RES) if (re.test(t)) out.add(k);
   return out;
 }
-const rowText = (r: Scheme) => ["name", "summary", "activities", "fit_signals", "aliases", "type", "consortium"].map((k) => String(r[k] ?? "")).join(" ");
+export const rowText = (r: Scheme) => ["name", "summary", "activities", "fit_signals", "aliases", "type", "consortium"].map((k) => String(r[k] ?? "")).join(" ");
 export function countryOk(pc: string, r: Scheme) {
   const rc = r.country;
   if (pc === "EU") return rc.startsWith("EU") || r.geo_scope === "eu";

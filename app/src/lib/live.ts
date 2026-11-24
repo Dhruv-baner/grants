@@ -10,6 +10,7 @@ import { llmProse } from "./prose";
 import { fetchCompany, type Site } from "./site";
 import { UnsafeUrl } from "./ssrf";
 import { askAbout } from "./assistant/followup";
+import { enhanceNotes } from "./notes/enhance";
 import { inScope } from "./assistant/knowledge";
 import type { Profile } from "./types";
 
@@ -71,4 +72,12 @@ export async function handleAsk(req: Request, d: Deps) {
   if (q.length < 3) return json({ error: "Ask a question about the programme." }, 400);
   try { const r = await askAbout(id, q, d.llm!); d.limiter.addTokens(r.usage.in + r.usage.out); return json(r); }
   catch (e: any) { if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not answer that." }, 502); }
+}
+
+export async function handleNotes(req: Request, d: Deps) {
+  const g = await guard(req, d); if (g instanceof Response) return g;
+  const transcript = String(g.body?.transcript ?? "").slice(0, 30000); const jottings = String(g.body?.jottings ?? "").slice(0, 3000);
+  if (transcript.trim().length < 20) return json({ error: "The transcript is too short to enhance." }, 400);
+  try { const r = await enhanceNotes(transcript, d.llm!, jottings); d.limiter.addTokens(r.usage.in + r.usage.out); return json(r); }
+  catch (e: any) { if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not enhance the notes." }, 502); }
 }

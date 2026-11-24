@@ -6,20 +6,22 @@ import type { Scheme } from "../types";
 import { daysBetween, fmtDate, LABEL } from "../ui";
 import { AMBIGUOUS, AS_COUNTRY, BETA, CONFIG, PARTIAL_PARENT } from "./config";
 import { ALIAS_LIST, CHECKLISTS, DATA_AS_OF, DOCS_AS_OF, IN_SCOPE, IN_SCOPE_ROWS, KIND_OF, inScope, labelOf, type DocItem } from "./knowledge";
+import { browseAnswer, isDiscovery, parseBrowse } from "./browse";
 import { parseCompany } from "./profileFromText";
 import { norm, scan, sentence, shorten, tidy } from "./text";
 
 export type Block =
-  | { t: "title"; text: string; sub?: string }
+  | { t: "title"; text: string; sub?: string; id?: string }
   | { t: "text"; text: string; lead?: boolean }
-  | { t: "facts"; rows: { k: string; v: string; hi?: boolean }[] }
+  | { t: "facts"; rows: { k: string; v: string; hi?: boolean }[]; src?: string }
   | { t: "checklist"; groups: { label: string; items: { item: string; note: string; url: string }[] }[] }
   | { t: "table"; cols: string[]; rows: { label: string; cells: string[] }[] }
+  | { t: "list"; groups: { label: string; note?: string; items: { id: string; label: string; meta: string; status: string; summary: string; url: string }[] }[]; more?: { text: string; href: string; label: string } }
   | { t: "picks"; items: { id: string; label: string; score: number; fit: string; why: string[]; flags: string[]; deadline: string }[] }
   | { t: "notice"; text: string }
   | { t: "sources"; items: { label: string; url: string }[] }
   | { t: "chips"; items: string[] };
-export type Kind = "docs" | "facts" | "compare" | "recommend" | "help" | "beta" | "clarify";
+export type Kind = "docs" | "facts" | "compare" | "recommend" | "browse" | "help" | "beta" | "clarify";
 export interface Answer { kind: Kind; ids: string[]; blocks: Block[]; }
 export interface Ctx { last: string[]; docs?: boolean; }
 export interface Result { answer: Answer; ctx: Ctx; followup?: { id: string; question: string }; }
@@ -35,6 +37,7 @@ const RX = {
   basics: /\b(basics?|overview|tell me about|what is|whats|summary|summari[sz]e|explain|about|details|info|information|describe)\b/,
   compare: /\b(compare|comparison|versus|vs|difference|differences|differ|better than|which is better)\b/,
   recommend: /\b(which (programme|program|scheme|grant|subsidy|funding|programmes|schemes|grants)|what (grants?|funding|subsidies|schemes?|programmes?|programs?)|what (could|can|should|might) (we|i)|what fits|recommend\w*|suggest\w*|looking for (funding|grants?|subsid\w+)|any (grants?|funding|subsid\w+)|we are (a|an)|were (a|an)|my company|our company|i run|i own|we (make|build|produce|manufacture|plan|want|need|operate)|funding for)\b/,
+  personal: /\b(we are|were (a|an)|my company|our company|i run|i own|we (make|build|produce|manufacture|plan|want|need|operate))\b/,
   help: /\b(help|what can you (do|answer)|how does this work|what do you (cover|know)|which programmes (do you|are)|list (of )?programmes?|what programmes|covered)\b/,
   greet: /^(hi|hello|hey|good (morning|afternoon|evening)|thanks?|thank you|ok|okay)\b/,
 };
@@ -84,13 +87,14 @@ const lead: Record<Focus, string> = {
   when: "", money: "", before: "", decide: "",
 };
 function factsBlocks(r: Scheme, focus?: Focus): Block[] {
-  return [{ t: "title", text: labelOf(r.id), sub: group(r) }, ...(focus && lead[focus] ? [{ t: "text", text: lead[focus] } as Block] : []), { t: "facts", rows: factRows(r, focus) }];
+  return [{ t: "title", text: labelOf(r.id), sub: group(r), id: r.id }, ...(focus && lead[focus] ? [{ t: "text", text: lead[focus] } as Block] : []), { t: "facts", rows: factRows(r, focus), src: r.official_url }];
 }
 const GROUPS: [DocItem["required"], string][] = [["required", "Required"], ["conditional", "Only if it applies to you"], ["after approval", "After you are approved"], ["optional", "Optional"]];
 function docsBlocks(r: Scheme): Block[] {
   const cl = CHECKLISTS[r.id];
   const groups = GROUPS.map(([k, label]) => ({ label, items: cl.documents.filter((d) => d.required === k).map((d) => ({ item: d.item.replace(/^\d+\.\s*/, ""), note: tidy(d.note), url: d.source_url })) })).filter((g) => g.items.length);
-  return [{ t: "title", text: `Documents for ${labelOf(r.id)}`, sub: group(r) }, { t: "text", text: `Where and how to apply: ${sentence(tidy(cl.channel))}` }, { t: "checklist", groups },
+  const n = (k: DocItem["required"]) => cl.documents.filter((d) => d.required === k).length;
+  return [{ t: "title", text: `Documents for ${labelOf(r.id)}`, sub: group(r), id: r.id }, { t: "text", text: `${cl.documents.length} items: ${n("required")} required, ${n("conditional")} only if they apply, ${n("after approval")} after approval. Where and how to apply: ${sentence(tidy(cl.channel))}` }, { t: "checklist", groups },
     ...(cl.notes ? [{ t: "text", text: `Good to know: ${sentence(tidy(cl.notes))}` } as Block] : []),
     { t: "text", text: `How solid this is: ${sentence(tidy(cl.confidence))} Checked ${fmtDate(cl.checked)}.` }];
 }
@@ -189,6 +193,8 @@ export function respond(raw: string, ctx: Ctx = { last: [] }): Result {
   if (!ids.length) {
     if (outIds.length) return { ctx: keep, answer: { ...betaAnswer(outNotice.replace(` ${BETA}`, "")), ids: [] } };
     if (I.help && !I.recommend) return { ctx: keep, answer: helpAnswer() };
+    if (!RX.personal.test(t)) { const f = parseBrowse(original); if (f) return { ctx: { last: [] }, answer: browseAnswer(f) }; }
+    if (!RX.personal.test(t) && parsed.signals < 2 && isDiscovery(original)) return { ctx: keep, answer: { kind: "clarify", ids: [], blocks: [{ t: "text", text: "What kind of funding are you looking for? Tell me a country, a sector or a type (grant, loan, tax incentive), or describe your company and I will rank the programmes I cover." }, { t: "chips", items: ["Dutch grants", "grants for energy companies", "R&D funding", "what closes this month"] }] } };
     if (I.recommend || parsed.signals >= 2) return recommend(original);
     if (I.greet && t.split(" ").length <= 4) return { ctx: keep, answer: helpAnswer() };
     if (aboutProgramme) return { ctx: keep, answer: { kind: "clarify", ids: [], blocks: [{ t: "text", text: "Which programme do you mean? Name one of the programmes I cover, or ask what I cover." }, { t: "chips", items: ["What can you answer?", ...popular.slice(0, 2)] }] } };

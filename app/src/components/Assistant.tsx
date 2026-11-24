@@ -1,82 +1,181 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { helpAnswer, respond, type Answer, type Block, type Ctx } from "@/lib/assistant/engine";
-import { DATA_AS_OF } from "@/lib/assistant/knowledge";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { collectCitations, type Citation } from "@/lib/assistant/citations";
+import { helpAnswer, respond, type Block, type Ctx } from "@/lib/assistant/engine";
+import { browserStore, deleteChat, loadChats, replay, saveChats, titleOf, turnsOf, upsertChat, type Msg, type Store, type StoredChat } from "@/lib/assistant/history";
+import { DATA_AS_OF, IN_SCOPE } from "@/lib/assistant/knowledge";
+import { answerToMarkdown, chatToMarkdown } from "@/lib/assistant/markdown";
+import { copyText, download } from "@/lib/browser";
 import { fmtDate } from "@/lib/ui";
 
-interface Followup { state: "loading" | "done" | "none"; text?: string; }
-interface Msg { id: number; role: "me" | "bot"; text?: string; answer?: Answer; followup?: Followup; }
-interface Status { live: boolean; needsCode: boolean; }
-let seq = 0;
+const STARTERS = [
+  { tag: "Documents", q: "What documents do I need for WBSO?" }, { tag: "Deadlines", q: "When does the SME energy-saving loan close?" },
+  { tag: "Eligibility", q: "Can a start-up apply for the Gründungsstipendium.NRW?" }, { tag: "Compare", q: "Compare EIA and MIA and Vamil" },
+  { tag: "Which fits", q: "We are a small manufacturer in Gelderland replacing gas heating. What fits?" }, { tag: "Coverage", q: "What can you answer?" },
+];
 const safeHref = (u: string) => (/^https?:\/\//i.test(u) ? u : "#");
+const uid = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+const Ico = ({ d, cls }: { d: string; cls?: string }) => <svg className={cls} viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d={d} /></svg>;
+const UP = "M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z";
+const COPY = "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z";
+const SEND = "M2 21l21-9L2 3v7l15 2-15 2z";
 
-function View({ b, ask }: { b: Block; ask: (q: string) => void }) {
+function Cite({ n, cites }: { n?: number; cites: Citation[] }) {
+  const c = cites.find((x) => x.n === n); if (!c) return null;
+  return <a className="cite" href={safeHref(c.url)} target="_blank" rel="noopener noreferrer" aria-label={`Source ${c.n}: ${c.label} (opens in a new tab)`}>[{c.n}]</a>;
+}
+function View({ b, cites, ask }: { b: Block; cites: Citation[]; ask: (q: string) => void }) {
+  const num = (u?: string) => cites.find((c) => c.url === u)?.n;
   switch (b.t) {
-    case "title": return <><h3 className="b-title">{b.text}</h3>{b.sub && <p className="b-sub mono">{b.sub}</p>}</>;
+    case "title": return <div className="b-titlerow"><h3 className="b-title">{b.text}</h3>{b.id && <Link className="b-more mono" href={`/programmes#${b.id}`}>Programme details →</Link>}</div>;
     case "text": return <p className="b-text">{b.text}</p>;
     case "notice": return <p className="b-notice" role="note">{b.text}</p>;
-    case "facts": return <dl className="b-facts">{b.rows.map((r) => <div key={r.k} className={r.hi ? "hi" : undefined}><dt>{r.k}</dt><dd>{r.v}</dd></div>)}</dl>;
-    case "checklist": return <>{b.groups.map((g) => <div key={g.label} className="b-group"><h4>{g.label}</h4>
-      <ul className="b-list">{g.items.map((i) => <li key={i.item}><span className="it">{i.item}</span>{i.note && <span className="nt">{i.note}</span>}<a href={safeHref(i.url)} target="_blank" rel="noopener noreferrer" aria-label={`Source for ${i.item} (opens in a new tab)`}>source ↗</a></li>)}</ul></div>)}</>;
+    case "facts": return <><dl className="b-facts">{b.rows.map((r) => <div key={r.k} className={r.hi ? "hi" : undefined}><dt>{r.k}</dt><dd>{r.v}</dd></div>)}</dl>{b.src && <p className="b-foot">Source <Cite n={num(b.src)} cites={cites} /></p>}</>;
+    case "checklist": return <>{b.groups.map((g) => <div key={g.label} className="b-group"><h4>{g.label}</h4><ul className="b-list">{g.items.map((i) => <li key={i.item}><span className="it">{i.item}<Cite n={num(i.url)} cites={cites} /></span>{i.note && <span className="nt">{i.note}</span>}</li>)}</ul></div>)}</>;
     case "table": return <div className="b-table-wrap" tabIndex={0} role="region" aria-label="Comparison table, scrolls sideways on small screens"><table className="b-table" role="table"><thead><tr role="row"><th role="columnheader" scope="col"><span className="sr">Topic</span></th>{b.cols.map((c) => <th key={c} role="columnheader" scope="col">{c}</th>)}</tr></thead>
       <tbody>{b.rows.map((r) => <tr key={r.label} role="row"><th role="rowheader" scope="row">{r.label}</th>{r.cells.map((c, i) => <td key={i} role="cell" data-label={b.cols[i]}>{c}</td>)}</tr>)}</tbody></table></div>;
+    case "list": return <>{b.groups.map((g) => <div key={g.label} className="b-group"><h4>{g.label}</h4>{g.note && <p className="b-foot" style={{ margin: "0 0 8px" }}>{g.note}</p>}
+      <ul className="b-list">{g.items.map((i) => <li key={i.id}><div className="pl-top"><span className="it">{i.label}<Cite n={num(i.url)} cites={cites} /></span><span className="pl-meta mono">{i.meta}</span></div><span className="pl-status">{i.status}</span><span className="nt">{i.summary}</span>
+        <div className="pl-acts"><button type="button" className="mini" onClick={() => ask(`What documents do I need for ${i.label}?`)}>Documents</button><Link className="mini" href={`/programmes#${i.id}`}>Details →</Link></div></li>)}</ul></div>)}
+      {b.more && <p className="b-text">{b.more.text}{b.more.href && <> <Link className="b-more" href={b.more.href}>{b.more.label} →</Link></>}</p>}</>;
     case "picks": return <div className="b-picks">{b.items.map((p, i) => <div key={p.id} className="b-pick"><h4><span>{i + 1}. {p.label}</span><span className="sc" title="Readable fit score, out of 110">{p.score} / 110{p.fit ? ` · ${p.fit}` : ""}</span></h4>
-      {p.why.length > 0 && <ul>{p.why.map((w) => <li key={w}>{w}</li>)}</ul>}{p.flags.length > 0 && <><p className="dl2" style={{ marginBottom: 0 }}>To check</p><ul style={{ marginTop: 2 }}>{p.flags.map((w) => <li key={w}>{w}</li>)}</ul></>}{p.deadline && <p className="dl2">Timing: {p.deadline}</p>}</div>)}</div>;
-    case "sources": return b.items.length ? <details className="b-src"><summary>Sources ({b.items.length})</summary><ul>{b.items.map((s) => <li key={s.url}><a href={safeHref(s.url)} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}</ul></details> : null;
-    case "chips": return <div className="b-chips">{b.items.map((c) => <button key={c} type="button" className="b-chip" onClick={() => ask(c)}>{c}</button>)}</div>;
+      {p.why.length > 0 && <ul>{p.why.map((w) => <li key={w}>{w}</li>)}</ul>}{p.flags.length > 0 && <><p className="dl2" style={{ marginBottom: 0 }}>To check</p><ul style={{ marginTop: 2 }}>{p.flags.map((w) => <li key={w}>{w}</li>)}</ul></>}
+      <p className="dl2">{p.deadline ? `Timing: ${p.deadline} · ` : ""}<Link href={`/programmes#${p.id}`}>Programme details →</Link></p></div>)}</div>;
+    default: return null;
   }
 }
 
-export default function Assistant() {
-  const [msgs, setMsgs] = useState<Msg[]>(() => [{ id: ++seq, role: "bot", answer: helpAnswer() }]);
-  const [ctx, setCtx] = useState<Ctx>({ last: [] });
-  const [input, setInput] = useState(""); const [busy, setBusy] = useState(false);
-  const [status, setStatus] = useState<Status | null>(null); const [code, setCode] = useState("");
-  const [narrow, setNarrow] = useState(false);
-  const lastRef = useRef<HTMLDivElement>(null); const inputRef = useRef<HTMLInputElement>(null); const first = useRef(true);
-  useEffect(() => { const mq = window.matchMedia("(max-width: 520px)"); const on = () => setNarrow(mq.matches); on(); mq.addEventListener("change", on); return () => mq.removeEventListener("change", on); }, []);
-  useEffect(() => { fetch("/api/status").then((r) => r.json()).then(setStatus).catch(() => setStatus({ live: false, needsCode: false })); }, []);
+function Bot({ m, last, onAsk, onFb, onCopy, copied }: { m: Msg; last: boolean; onAsk: (q: string) => void; onFb: (id: number, v: "up" | "down") => void; onCopy: (m: Msg) => void; copied: boolean }) {
+  const a = m.answer!; const blocks = useMemo(() => a.blocks.filter((b) => b.t !== "chips" && b.t !== "sources"), [a]);
+  const chips = (a.blocks.find((b) => b.t === "chips") as Extract<Block, { t: "chips" }> | undefined)?.items ?? [];
+  const cites = useMemo(() => collectCitations(a), [a]);
+  const [shown, setShown] = useState(m.fresh ? 1 : blocks.length);
   useEffect(() => {
-    if (first.current) { first.current = false; return; }
-    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    lastRef.current?.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "start" });
-  }, [msgs.length]);
+    if (!m.fresh || shown >= blocks.length) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setShown(blocks.length); return; }
+    const t = setTimeout(() => setShown((n) => n + 1), 90); return () => clearTimeout(t);
+  }, [shown, blocks.length, m.fresh]);
+  const done = shown >= blocks.length; const ai = m.followup;
+  return (
+    <article className="msg bot" aria-label="Answer" aria-busy={!done}>
+      <div className="avatar" aria-hidden="true"><i /></div>
+      <div className="body">
+        {ai?.state === "loading" && <p className="b-text thinking" aria-busy="true">Checking the record<span className="dots" aria-hidden="true"><b>.</b><b>.</b><b>.</b></span></p>}
+        {ai?.state === "done" && <div className="ai-box"><p className="b-text" style={{ margin: 0 }}>{ai.text}</p><p className="b-foot" style={{ marginTop: 8 }}>Written by Claude from the programme's record, with numbers checked against the data.</p></div>}
+        {blocks.slice(0, shown).filter((b) => !(b.t === "text" && b.lead && ai?.state === "done")).map((b, k) => <div key={k} className={m.fresh ? "rev" : undefined}><View b={b} cites={cites} ask={onAsk} /></div>)}
+        {done && cites.length > 0 && <section className="srcs" aria-label="Sources"><h4>Sources</h4><ol>{cites.map((c) => <li key={c.n}><a href={safeHref(c.url)} target="_blank" rel="noopener noreferrer" aria-label={`Source ${c.n}: ${c.label} (opens in a new tab)`}><span className="n">{c.n}</span><span className="t">{c.label}</span><span className="h">{c.host}</span></a></li>)}</ol></section>}
+        {done && <div className="acts" role="group" aria-label="Answer actions">
+          <button type="button" className="act" onClick={() => onCopy(m)}><Ico d={COPY} />{copied ? "Copied" : "Copy"}</button>
+          <button type="button" className="act" aria-pressed={m.fb === "up"} onClick={() => onFb(m.id, "up")} aria-label="Helpful"><Ico d={UP} /></button>
+          <button type="button" className="act dn" aria-pressed={m.fb === "down"} onClick={() => onFb(m.id, "down")} aria-label="Not helpful"><Ico d={UP} cls="dn" /></button>
+        </div>}
+        {done && last && chips.length > 0 && <div className="follow" role="group" aria-label="Follow-up questions"><h4>Follow-ups</h4>{chips.map((c) => <button key={c} type="button" className="b-chip" onClick={() => onAsk(c)}>↳ {c}</button>)}</div>}
+        {done && a.kind !== "help" && a.kind !== "beta" && <p className="b-foot">Programme data as of {fmtDate(DATA_AS_OF)}. A checklist says what the official page asks for. It is not advice that a company qualifies.</p>}
+      </div>
+    </article>
+  );
+}
 
-  const patch = (id: number, followup: Followup) => setMsgs((m) => m.map((x) => (x.id === id ? { ...x, followup } : x)));
+export default function Assistant() {
+  const [chats, setChats] = useState<StoredChat[]>([]); const [activeId, setActiveId] = useState(() => uid());
+  const [msgs, setMsgs] = useState<Msg[]>([]); const [ctx, setCtx] = useState<Ctx>({ last: [] });
+  const [input, setInput] = useState(""); const [busy, setBusy] = useState(false); const [status, setStatus] = useState<{ live: boolean; needsCode: boolean } | null>(null); const [code, setCode] = useState("");
+  const [rail, setRail] = useState(false); const [mobile, setMobile] = useState(false); const [copied, setCopied] = useState(0);
+  const seq = useRef(0); const store = useRef<Store | null>(null); const chatsRef = useRef<StoredChat[]>([]);
+  const lastRef = useRef<HTMLDivElement>(null); const taRef = useRef<HTMLTextAreaElement>(null); const histBtn = useRef<HTMLButtonElement>(null); const firstRender = useRef(true);
+  const nextId = () => ++seq.current; const started = msgs.length > 0;
+
+  useEffect(() => { store.current = browserStore(); const c = loadChats(store.current); chatsRef.current = c; setChats(c); fetch("/api/status").then((r) => r.json()).then(setStatus).catch(() => setStatus({ live: false, needsCode: false })); }, []);
+  useEffect(() => { // start typing at once on a computer (not on a phone, where it would throw up the keyboard), and "/" jumps back to the box
+    if (window.matchMedia("(min-width: 901px)").matches && navigator.maxTouchPoints === 0) taRef.current?.focus();
+    const on = (e: globalThis.KeyboardEvent) => { if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return; const t = e.target as HTMLElement | null; if (t?.closest("input,textarea,select,[contenteditable]")) return; e.preventDefault(); taRef.current?.focus(); };
+    window.addEventListener("keydown", on); return () => window.removeEventListener("keydown", on);
+  }, []);
+  useEffect(() => { const mq = window.matchMedia("(max-width: 900px)"); const on = () => setMobile(mq.matches); on(); mq.addEventListener("change", on); return () => mq.removeEventListener("change", on); }, []);
+  useEffect(() => { const on = (e: globalThis.KeyboardEvent) => { if (e.key === "Escape" && rail) { setRail(false); histBtn.current?.focus(); } }; window.addEventListener("keydown", on); return () => window.removeEventListener("keydown", on); }, [rail]);
+  useEffect(() => { const el = taRef.current; if (el) { el.style.height = "auto"; el.style.height = Math.min(el.scrollHeight, 176) + "px"; } }, [input, started]);
+  useEffect(() => {
+    if (first_(firstRender)) return; if (msgs.length) lastRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }, [msgs.length]);
+  // Save the conversation (questions only) whenever it changes. Opening an old chat does not bump it to the top.
+  useEffect(() => {
+    if (!msgs.some((m) => m.role === "me")) return; const turns = turnsOf(msgs); if (!turns.length) return;
+    const old = chatsRef.current.find((c) => c.id === activeId); if (old && JSON.stringify(old.turns) === JSON.stringify(turns)) return;
+    const next = upsertChat(chatsRef.current, { id: activeId, title: old?.title ?? titleOf(turns), updated: Date.now(), turns }); chatsRef.current = next; setChats(next); saveChats(next, store.current);
+  }, [msgs, activeId]);
+
+  const patch = (id: number, f: Partial<Msg>) => setMsgs((m) => m.map((x) => (x.id === id ? { ...x, ...f } : x)));
   const send = useCallback(async (text: string) => {
     const q = text.trim().slice(0, 600); if (!q || busy) return;
-    setInput(""); const r = respond(q, ctx); setCtx(r.ctx);
-    const botId = ++seq; const live = !!(r.followup && status?.live);
-    setMsgs((m) => [...m, { id: ++seq, role: "me", text: q }, { id: botId, role: "bot", answer: r.answer, followup: live ? { state: "loading" } : undefined }]);
-    inputRef.current?.focus();
-    if (!live || !r.followup) return;
+    setInput(""); const r = respond(q, ctx); setCtx(r.ctx); const botId = nextId(); const live = !!(r.followup && status?.live);
+    setMsgs((m) => [...m, { id: nextId(), role: "me", text: q }, { id: botId, role: "bot", answer: r.answer, q, fresh: true, followup: live ? { state: "loading" } : undefined }]);
+    taRef.current?.focus(); if (!live || !r.followup) return;
     setBusy(true);
     try {
       const res = await fetch("/api/assistant", { method: "POST", headers: { "content-type": "application/json", ...(code ? { "x-access-code": code } : {}) }, body: JSON.stringify({ programme_id: r.followup.id, question: r.followup.question }) });
-      const data = await res.json().catch(() => ({}));
-      patch(botId, res.ok && typeof data.answer === "string" ? { state: "done", text: data.answer } : { state: "none" });
-    } catch { patch(botId, { state: "none" }); } finally { setBusy(false); }
+      const data = await res.json().catch(() => ({})); patch(botId, { followup: res.ok && typeof data.answer === "string" ? { state: "done", text: data.answer } : { state: "none" } });
+    } catch { patch(botId, { followup: { state: "none" } }); } finally { setBusy(false); }
   }, [busy, ctx, status, code]);
-  const submit = (e: FormEvent) => { e.preventDefault(); void send(input); };
+  const newChat = () => { setActiveId(uid()); setMsgs([]); setCtx({ last: [] }); setInput(""); setRail(false); setTimeout(() => taRef.current?.focus(), 0); };
+  const openChat = (c: StoredChat) => { const r = replay(c.turns); seq.current = r.msgs.length; setActiveId(c.id); setMsgs(r.msgs); setCtx(r.ctx); setRail(false); };
+  const removeChat = (id: string) => { const next = deleteChat(chatsRef.current, id); chatsRef.current = next; setChats(next); saveChats(next, store.current); if (id === activeId) newChat(); };
+  const clearAll = () => { if (!window.confirm("Delete all saved conversations from this browser?")) return; chatsRef.current = []; setChats([]); saveChats([], store.current); newChat(); };
+  const onFb = (id: number, v: "up" | "down") => setMsgs((m) => m.map((x) => (x.id === id ? { ...x, fb: x.fb === v ? undefined : v } : x)));
+  const onCopy = async (m: Msg) => { const md = answerToMarkdown(m.answer!, undefined, m.followup?.state === "done" ? m.followup.text : undefined); if (await copyText(md)) { setCopied(m.id); setTimeout(() => setCopied((c) => (c === m.id ? 0 : c)), 1800); } };
+  const exportChat = () => download("grants-and-funding-conversation.md", chatToMarkdown(titleOf(turnsOf(msgs)), msgs.map((m) => ({ role: m.role, text: m.text, answer: m.answer, ai: m.followup?.state === "done" ? m.followup.text : undefined })), fmtDate(new Date().toISOString().slice(0, 10))));
+  const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); void send(input); } };
+  const covered = useMemo(() => (helpAnswer().blocks.find((b) => b.t === "facts") as Extract<Block, { t: "facts" }>).rows, []);
+
+  const composer = (
+    <div className="dock-in">
+      {status?.live && status.needsCode && <div className="field" style={{ marginBottom: 10, maxWidth: 320 }}><label htmlFor="ac">Access code (for follow-up questions)</label><input id="ac" type="password" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" /></div>}
+      <form className="composer" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
+        <label htmlFor="q" className="sr">Ask about a programme</label>
+        <textarea id="q" ref={taRef} rows={1} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={onKey} maxLength={600} placeholder={mobile ? "Ask a question" : "Ask about documents, deadlines, eligibility, or describe your company"} autoComplete="off" enterKeyHint="send" />
+        <button className="send" type="submit" disabled={busy || !input.trim()} aria-label="Send"><Ico d={SEND} cls="sendi" /></button>
+      </form>
+      <p className="composer-note">Enter to send, Shift+Enter for a new line, / to jump here. Built from sourced data, in beta.</p>
+    </div>
+  );
+  const lastBot = [...msgs].reverse().find((m) => m.role === "bot")?.id;
 
   return (
-    <div className="chat">
-      <div className="chat-log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation">
-        {msgs.map((m, i) => m.role === "me"
-          ? <div key={m.id} className="msg me" ref={i === msgs.length - 1 ? lastRef : undefined}><p>{m.text}</p></div>
-          : <div key={m.id} className="msg bot" ref={i === msgs.length - 1 ? lastRef : undefined}>
-              {m.followup?.state === "loading" && <p className="b-text" aria-busy="true">Checking the record…</p>}
-              {m.followup?.state === "done" && <div className="ai-box"><p className="b-text" style={{ margin: 0 }}>{m.followup.text}</p><p className="b-foot" style={{ marginTop: 8 }}>Written by Claude from the programme's record, with numbers checked against the data.</p></div>}
-              {m.answer!.blocks.filter((b) => !(b.t === "text" && b.lead && m.followup?.state === "done")).map((b, k) => <View key={k} b={b} ask={send} />)}
-              {m.answer!.kind !== "help" && m.answer!.kind !== "beta" && <p className="b-foot">Programme data as of {fmtDate(DATA_AS_OF)}. A checklist says what the official page asks for. It is not advice that a company qualifies.</p>}
-            </div>)}
-      </div>
-      {status?.live && status.needsCode && <div className="field" style={{ marginTop: 16, maxWidth: 320 }}><label htmlFor="ac">Access code (for follow-up questions)</label><input id="ac" type="password" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" /></div>}
-      <form className="chat-form" onSubmit={submit}>
-        <label htmlFor="q" className="sr">Ask about a programme</label>
-        <input id="q" ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} maxLength={600} placeholder={narrow ? "Ask a question" : "Ask about documents, deadlines, eligibility, or describe your company"} autoComplete="off" enterKeyHint="send" />
-        <button className="btn" type="submit" disabled={busy || !input.trim()}>Ask <span className="arr" aria-hidden="true">→</span></button>
-      </form>
+    <div className="ask-app">
+      {rail && mobile && <button type="button" className="rail-bd" aria-label="Close history" onClick={() => { setRail(false); histBtn.current?.focus(); }} />}
+      <aside className="rail" data-open={rail} aria-label="Conversations" {...(mobile && !rail ? { inert: true } : {})}>
+        <button type="button" className="newchat" onClick={newChat}><span aria-hidden="true">+</span> New chat</button>
+        <h2>History</h2>
+        {chats.length === 0 ? <p className="rail-empty">Your conversations will appear here.</p> : <ul className="chatlist">{chats.map((c) => <li key={c.id} data-active={c.id === activeId}><button type="button" className="chat-item" aria-current={c.id === activeId ? "true" : undefined} onClick={() => openChat(c)} title={c.title}>{c.title}</button><button type="button" className="chat-del" aria-label={`Delete conversation: ${c.title}`} onClick={() => removeChat(c.id)}>×</button></li>)}</ul>}
+        <div className="rail-note">Saved only in this browser, as questions. Answers are rebuilt from the current data when you open one.{chats.length > 0 && <button type="button" className="rail-clear" onClick={clearAll}>Delete all</button>}</div>
+      </aside>
+      <section className="stage">
+        <div className="stage-bar">
+          <button type="button" ref={histBtn} className="bar-btn hist-btn" aria-expanded={rail} onClick={() => setRail((v) => !v)}>History</button>
+          {started && <><button type="button" className="bar-btn" onClick={exportChat}>Export</button><button type="button" className="bar-btn" onClick={newChat}>New</button></>}
+        </div>
+        {!started ? (
+          <div className="hero-chat">
+            <p className="hero-kick mono">Ask the consultant <span className="beta-tag">Beta</span></p>
+            <h1>What do you need to know about funding?</h1>
+            <p className="hero-lede">Documents, deadlines, eligibility and fit for {IN_SCOPE.length} programmes in the Netherlands, Germany and the EU. Every answer is built from sourced data, with the source shown.</p>
+            {composer}
+            <ul className="starters">{STARTERS.map((s) => <li key={s.q}><button type="button" onClick={() => void send(s.q)}><span className="tag mono">{s.tag}</span><span>{s.q}</span></button></li>)}</ul>
+            <details className="covers"><summary>Programmes covered</summary><dl>{covered.map((r) => <div key={r.k} style={{ display: "contents" }}><dt>{r.k}</dt><dd>{r.v}</dd></div>)}</dl></details>
+          </div>
+        ) : (
+          <>
+            <h1 className="sr">Ask the consultant</h1>
+            <div className="thread" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation">
+              {msgs.map((m, i) => m.role === "me"
+                ? <div key={m.id} className="msg me" ref={i === msgs.length - 1 ? lastRef : undefined}><p>{m.text}</p></div>
+                : <div key={m.id} ref={i === msgs.length - 1 ? lastRef : undefined} style={{ scrollMarginTop: "calc(var(--nav-h) + 72px)" }}><Bot m={m} last={m.id === lastBot} onAsk={(q) => void send(q)} onFb={onFb} onCopy={onCopy} copied={copied === m.id} /></div>)}
+            </div>
+            <div className="dock">{composer}</div>
+          </>
+        )}
+      </section>
     </div>
   );
 }
+function first_(r: { current: boolean }) { if (r.current) { r.current = false; return true; } return false; }

@@ -5,16 +5,18 @@ import type { Profile } from "../types";
 import { norm } from "./text";
 
 export interface Parsed { profile: Profile | null; signals: number; found: string[]; missing: string[]; }
+export const COUNTRY_RX = { get NL() { return NL; }, get DE() { return DE; }, get EU() { return EU; }, get OTHER() { return OTHER; } };
 const NL = /\b(netherlands|nederland|dutch|holland|amsterdam|rotterdam|eindhoven|utrecht|gelderland|limburg|zeeland|brabant|groningen|twente|friesland|overijssel|flevoland)\b/;
 const DE = /\b(germany|german|deutschland|berlin|munich|munchen|bavaria|bayern|saxony|sachsen|nrw|north rhine|hamburg|stuttgart|baden wurttemberg|frankfurt|cologne|dusseldorf|lower saxony|niedersachsen|hessen|thuringia|brandenburg)\b/;
 const EU = /\b(belgium|france|spain|italy|portugal|austria|poland|sweden|denmark|finland|ireland|czech|greece|romania|hungary|luxembourg|estonia|latvia|lithuania|croatia|slovenia|slovakia|bulgaria|malta|cyprus|eu|european)\b/;
 const OTHER = /\b(india|united states|usa|us based|uk|united kingdom|britain|england|canada|australia|china|japan|switzerland|norway|turkey|brazil|singapore|uae)\b/;
+export const SECTOR_RULES = (): [RegExp, string][] => SECTOR;
 const SECTOR: [RegExp, string][] = [
-  [/\b(manufactur\w*|factory|factories|production plant|industrial|machining|metal\w*|steel|chemical\w*|packaging|plastics?|components?)\b/, "Industry & manufacturing"],
+  [/\b(manufactur\w*|factory|factories|production plant|industrial|machining|machinery|machine builders?|machine building|mechanical engineering|fabricat\w*|toolmak\w*|metal\w*|steel|chemical\w*|packaging|plastics?|components?)\b/, "Industry & manufacturing"],
   [/\b(software|saas|ai|artificial intelligence|machine learning|data|digital|app|platform|cyber\w*|ict|it services)\b/, "Digital, AI & ICT"],
   [/\b(medical|medtech|health\w*|pharma\w*|biotech|clinical|hospital|diagnostic\w*)\b/, "Health & life sciences"],
-  [/\b(farm\w*|agri\w*|food|dairy|greenhouse|horticulture|crops?)\b/, "Agriculture & food"],
-  [/\b(building\w*|real estate|property|construction|offices?|warehouse|retrofit)\b/, "Buildings & real estate"],
+  [/\b(farm\w*|agri\w*|food|dairy|greenhouse|horticulture|crops?|bakery|bakeries|baker|brewery|breweries|restaurants?|catering)\b/, "Agriculture & food"],
+  [/\b(buildings|building (?:sector|industry|stock|materials|owner)|real estate|property|construction|offices?|warehouse|retrofit)\b/, "Buildings & real estate"],
   [/\b(ship\w*|vessel\w*|maritime|logistics|transport\w*|trucks?|fleet|port|aviation|barge\w*)\b/, "Transport & maritime"],
   [/\b(recycl\w*|waste|circular|plastics? recycl\w*|biobased|bio based)\b/, "Circular economy & environment"],
   [/\b(energy|solar|wind|hydrogen|heat pumps?|heating|electrolys\w*|battery|batteries|decarboni[sz]\w*|carbon|co2|power)\b/, "Energy & climate"],
@@ -23,6 +25,8 @@ const SECTOR: [RegExp, string][] = [
   [/\b(education|training|skills|apprentice\w*|school|university)\b/, "Education & skills"],
   [/\b(municipalit\w*|city council|public sector|local authority)\b/, "Public sector & municipalities"],
 ];
+/** Sectors named in already-normalised text. */
+export const sectorsIn = (t: string): string[] => SECTOR.filter(([re]) => re.test(t)).map(([, s]) => s);
 function sizeOf(t: string): { size: Profile["size"]; why: string } {
   const m = t.match(/\b(\d{1,5})\s*(?:person|people|employees?|staff|fte|workers?|strong|members)\b/) ?? t.match(/\b(?:team|staff|workforce|headcount) of (\d{1,5})\b/) ?? t.match(/\bwith (\d{1,5}) (?:employees|staff|people)\b/);
   if (m) { const n = Number(m[1]); return { size: n < 10 ? "micro" : n < 50 ? "small" : n < 250 ? "medium" : "large", why: `${n} staff` }; }
