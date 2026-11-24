@@ -17,6 +17,7 @@ export function parseItems(text: string): any[] {
   return out;
 }
 
+const CLAIM = /\b(?:qualif(?:y|ies|ied)|(?:is|are|will be) eligible|entitled|will receive|guaranteed?)\b/i;
 export async function llmProse(profile: Profile, matches: MatchEntry[], by: Record<string, Scheme>, llm: Llm) {
   const notes: string[] = []; const prose: Record<string, { why: string; watch: string[] }> = {};
   const pack = matches.slice(0, 8).map((m) => { const r = by[m.scheme_id]; const f: Record<string, string> = {};
@@ -29,6 +30,7 @@ export async function llmProse(profile: Profile, matches: MatchEntry[], by: Reco
   for (const it of arr) {
     const row = by[it?.scheme_id]; if (!row || !matches.some((m) => m.scheme_id === it.scheme_id) || typeof it.why_it_fits !== "string") continue;
     const watch = (Array.isArray(it.watch_outs) ? it.watch_outs : []).filter((w: unknown) => typeof w === "string") as string[];
+    if (CLAIM.test(it.why_it_fits + " " + watch.join(" "))) { notes.push(`${it.scheme_id}: generated text claimed eligibility or a guaranteed outcome, which is not allowed; template text kept.`); continue; }
     const bad = groundingViolations(it.why_it_fits + " " + watch.join(" "), row, profile);
     if (bad.length) { notes.push(`${it.scheme_id}: generated text contained numbers not found in the data (${bad.join(", ")}); template text kept.`); continue; }
     prose[it.scheme_id] = { why: it.why_it_fits.slice(0, 400), watch: watch.map((w) => w.slice(0, 200)).slice(0, 3) };

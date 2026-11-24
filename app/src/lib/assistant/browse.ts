@@ -33,7 +33,7 @@ const STRICT: Record<string, RegExp> = {
 };
 const themeText = (r: Scheme) => [r.name, r.summary, r.activities, r.fit_signals, r.applicants].map((x) => String(x ?? "")).join(" ");
 const hasTheme = (r: Scheme, c: string) => (STRICT[c] ? STRICT[c].test(themeText(r)) : (THEMES.get(r.id) ?? new Set()).has(c));
-const THEME_LABEL: Record<string, string> = { rd_innovation: "R&D and innovation", startup: "start-ups", energy_saving: "energy saving", ai_digital: "AI and digital", circular_plastics: "plastics and recycling", hydrogen: "hydrogen" };
+export const THEME_LABEL: Record<string, string> = { rd_innovation: "R&D and innovation", startup: "start-ups", energy_saving: "energy saving", ai_digital: "AI and digital", circular_plastics: "plastics and recycling", hydrogen: "hydrogen" };
 const MONTH_END = (iso: string) => { const [y, m] = iso.split("-").map(Number); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); };
 const addDays = (iso: string, n: number) => new Date(Date.parse(iso + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
 

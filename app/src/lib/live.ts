@@ -5,6 +5,7 @@ import type { Llm } from "./llm";
 import { LlmError } from "./llm";
 import { Limiter } from "./limits";
 import { match } from "./matcher";
+import { DocumentError, extractDocumentText, MAX_DOC_BYTES } from "./document";
 import { buildProfile } from "./profiler";
 import { llmProse } from "./prose";
 import { fetchCompany, type Site } from "./site";
@@ -12,6 +13,7 @@ import { UnsafeUrl } from "./ssrf";
 import { askAbout } from "./assistant/followup";
 import { enhanceNotes } from "./notes/enhance";
 import { inScope } from "./assistant/knowledge";
+import { routeQuestion } from "./assistant/router";
 import type { Profile } from "./types";
 
 export interface Deps { llm?: Llm; fetchSite?: (url: string) => Promise<Site>; limiter: Limiter; accessCode?: string; cacheNow?: () => number; }
@@ -40,9 +42,9 @@ export async function handleProfile(req: Request, d: Deps) {
   if (hit && now - hit.at < 3_600_000) return json({ ...(hit.value as object), cached: true });
   try {
     const site = await (d.fetchSite ?? ((u: string) => fetchCompany(u)))(url);
-    const { profile, usage } = await buildProfile(site, d.llm!);
+    const { profile, fields, usage } = await buildProfile(site, d.llm!);
     d.limiter.addTokens(usage.in + usage.out);
-    const value = { profile, pages: site.pages, usage };
+    const value = { profile, fields, pages: site.pages, usage };
     cache.set(key, { at: now, value }); if (cache.size > 200) cache.delete(cache.keys().next().value!);
     return json(value);
   } catch (e: any) {
@@ -80,4 +82,27 @@ export async function handleNotes(req: Request, d: Deps) {
   if (transcript.trim().length < 20) return json({ error: "The transcript is too short to enhance." }, 400);
   try { const r = await enhanceNotes(transcript, d.llm!, jottings); d.limiter.addTokens(r.usage.in + r.usage.out); return json(r); }
   catch (e: any) { if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not enhance the notes." }, 502); }
+}
+
+/** A company profile read from an uploaded PDF, Word or text file. */
+export async function handleDocument(req: Request, d: Deps) {
+  if (!d.llm) return json({ error: "Live mode is not configured on this server." }, 503);
+  if (d.accessCode && !same(req.headers.get("x-access-code") ?? "", d.accessCode)) return json({ error: "Access code required or incorrect." }, 401);
+  if (Number(req.headers.get("content-length") ?? 0) > MAX_DOC_BYTES + 300_000) return json({ error: "That file is too large (4 MB at most)." }, 413);
+  const lim = d.limiter.check(ipOf(req)); if (!lim.ok) return json({ error: lim.reason }, 429);
+  let form: FormData; try { form = await req.formData(); } catch { return json({ error: "Upload the file as a form." }, 400); }
+  const f = form.get("file"); if (!(f instanceof File)) return json({ error: "Choose a file to read." }, 400); if (f.size > MAX_DOC_BYTES) return json({ error: "That file is too large (4 MB at most)." }, 413);
+  const name = f.name.replace(/[^\w .()-]/g, "").slice(0, 80) || "document";
+  try {
+    const { text, kind } = await extractDocumentText(f.name, new Uint8Array(await f.arrayBuffer())); const { profile, fields, usage } = await buildProfile({ url: "", pages: [name], text }, d.llm);
+    d.limiter.addTokens(usage.in + usage.out); return json({ profile, fields, pages: [name], kind, chars: text.length, usage });
+  } catch (e: any) { if (e instanceof DocumentError) return json({ error: e.message }, e.status); if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not read that file." }, 422); }
+}
+
+/** Works out how a question the rules could not place should be answered. The model only chooses; the answer is built from the data. */
+export async function handleIntent(req: Request, d: Deps) {
+  const g = await guard(req, d); if (g instanceof Response) return g;
+  const question = String(g.body?.question ?? "").trim().slice(0, 600); if (question.length < 3) return json({ error: "Ask a question." }, 400);
+  try { const r = await routeQuestion(question, g.body?.hasCompany === true, d.llm!); d.limiter.addTokens(r.usage.in + r.usage.out); return json({ intent: r.route.intent, canonical: r.canonical, usage: r.usage }); }
+  catch (e: any) { if (e instanceof LlmError) return json({ error: e.message }, e.status); return json({ error: "Could not work out that question." }, 502); }
 }

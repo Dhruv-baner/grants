@@ -6,10 +6,10 @@ export default function Home() {
   return (
     <>
       <Spot className="hero wrap">
-        <div className="mono muted" style={{ marginBottom: 28 }}>Funding screening · Netherlands · Germany · EU</div>
-        <Rise text="Your Complete Guide to *Funding*" />
+        <div className="mono muted" style={{ marginBottom: 28 }}>For funding consultants · Netherlands · Germany · EU</div>
+        <Rise text="Your complete guide for *grants*" />
         <div style={{ marginTop: "var(--s7)" }}>
-          <p className="hero-sub">Curated AI-native recommendations on carefully sourced funding opportunities in the EU, Netherlands and Germany</p>
+          <p className="hero-sub">Built for funding consultants: screen a company, check eligibility, estimate the aid and keep your call notes, on carefully sourced programmes</p>
           <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap", marginTop: 28 }}><Magnetic><Link className="btn" href="/screen">Screen a company <span className="arr">→</span></Link></Magnetic><Link className="link-u" href="/method">How fit is judged</Link></div>
         </div>
       </Spot>

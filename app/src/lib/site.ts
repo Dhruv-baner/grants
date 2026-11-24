@@ -2,8 +2,9 @@
 import * as cheerio from "cheerio";
 import { httpGet, UA, validateUrl, UnsafeUrl, type GetOpts } from "./ssrf";
 
-export const MAX_PAGES = 3, MAX_CHARS = 12000;
-const LINK_HINTS = /about|over-ons|ueber|über|team|product|producten|service|diensten|leistung|technolog|solution|oplossing|research|innovat/i;
+export const MAX_PAGES = 5, MAX_CHARS = 16000;
+// One page per kind, in this order, before any repeat: about, what they sell, research, careers, news and reports.
+const CATS = [/about|over-ons|ueber|über|company|unternehmen|bedrijf|who-we-are|team/i, /product|producten|service|diensten|leistung|solution|oplossing|technolog|branche|sector|industr/i, /research|innovat|r-d|forschung|onderzoek/i, /career|jobs|vacatur|karriere|stellen/i, /news|nieuws|press|investor|sustainab|duurzaam|nachhaltig|annual|jaarverslag|geschaeftsbericht|projects|cases/i];
 export interface Site { url: string; pages: string[]; text: string; }
 export type Getter = (url: string) => Promise<{ text: string; finalUrl: string }>;
 
@@ -28,13 +29,13 @@ export function extractText(html: string): string {
   return [title, desc, body].filter(Boolean).join(" | ");
 }
 export function pickLinks(html: string, baseUrl: string, limit = 2): string[] {
-  const $ = cheerio.load(html); const host = new URL(baseUrl).host; const seen = new Set<string>(); const out: string[] = [];
+  const $ = cheerio.load(html); const host = new URL(baseUrl).host; const seen = new Set<string>(); const cands: { s: string; cat: number }[] = [];
   $("a[href]").each((_, a) => {
-    if (out.length >= limit) return;
-    try { const u = new URL($(a).attr("href")!, baseUrl); u.hash = ""; const s = u.toString();
-      if (u.host === host && s !== baseUrl && !seen.has(s) && LINK_HINTS.test(u.pathname + " " + $(a).text())) { seen.add(s); out.push(s); } } catch { /* bad href */ }
+    try { const u = new URL($(a).attr("href")!, baseUrl); u.hash = ""; const s = u.toString(); if (u.host !== host || s === baseUrl || seen.has(s)) return;
+      const cat = CATS.findIndex((re) => re.test(u.pathname + " " + $(a).text())); if (cat >= 0) { seen.add(s); cands.push({ s, cat }); } } catch { /* bad href */ }
   });
-  return out;
+  const out: string[] = []; for (let c = 0; c < CATS.length && out.length < limit; c++) { const hit = cands.find((x) => x.cat === c); if (hit) out.push(hit.s); }
+  for (const x of cands) { if (out.length >= limit) break; if (!out.includes(x.s)) out.push(x.s); } return out;
 }
 export async function fetchCompany(rawUrl: string, get: Getter = (u) => httpGet(u)): Promise<Site> {
   const url = /^[a-z][a-z0-9+.-]*:\/\//i.test(rawUrl) ? rawUrl : "https://" + rawUrl; const u0 = validateUrl(url);

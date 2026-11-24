@@ -1,16 +1,18 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { collectCitations, type Citation } from "@/lib/assistant/citations";
-import { helpAnswer, respond, type Block, type Ctx } from "@/lib/assistant/engine";
+import EligibilityChips from "@/components/Eligibility";
+import { helpAnswer, respond, type Answer, type Block, type Ctx } from "@/lib/assistant/engine";
 import { browserStore, deleteChat, loadChats, replay, saveChats, titleOf, turnsOf, upsertChat, type Msg, type Store, type StoredChat } from "@/lib/assistant/history";
-import { DATA_AS_OF, IN_SCOPE } from "@/lib/assistant/knowledge";
+import { DATA_AS_OF, IN_SCOPE, labelOf } from "@/lib/assistant/knowledge";
 import { answerToMarkdown, chatToMarkdown } from "@/lib/assistant/markdown";
 import { copyText, download } from "@/lib/browser";
 import { fmtDate } from "@/lib/ui";
 
 const STARTERS = [
   { tag: "Documents", q: "What documents do I need for WBSO?" }, { tag: "Deadlines", q: "When does the SME energy-saving loan close?" },
+  { tag: "Estimate", q: "How much would WBSO save with 2,000 hours of R&D work?" }, { tag: "Combine", q: "Can I combine EIA and MIA?" },
   { tag: "Eligibility", q: "Can a start-up apply for the Gründungsstipendium.NRW?" }, { tag: "Compare", q: "Compare EIA and MIA and Vamil" },
   { tag: "Which fits", q: "We are a small manufacturer in Gelderland replacing gas heating. What fits?" }, { tag: "Coverage", q: "What can you answer?" },
 ];
@@ -39,7 +41,13 @@ function View({ b, cites, ask }: { b: Block; cites: Citation[]; ask: (q: string)
       <ul className="b-list">{g.items.map((i) => <li key={i.id}><div className="pl-top"><span className="it">{i.label}<Cite n={num(i.url)} cites={cites} /></span><span className="pl-meta mono">{i.meta}</span></div><span className="pl-status">{i.status}</span><span className="nt">{i.summary}</span>
         <div className="pl-acts"><button type="button" className="mini" onClick={() => ask(`What documents do I need for ${i.label}?`)}>Documents</button><Link className="mini" href={`/programmes#${i.id}`}>Details →</Link></div></li>)}</ul></div>)}
       {b.more && <p className="b-text">{b.more.text}{b.more.href && <> <Link className="b-more" href={b.more.href}>{b.more.label} →</Link></>}</p>}</>;
-    case "picks": return <div className="b-picks">{b.items.map((p, i) => <div key={p.id} className="b-pick"><h4><span>{i + 1}. {p.label}</span><span className="sc" title="Readable fit score, out of 110">{p.score} / 110{p.fit ? ` · ${p.fit}` : ""}</span></h4>
+    case "estimate": return <div className="b-est"><div className="b-titlerow"><h3 className="b-title">{b.title}</h3><span className={`ctype mono ${b.kind}`}>{b.kind === "tax" ? "Tax benefit" : b.kind === "grant" ? "Grant" : "Loan"}</span></div><p className="calc-head">{b.headline}</p>
+      <dl className="calc-lines">{b.lines.map((l) => <div key={l.label}><dt>{l.label}</dt><dd>{l.value}</dd></div>)}</dl>{b.warnings.map((w) => <p className="calc-warn" key={w}>{w}</p>)}<ul className="calc-notes">{b.notes.map((n) => <li key={n}>{n}</li>)}</ul>
+      <details className="dd"><summary>Figures used</summary><dl className="dl">{b.inputs.map((i) => <Fragment key={i.label}><dt>{i.label}</dt><dd>{i.value}</dd></Fragment>)}</dl></details><p className="b-foot">Source <Cite n={num(b.src)} cites={cites} /></p></div>;
+    case "checks": return <EligibilityChips checks={b.checks} />;
+    case "combine": return <div className="b-combine"><ul className="stack-conf">{b.pairs.map((p) => <li key={p.a + p.b} className={p.verdict}><span className="elig-mark mono">{({ no: "Not together", conditional: "Partly", yes: "Allowed", unknown: "No rule recorded" })[p.verdict]}</span>
+      <span><b>{labelOf(p.a)} and {labelOf(p.b)}.</b> {p.note} {p.source && (p.source.url.startsWith("http") ? <><Cite n={num(p.source.url)} cites={cites} /> <a href={safeHref(p.source.url)} target="_blank" rel="noopener noreferrer">{p.source.label}</a></> : <Link href={p.source.url}>{p.source.label}</Link>)}</span></li>)}</ul>{b.general && <p className="b-foot">{b.general}</p>}</div>;
+    case "picks": return <div className="b-picks">{b.items.map((p, i) => <div key={p.id} className="b-pick"><h4><span>{i + 1}. {p.label}</span></h4>
       {p.why.length > 0 && <ul>{p.why.map((w) => <li key={w}>{w}</li>)}</ul>}{p.flags.length > 0 && <><p className="dl2" style={{ marginBottom: 0 }}>To check</p><ul style={{ marginTop: 2 }}>{p.flags.map((w) => <li key={w}>{w}</li>)}</ul></>}
       <p className="dl2">{p.deadline ? `Timing: ${p.deadline} · ` : ""}<Link href={`/programmes#${p.id}`}>Programme details →</Link></p></div>)}</div>;
     default: return null;
@@ -64,14 +72,14 @@ function Bot({ m, last, onAsk, onFb, onCopy, copied }: { m: Msg; last: boolean; 
         {ai?.state === "loading" && <p className="b-text thinking" aria-busy="true">Checking the record<span className="dots" aria-hidden="true"><b>.</b><b>.</b><b>.</b></span></p>}
         {ai?.state === "done" && <div className="ai-box"><p className="b-text" style={{ margin: 0 }}>{ai.text}</p><p className="b-foot" style={{ marginTop: 8 }}>Written by Claude from the programme's record, with numbers checked against the data.</p></div>}
         {blocks.slice(0, shown).filter((b) => !(b.t === "text" && b.lead && ai?.state === "done")).map((b, k) => <div key={k} className={m.fresh ? "rev" : undefined}><View b={b} cites={cites} ask={onAsk} /></div>)}
-        {done && cites.length > 0 && <section className="srcs" aria-label="Sources"><h4>Sources</h4><ol>{cites.map((c) => <li key={c.n}><a href={safeHref(c.url)} target="_blank" rel="noopener noreferrer" aria-label={`Source ${c.n}: ${c.label} (opens in a new tab)`}><span className="n">{c.n}</span><span className="t">{c.label}</span><span className="h">{c.host}</span></a></li>)}</ol></section>}
-        {done && <div className="acts" role="group" aria-label="Answer actions">
+        {done && cites.length > 0 && <section className="csrc" aria-label="Sources"><h4>Sources</h4><ol>{cites.map((c) => <li key={c.n}><a href={safeHref(c.url)} target="_blank" rel="noopener noreferrer" aria-label={`Source ${c.n}: ${c.label} (opens in a new tab)`}><span className="n">{c.n}</span><span className="t">{c.label}</span><span className="h">{c.host}</span></a></li>)}</ol></section>}
+        {done && !m.pending && <div className="acts" role="group" aria-label="Answer actions">
           <button type="button" className="act" onClick={() => onCopy(m)}><Ico d={COPY} />{copied ? "Copied" : "Copy"}</button>
           <button type="button" className="act" aria-pressed={m.fb === "up"} onClick={() => onFb(m.id, "up")} aria-label="Helpful"><Ico d={UP} /></button>
           <button type="button" className="act dn" aria-pressed={m.fb === "down"} onClick={() => onFb(m.id, "down")} aria-label="Not helpful"><Ico d={UP} cls="dn" /></button>
         </div>}
         {done && last && chips.length > 0 && <div className="follow" role="group" aria-label="Follow-up questions"><h4>Follow-ups</h4>{chips.map((c) => <button key={c} type="button" className="b-chip" onClick={() => onAsk(c)}>↳ {c}</button>)}</div>}
-        {done && a.kind !== "help" && a.kind !== "beta" && <p className="b-foot">Programme data as of {fmtDate(DATA_AS_OF)}. A checklist says what the official page asks for. It is not advice that a company qualifies.</p>}
+        {done && !m.pending && a.kind !== "help" && a.kind !== "beta" && <p className="b-foot">Programme data as of {fmtDate(DATA_AS_OF)}. {a.kind === "estimate" ? "Estimates are not offers or decisions, and do not say a company qualifies." : a.kind === "combine" ? "Only combining rules with a source are stated. Check each programme's own conditions." : a.kind === "checks" ? "A check is not advice that a company qualifies." : "A checklist says what the official page asks for. It is not advice that a company qualifies."}</p>}
       </div>
     </article>
   );
@@ -84,6 +92,8 @@ export default function Assistant() {
   const [rail, setRail] = useState(false); const [mobile, setMobile] = useState(false); const [copied, setCopied] = useState(0);
   const seq = useRef(0); const store = useRef<Store | null>(null); const chatsRef = useRef<StoredChat[]>([]);
   const lastRef = useRef<HTMLDivElement>(null); const taRef = useRef<HTMLTextAreaElement>(null); const histBtn = useRef<HTMLButtonElement>(null); const firstRender = useRef(true);
+  const startRef = useRef<string | null>(null);
+  useEffect(() => { try { const t = sessionStorage.getItem("gf-chat-start"); if (t) { sessionStorage.removeItem("gf-chat-start"); startRef.current = t; } } catch { /* ignore */ } }, []);
   const nextId = () => ++seq.current; const started = msgs.length > 0;
 
   useEffect(() => { store.current = browserStore(); const c = loadChats(store.current); chatsRef.current = c; setChats(c); fetch("/api/status").then((r) => r.json()).then(setStatus).catch(() => setStatus({ live: false, needsCode: false })); }, []);
@@ -105,15 +115,27 @@ export default function Assistant() {
     const next = upsertChat(chatsRef.current, { id: activeId, title: old?.title ?? titleOf(turns), updated: Date.now(), turns }); chatsRef.current = next; setChats(next); saveChats(next, store.current);
   }, [msgs, activeId]);
 
+  useEffect(() => { if (status && startRef.current) { const t = startRef.current; startRef.current = null; void send(t); } }); // eslint-disable-line react-hooks/exhaustive-deps
   const patch = (id: number, f: Partial<Msg>) => setMsgs((m) => m.map((x) => (x.id === id ? { ...x, ...f } : x)));
   const send = useCallback(async (text: string) => {
     const q = text.trim().slice(0, 600); if (!q || busy) return;
     setInput(""); const r = respond(q, ctx); setCtx(r.ctx); const botId = nextId(); const live = !!(r.followup && status?.live);
-    setMsgs((m) => [...m, { id: nextId(), role: "me", text: q }, { id: botId, role: "bot", answer: r.answer, q, fresh: true, followup: live ? { state: "loading" } : undefined }]);
-    taRef.current?.focus(); if (!live || !r.followup) return;
-    setBusy(true);
+    // When the rules cannot place a question (the beta message, or "I can't answer that exact question"), a small model first chooses how to answer it. It only picks; the answer is built from the data.
+    const tryRoute = !!status?.live && (r.answer.kind === "beta" || !!r.followup);
+    const thinking: Answer = { kind: "clarify", ids: [], blocks: [{ t: "text", text: "Working out what you mean…" }] };
+    setMsgs((m) => [...m, { id: nextId(), role: "me", text: q }, { id: botId, role: "bot", answer: tryRoute ? thinking : r.answer, q, fresh: true, pending: tryRoute, followup: live && !tryRoute ? { state: "loading" } : undefined }]);
+    taRef.current?.focus();
+    if (tryRoute) {
+      setBusy(true); let routed = false;
+      try {
+        const res = await fetch("/api/assistant/intent", { method: "POST", headers: { "content-type": "application/json", ...(code ? { "x-access-code": code } : {}) }, body: JSON.stringify({ question: q, hasCompany: !!ctx.company }) }); const d = await res.json().catch(() => ({}));
+        if (res.ok && typeof d.canonical === "string" && d.canonical) { const r2 = respond(d.canonical, ctx); if (r2.answer.kind !== "beta" && !r2.followup) { setCtx(r2.ctx); patch(botId, { answer: r2.answer, route: d.canonical, pending: false }); routed = true; } }
+      } catch { /* fall back to the rules' own answer */ }
+      if (routed) { setBusy(false); return; }
+      patch(botId, { answer: r.answer, pending: false, followup: live ? { state: "loading" } : undefined }); if (!live) { setBusy(false); return; }
+    } else { if (!live || !r.followup) return; setBusy(true); }
     try {
-      const res = await fetch("/api/assistant", { method: "POST", headers: { "content-type": "application/json", ...(code ? { "x-access-code": code } : {}) }, body: JSON.stringify({ programme_id: r.followup.id, question: r.followup.question }) });
+      const res = await fetch("/api/assistant", { method: "POST", headers: { "content-type": "application/json", ...(code ? { "x-access-code": code } : {}) }, body: JSON.stringify({ programme_id: r.followup!.id, question: r.followup!.question }) });
       const data = await res.json().catch(() => ({})); patch(botId, { followup: res.ok && typeof data.answer === "string" ? { state: "done", text: data.answer } : { state: "none" } });
     } catch { patch(botId, { followup: { state: "none" } }); } finally { setBusy(false); }
   }, [busy, ctx, status, code]);
@@ -129,6 +151,7 @@ export default function Assistant() {
 
   const composer = (
     <div className="dock-in">
+      {ctx.company && <p className="co-chip" role="status"><span className="mono">Company in this chat</span><b>{ctx.company.label}</b><button type="button" className="mini" onClick={() => setCtx((c) => ({ ...c, company: undefined }))}>Remove</button></p>}
       {status?.live && status.needsCode && <div className="field" style={{ marginBottom: 10, maxWidth: 320 }}><label htmlFor="ac">Access code (for follow-up questions)</label><input id="ac" type="password" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" /></div>}
       <form className="composer" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
         <label htmlFor="q" className="sr">Ask about a programme</label>
@@ -156,12 +179,10 @@ export default function Assistant() {
         </div>
         {!started ? (
           <div className="hero-chat">
-            <p className="hero-kick mono">Ask the consultant <span className="beta-tag">Beta</span></p>
-            <h1>What do you need to know about funding?</h1>
-            <p className="hero-lede">Documents, deadlines, eligibility and fit for {IN_SCOPE.length} programmes in the Netherlands, Germany and the EU. Every answer is built from sourced data, with the source shown.</p>
+            <div className="hero-title"><h1>Ask The Consultant</h1><span className="beta-tag">Beta</span></div>
             {composer}
             <ul className="starters">{STARTERS.map((s) => <li key={s.q}><button type="button" onClick={() => void send(s.q)}><span className="tag mono">{s.tag}</span><span>{s.q}</span></button></li>)}</ul>
-            <details className="covers"><summary>Programmes covered</summary><dl>{covered.map((r) => <div key={r.k} style={{ display: "contents" }}><dt>{r.k}</dt><dd>{r.v}</dd></div>)}</dl></details>
+            <details className="covers"><summary>Programmes covered ({IN_SCOPE.length})</summary><dl>{covered.map((r) => <div key={r.k} style={{ display: "contents" }}><dt>{r.k}</dt><dd>{r.v}</dd></div>)}</dl></details>
           </div>
         ) : (
           <>

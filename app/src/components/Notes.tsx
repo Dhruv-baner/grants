@@ -129,12 +129,12 @@ export default function Notes() {
       <header className="nt-top">
         <div className="nt-head"><p className="mono nt-kick">Notes <span className="beta-tag">Beta</span> <span className="nt-date">{when}</span></p>
           <input className="nt-title" aria-label="Note title" placeholder="Untitled call" value={title} maxLength={80} onChange={(e) => setTitle(e.target.value)} />
-          {analysed && <p className="nt-savedline"><span aria-hidden="true">●</span> Saved to <Link href="/calls" onClick={goCalls}>Calls</Link>, in this browser only</p>}</div>
+          {analysed && <p className="nt-savedline"><span aria-hidden="true">●</span> Saved to <Link href="/notes/calls" onClick={goCalls}>Calls</Link>, in this browser only</p>}</div>
         <div className="nt-tools">
           <details className="nt-saved"><summary>Saved ({saved.length})</summary><div className="nt-pop">
             {saved.length === 0 ? <p className="nt-muted">Notes you make are saved here, in this browser only.</p> : <ul>{saved.map((n) => <li key={n.id} data-active={n.id === activeId}><button type="button" className="nt-open" onClick={() => openSaved(n)} title={n.title}>{n.title}</button><button type="button" className="nt-del" aria-label={`Delete note: ${n.title}`} onClick={() => removeSaved(n.id)}>×</button></li>)}</ul>}
             {saved.length > 0 && <button type="button" className="rail-clear" onClick={clearAll}>Delete all</button>}</div></details>
-          <Link className="bar-btn" href="/calls" onClick={goCalls}>All calls ({saved.length})</Link>
+          <Link className="bar-btn" href="/notes/calls" onClick={goCalls}>All calls ({saved.length})</Link>
           <button type="button" className="bar-btn" onClick={reset} disabled={busy}>New note</button>
         </div>
       </header>

@@ -22,7 +22,7 @@ const ROWS: [string, string, string, boolean?][] = [
   ["Location not given", "-15", "A regional scheme when the company's state or province is unknown.", true],
   ["Needs a consortium", "-15", "The scheme requires partners the company has not mentioned.", true],
 ];
-export const metadata = { title: "How fit is judged · Grants and Funding" };
+export const metadata = { title: "How fit is judged · Grants & Funding" };
 
 export default function Method() {
   return (

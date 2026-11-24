@@ -7,6 +7,12 @@ import { daysBetween, fmtDate, LABEL } from "../ui";
 import { AMBIGUOUS, AS_COUNTRY, BETA, CONFIG, PARTIAL_PARENT } from "./config";
 import { ALIAS_LIST, CHECKLISTS, DATA_AS_OF, DOCS_AS_OF, IN_SCOPE, IN_SCOPE_ROWS, KIND_OF, inScope, labelOf, type DocItem } from "./knowledge";
 import { browseAnswer, isDiscovery, parseBrowse } from "./browse";
+import { hasCalc, type CalcOut } from "../screen/calculators";
+import { checksFor, type Check } from "../screen/eligibility";
+import { intakeFromText } from "../screen/intake";
+import { RULES, ruleFor, STATE_AID, WITHIN } from "../screen/stack";
+import type { CompanyCtx } from "./company";
+import { estimateCore, EXAMPLES } from "./estimate";
 import { parseCompany } from "./profileFromText";
 import { norm, scan, sentence, shorten, tidy } from "./text";
 
@@ -20,26 +26,33 @@ export type Block =
   | { t: "picks"; items: { id: string; label: string; score: number; fit: string; why: string[]; flags: string[]; deadline: string }[] }
   | { t: "notice"; text: string }
   | { t: "sources"; items: { label: string; url: string }[] }
+  | { t: "estimate"; title: string; kind: "tax" | "grant" | "loan"; headline: string; lines: { label: string; value: string }[]; notes: string[]; warnings: string[]; inputs: { label: string; value: string }[]; src: string }
+  | { t: "checks"; id: string; label: string; checks: Check[] }
+  | { t: "combine"; pairs: { a: string; b: string; verdict: "no" | "yes" | "conditional" | "unknown"; note: string; source?: { label: string; url: string } }[]; general?: string }
   | { t: "chips"; items: string[] };
-export type Kind = "docs" | "facts" | "compare" | "recommend" | "browse" | "help" | "beta" | "clarify";
+export type Kind = "docs" | "facts" | "compare" | "recommend" | "browse" | "estimate" | "combine" | "checks" | "help" | "beta" | "clarify";
 export interface Answer { kind: Kind; ids: string[]; blocks: Block[]; }
-export interface Ctx { last: string[]; docs?: boolean; }
+export interface Ctx { last: string[]; docs?: boolean; company?: CompanyCtx; }
 export interface Result { answer: Answer; ctx: Ctx; followup?: { id: string; question: string }; }
 type Focus = "when" | "elig" | "money" | "before" | "decide";
 
 const RX = {
-  docs: /\b(documents?|paperwork|attachments?|annex(es)?|checklist|upload|prepare|preparing|papers|forms|what (do|should) (i|we) (need|have|bring|send|submit|gather)|what (is|are) (needed|required)|how (do|can|should) (i|we) apply|need to (apply|submit)|required to apply|what to (send|submit|bring|prepare))\b/,
-  elig: /\b(eligib\w*|who (can|may|is|are|qualifies|gets)|who is it for|can (we|i|a|an|my|our|startups?|smes?|small|large)\b.*\b(apply|get|use|claim|qualify|join|take part)|do (we|i) qualify|qualif\w*|open to|suitable for|applicants?)\b/,
+  docs: /\b(documenten|stukken|bijlagen?|unterlagen|dokumente|nachweise|checkliste|antragsunterlagen|wat heb ik nodig|was brauche ich|documents?|paperwork|attachments?|annex(es)?|checklist|upload|prepare|preparing|papers|forms|what (do|should) (i|we) (need|have|bring|send|submit|gather)|what (is|are) (needed|required)|how (do|can|should) (i|we) apply|need to (apply|submit)|required to apply|what to (send|submit|bring|prepare))\b/,
+  elig: /\b(wie kan|komt in aanmerking|komen wij in aanmerking|voorwaarden|wer kann|berechtigt|antragsberechtigt|voraussetzungen|eligib\w*|who (can|may|is|are|qualifies|gets)|who is it for|can (we|i|a|an|my|our|startups?|smes?|small|large)\b.*\b(apply|get|use|claim|qualify|join|take part)|do (we|i) qualify|qualif\w*|open to|suitable for|applicants?)\b/,
   decide: /\b(decision|how long (does|will|until|do)|turnaround|processing time|hear back)\b/,
   before: /\b(before (we |i )?(start|begin|order|buy|sign)|apply before|already (started|ordered|bought|signed)|start(ed)? (the )?(work|project)|too late)\b/,
-  money: /\b(how much|amount|funding rate|rate|percent\w*|cap|maximum|max|grant size|loan size|budget|what (does|do) it (give|pay|cover|fund)|benefit|worth)\b/,
-  when: /\b(deadlines?|closing|closes?|close|when|opens?|opening|status|window|until|due|dates?|still open|is it open)\b/,
+  money: /\b(hoeveel|wie viel|wieviel|bedrag|percentage|foerderquote|forderquote|how much|amount|funding rate|rate|percent\w*|cap|maximum|max|grant size|loan size|budget|what (does|do) it (give|pay|cover|fund)|benefit|worth)\b/,
+  when: /\b(sluitingsdatum|sluit|frist|einreichfrist|antragsfrist|wanneer|wann|deadlines?|closing|closes?|close|when|opens?|opening|status|window|until|due|dates?|still open|is it open)\b/,
   basics: /\b(basics?|overview|tell me about|what is|whats|summary|summari[sz]e|explain|about|details|info|information|describe)\b/,
-  compare: /\b(compare|comparison|versus|vs|difference|differences|differ|better than|which is better)\b/,
-  recommend: /\b(which (programme|program|scheme|grant|subsidy|funding|programmes|schemes|grants)|what (grants?|funding|subsidies|schemes?|programmes?|programs?)|what (could|can|should|might) (we|i)|what fits|recommend\w*|suggest\w*|looking for (funding|grants?|subsid\w+)|any (grants?|funding|subsid\w+)|we are (a|an)|were (a|an)|my company|our company|i run|i own|we (make|build|produce|manufacture|plan|want|need|operate)|funding for)\b/,
+  compare: /\b(vergelijk\w*|verschil|vergleich\w*|unterschied\w*|compare|comparison|versus|vs|difference|differences|differ|better than|which is better)\b/,
+  recommend: /\b(welke regeling|welke subsidies?|welche foerderung|welche forderung|welches programm|which (programme|program|scheme|grant|subsidy|funding|programmes|schemes|grants)|what (grants?|funding|subsidies|schemes?|programmes?|programs?)|what (could|can|should|might) (we|i)|what fits|recommend\w*|suggest\w*|looking for (funding|grants?|subsid\w+)|any (grants?|funding|subsid\w+)|we are (a|an)|were (a|an)|my company|our company|i run|i own|we (make|build|produce|manufacture|plan|want|need|operate)|funding for)\b/,
   personal: /\b(we are|were (a|an)|my company|our company|i run|i own|we (make|build|produce|manufacture|plan|want|need|operate))\b/,
   help: /\b(help|what can you (do|answer)|how does this work|what do you (cover|know)|which programmes (do you|are)|list (of )?programmes?|what programmes|covered)\b/,
   greet: /^(hi|hello|hey|good (morning|afternoon|evening)|thanks?|thank you|ok|okay)\b/,
+  combine: /\b(combin\w*|stack\w*|cumulat\w*|together|alongside|on top of|at the same time|same (asset|installation|costs?|investment)|combineren|stapelen|tegelijk|kombinier\w*|gleichzeitig|zusammen)\b/,
+  estimate: /\b(how much|how many|estimate\w*|calculat\w*|work out|compute|worth|sav(e|es|ing|ings)|repay\w*|monthly|per month|what would|would (it|we|i) (give|get|cost|be)|bereken\w*|hoeveel|schat\w*|berechn\w*|wie viel|wieviel|ersparnis|aflossing|maandelijks)\b/,
+  us: /\b(we|us|our|ours|this company|the company|my company|wij|ons|onze|wir|unser\w*)\b/,
+  lang: /\b(wat|welke|hoeveel|wanneer|voor|het|een|en|ik|ich|bitte|bedrijf|subsidie|regeling|aanvragen|nodig|onze|kan|vergelijk\w*|vergleich\w*|combineren|kombinieren|documenten|geeft|bespaart|welche|wie|unterlagen|foerderung|antrag|unternehmen|frist|und|oder|nicht|wir|brauche|kann|koennen)\b/g,
 };
 // Words that show a message is about applying for funding. Without one, "when does it rain" must not reuse the last programme.
 const DOMAIN = /\b(deadlines?|close[sd]?|closing|open|opens|opening|status|window|apply|applying|applications?|eligib\w*|qualif\w*|documents?|paperwork|attachments?|checklist|funding|grants?|subsid\w+|loans?|amount|rate|cap|maximum|max|decision|programmes?|programs?|schemes?|benefit|costs?|who (can|may) (get|use|claim|join)|how much|before (we |i )?(start|order|buy))\b/;
@@ -50,7 +63,7 @@ function intents(t: string) {
   if (RX.decide.test(t)) focus.push("decide"); if (RX.elig.test(t)) focus.push("elig"); if (RX.before.test(t)) focus.push("before");
   if (RX.money.test(t)) focus.push("money"); if (RX.when.test(t)) focus.push("when");
   return { docs: RX.docs.test(t), focus, basics: RX.basics.test(t), compare: RX.compare.test(t) || / or /.test(` ${t} `), compareWord: RX.compare.test(t),
-    recommend: RX.recommend.test(t), help: RX.help.test(t), greet: RX.greet.test(t) };
+    recommend: RX.recommend.test(t), help: RX.help.test(t), greet: RX.greet.test(t), combine: RX.combine.test(t), estimate: RX.estimate.test(t), us: RX.us.test(t) };
 }
 
 // ---------- building blocks ----------
@@ -111,6 +124,7 @@ const popular = ["What documents do I need for WBSO?", "When does the SME energy
 const chipsFor = (ids: string[], skip: "docs" | "facts" | "none" = "none"): Block => {
   const out: string[] = [];
   for (const id of ids.slice(0, 2)) { if (skip !== "docs") out.push(`What documents do I need for ${labelOf(id)}?`); if (skip !== "facts") out.push(`Deadline and eligibility for ${labelOf(id)}?`); }
+  if (ids.length === 1 && hasCalc(ids[0]) && skip !== "none") out.push(EXAMPLES[ids[0]]);
   out.push("Which programme fits my company?"); return { t: "chips", items: out.slice(0, 4) };
 };
 const covered = () => {
@@ -118,7 +132,7 @@ const covered = () => {
   return Object.entries(by).map(([c, l]) => ({ c, l })).sort((a, b) => ["NL", "DE", "EU"].indexOf(a.c) - ["NL", "DE", "EU"].indexOf(b.c));
 };
 export const helpAnswer = (): Answer => ({ kind: "help", ids: [], blocks: [
-  { t: "text", text: `I'm a consultant's assistant for ${IN_SCOPE.length} funding programmes in the Netherlands, Germany and the EU. I can tell you what documents a programme asks for, its deadline, who can apply, and what it gives. I can compare two programmes, or point you to the ones that fit a company you describe.` },
+  { t: "text", text: `I'm a consultant's assistant for ${IN_SCOPE.length} funding programmes in the Netherlands, Germany and the EU. I can tell you what documents a programme asks for, its deadline, who can apply, and what it gives. I can compare two programmes, or point you to the ones that fit a company you describe. I can also estimate the aid for 11 programmes from your numbers, tell you which programmes can be combined, and check a company you describe against a programme.` },
   { t: "facts", rows: covered().map(({ c, l }) => ({ k: c === "NL" ? "Netherlands" : c === "DE" ? "Germany" : c, v: l.join(", ") })) },
   { t: "text", text: `I only answer about these programmes. For anything else: ${BETA}` }, { t: "chips", items: popular }] });
 export const betaAnswer = (lineText: string): Answer => ({ kind: "beta", ids: [], blocks: [{ t: "text", text: lineText }, { t: "notice", text: BETA },
@@ -145,6 +159,36 @@ function compareBlocks(a: Scheme, b: Scheme): Block[] {
 }
 
 // ---------- recommend ----------
+// ---------- estimates, combining rules and company checks ----------
+function estimateAnswer(id: string, original: string, company?: CompanyCtx): Answer {
+  const core = estimateCore(id, original, company), label = labelOf(id), blocks: Block[] = [];
+  if ("error" in core.out) blocks.push({ t: "text", text: `I can estimate ${label}, but I still need one thing: ${core.out.error.replace(/^Enter\s+/i, "").replace(/\.$/, "")}.` }, { t: "text", text: `For example: ${EXAMPLES[id]}` });
+  else { const o: CalcOut = core.out; blocks.push({ t: "text", lead: true, text: core.found.length ? `Here is an estimate for ${label}. I read from your question: ${core.found.join(", ")}.` : `Here is an estimate for ${label}, using the project in this chat.` },
+    { t: "estimate", title: core.calc.title, kind: o.kind, headline: o.headline, lines: o.lines, notes: o.notes, warnings: o.warnings, inputs: core.used, src: BY_ID[id].official_url },
+    { t: "text", text: "An estimate from the recorded rates, to help a conversation. It is not an offer or a decision, and it does not say the company qualifies." }); }
+  blocks.push(sourcesBlock([id]), { t: "chips", items: [`What documents do I need for ${label}?`, `What can I combine ${label} with?`, `Deadline and eligibility for ${label}?`] });
+  return { kind: "estimate", ids: [id], blocks };
+}
+function combineAnswer(rows: Scheme[]): Answer {
+  const ids = rows.map((r) => r.id).slice(0, 3), pairs: Extract<Block, { t: "combine" }>["pairs"] = [], blocks: Block[] = [];
+  if (ids.length >= 2) { for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) { const rule = ruleFor(ids[i], ids[j]); pairs.push(rule ? { a: ids[i], b: ids[j], verdict: rule.verdict, note: rule.note, source: rule.source } : { a: ids[i], b: ids[j], verdict: "unknown", note: "I have no recorded rule for combining these two. Check each programme's own conditions." }); } }
+  else for (const rule of RULES.filter((r) => r.a === ids[0] || r.b === ids[0])) pairs.push({ a: ids[0], b: rule.a === ids[0] ? rule.b : rule.a, verdict: rule.verdict, note: rule.note, source: rule.source });
+  const names = ids.map(labelOf).join(" and ");
+  blocks.push({ t: "text", lead: true, text: pairs.length ? `Here is what I have recorded about combining ${names}.` : `I have no recorded rule for combining ${labelOf(ids[0])} with other programmes.` });
+  if (pairs.length) blocks.push({ t: "combine", pairs, general: STATE_AID }); else blocks.push({ t: "notice", text: BETA }, { t: "text", text: STATE_AID });
+  if (pairs.some((p) => p.verdict === "unknown")) blocks.push({ t: "notice", text: `For the pairs with no recorded rule: ${BETA}` });
+  for (const id of ids) if (WITHIN[id]) blocks.push({ t: "text", text: WITHIN[id] });
+  blocks.push(sourcesBlock(ids), { t: "chips", items: ids.slice(0, 2).map((id) => `What documents do I need for ${labelOf(id)}?`).concat(["Which programme fits my company?"]) });
+  return { kind: "combine", ids, blocks };
+}
+function checksAnswer(rows: Scheme[], company: CompanyCtx): Answer {
+  const blocks: Block[] = [{ t: "text", lead: true, text: `Here is how ${rows.slice(0, 2).map((r) => labelOf(r.id)).join(" and ")} check against the company in this chat (${company.label}).` }];
+  for (const r of rows.slice(0, 2)) blocks.push({ t: "title", text: `${labelOf(r.id)}: checks`, sub: group(r), id: r.id }, { t: "checks", id: r.id, label: labelOf(r.id), checks: checksFor(company.profile, company.project, r) });
+  const used = rows.slice(0, 2).map((r) => r.id);
+  blocks.push({ t: "text", text: "A check shows what is clear, what is blocked and what still needs confirming. It does not say the company qualifies: the programme's own conditions decide that." }, sourcesBlock(used), chipsFor(used, "none"));
+  return { kind: "checks", ids: used, blocks };
+}
+
 export function recommend(original: string): Result {
   const parsed = parseCompany(original); const ctx: Ctx = { last: [] };
   if (!parsed.profile) return { ctx, answer: { kind: "clarify", ids: [], blocks: [
@@ -154,11 +198,11 @@ export function recommend(original: string): Result {
   const read = `Here is how the programmes I cover rank for: ${parsed.found.join(" · ")}.` + (parsed.missing.length ? ` I could not read the ${parsed.missing.join(" or ")}, so I left that open.` : "");
   if (!top.length) return { ctx, answer: { kind: "recommend", ids: [], blocks: [{ t: "text", text: `${read} None of the programmes I cover is a clear fit for what you described.` }, { t: "notice", text: BETA },
     { t: "text", text: "Add more detail about what the company plans to do and I will look again." }, { t: "chips", items: ["What can you answer?"] }] } };
-  const ids = top.map((m) => m.scheme_id);
-  return { ctx: { last: ids.slice(0, 2) }, answer: { kind: "recommend", ids, blocks: [
+  const ids = top.map((m) => m.scheme_id); const company: CompanyCtx = { profile: parsed.profile, project: intakeFromText(original, DATA_AS_OF).project, label: parsed.found.filter((f) => !f.startsWith("themes:")).map((f) => (f.startsWith("size:") ? `size: ${parsed.profile!.size}` : f)).join(" · ") || "the company you described" };
+  return { ctx: { last: ids.slice(0, 2), company }, answer: { kind: "recommend", ids, blocks: [
     { t: "text", text: read },
     { t: "picks", items: top.map((m) => ({ id: m.scheme_id, label: labelOf(m.scheme_id), score: m.score, fit: m.fit ?? "", why: m.reasons.slice(0, 3), flags: m.flags.slice(0, 2).map((f) => f.replace(/:\s*check\b/i, "")), deadline: /^\d{4}-\d{2}-\d{2}$/.test(m.next_deadline) ? `Closes ${fmtDate(m.next_deadline)}` : (LABEL[m.status_clean] ?? "") })) },
-    { t: "text", text: "This uses the same readable score as the Screen page, limited to the programmes I cover. It shows where to look first, not whether the company qualifies." },
+    { t: "text", text: "This uses the same rules as the Screen page, limited to the programmes I cover. It shows where to look first, not whether the company qualifies." },
     { t: "chips", items: ids.slice(0, 2).map((id) => `What documents do I need for ${labelOf(id)}?`).concat(["Compare " + labelOf(ids[0]) + (ids[1] ? " and " + labelOf(ids[1]) : "")].filter(() => ids.length > 1)) }] } };
 }
 
@@ -166,7 +210,7 @@ export function recommend(original: string): Result {
 function contentWords(t: string, hitAliases: string[]) {
   const drop = new Set(hitAliases.flatMap((a) => a.split(" "))); return t.split(" ").filter((w) => w && !STOPWORDS.has(w) && !drop.has(w)).length;
 }
-export function respond(raw: string, ctx: Ctx = { last: [] }): Result {
+function respondCore(raw: string, ctx: Ctx = { last: [] }): Result {
   const original = (raw ?? "").trim().slice(0, 600); const t = norm(original);
   const keep: Ctx = ctx;
   if (!t) return { ctx: keep, answer: helpAnswer() };
@@ -203,6 +247,10 @@ export function respond(raw: string, ctx: Ctx = { last: [] }): Result {
   const rows = ids.slice(0, 3).map((id) => BY_ID[id]); const used = rows.map((r) => r.id);
   const focus = I.focus[0]; const blocks: Block[] = []; let kindOut: Kind = "facts"; let followup: Result["followup"];
   if (note) blocks.push({ t: "notice", text: note });
+  if (I.combine && !I.docs && !I.compareWord) return { ctx: { last: used.slice(0, 2), company: keep.company }, answer: combineAnswer(rows) };
+  const estRow = rows.find((r) => hasCalc(r.id));
+  if (estRow && !I.docs && (I.estimate || I.focus.includes("money"))) { const core = estimateCore(estRow.id, original, keep.company); if (core.found.length || (keep.company?.project.budget && I.estimate)) return { ctx: { last: [estRow.id], company: keep.company }, answer: estimateAnswer(estRow.id, original, keep.company) }; }
+  if (I.us && I.focus.includes("elig") && !I.docs && keep.company) return { ctx: { last: used.slice(0, 2), company: keep.company }, answer: checksAnswer(rows, keep.company) };
   const isCompare = rows.length >= 2 && (I.compareWord || (I.compare && !I.docs) || (!I.docs && I.focus.length === 0));
   if (isCompare) { kindOut = "compare"; blocks.push(...compareBlocks(rows[0], rows[1])); }
   else {
@@ -214,8 +262,15 @@ export function respond(raw: string, ctx: Ctx = { last: [] }): Result {
       for (const r of rows) blocks.push(...factsBlocks(r, focus));
     }
   }
+  if (I.us && I.focus.includes("elig") && !keep.company && !isCompare) blocks.push({ t: "text", text: "To check this against your company, describe it: its country, size and what it plans to do." });
   if (outNotice && !note) blocks.push({ t: "notice", text: outNotice });
   blocks.push(sourcesBlock(used)); blocks.push(chipsFor(used, kindOut === "docs" ? (I.focus.length ? "none" : "docs") : kindOut === "facts" ? "facts" : "none"));
   return { ctx: { last: used.slice(0, 2), docs: kindOut === "docs" }, answer: { kind: kindOut, ids: used, blocks }, followup };
+}
+/** Answers a message. The company in the conversation carries through; a question in Dutch or German is understood and answered in English. */
+export function respond(raw: string, ctx: Ctx = { last: [] }): Result {
+  const r = respondCore(raw, ctx); if (ctx.company && !r.ctx.company) r.ctx = { ...r.ctx, company: ctx.company };
+  if (((norm(raw).match(RX.lang) ?? []).length >= 1) && r.answer.kind !== "help") r.answer = { ...r.answer, blocks: [{ t: "text", text: "I answer in English for now." }, ...r.answer.blocks] };
+  return r;
 }
 export { inScope, DOCS_AS_OF, DATA_AS_OF };
