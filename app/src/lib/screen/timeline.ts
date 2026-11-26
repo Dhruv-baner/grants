@@ -21,7 +21,7 @@ function fold(line: string): string { const enc = new TextEncoder(); if (enc.enc
 const ymd = (d: string) => d.replace(/-/g, ""); const nextDay = (d: string) => new Date(Date.parse(d + "T00:00:00Z") + 864e5).toISOString().slice(0, 10).replace(/-/g, "");
 /** An iCalendar file with one all-day event per date, ready for Outlook or Google Calendar. */
 export function toIcs(items: TItem[], company: string, stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z"): string {
-  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Grants & Funding//Screen//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Consulting Toolkit//Screen//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
   for (const it of items.filter((x) => x.urgency !== "passed")) lines.push("BEGIN:VEVENT", `UID:${it.id}-${it.kind}-${ymd(it.date)}@grants-and-funding`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${ymd(it.date)}`, `DTEND;VALUE=DATE:${nextDay(it.date)}`,
     `SUMMARY:${esc(`${it.name}: ${it.kind === "opens" ? "opens" : "closes"}${company ? ` (${company})` : ""}`)}`, `DESCRIPTION:${esc(`${it.note}. Check the official page before relying on this date: ${it.url}`)}`, "END:VEVENT");
   lines.push("END:VCALENDAR"); return lines.map(fold).join("\r\n") + "\r\n";

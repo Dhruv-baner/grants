@@ -31,7 +31,7 @@ export function answerToMarkdown(a: Answer, cites: Citation[] = collectCitations
 }
 export interface ExportMsg { role: "me" | "bot"; text?: string; answer?: Answer; ai?: string; }
 export function chatToMarkdown(title: string, msgs: ExportMsg[], date: string): string {
-  const out = [`# ${title || "Conversation"}`, `_Grants & Funding, exported ${date}._`];
+  const out = [`# ${title || "Conversation"}`, `_Consulting Toolkit, exported ${date}._`];
   for (const m of msgs) out.push(m.role === "me" ? `**Question:** ${m.text ?? ""}` : answerToMarkdown(m.answer!, undefined, m.ai));
   return out.join("\n\n---\n\n").replace(/\n\n---\n\n(?=\*\*Question)/g, "\n\n---\n\n");
 }
