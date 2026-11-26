@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/fx";
 
 export interface FuseItem { id: string; name: string; date: string; days: number; country: string }
-const PX = 16, ORIGIN = 150, MINGAP = 124, MAXGAP = 300, CENTER = 230, STEP = 84, BASE = 36;
+const PX = 14, ORIGIN = 120, MINGAP = 138, MAXGAP = 280, CENTER = 178, STEP = 56, BASE = 28; // compact: the timeline sits in the middle of a page, so it stays low
 const fmt = (iso: string) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
 export function Countdown({ items }: { items: FuseItem[] }) {
@@ -42,9 +42,9 @@ export default function Fuse({ items, asOf }: { items: FuseItem[]; asOf: string 
           <div className="fuse-line fuse-char" style={{ width: spark }} /><div className="fuse-line fuse-fire" style={{ left: spark, width: Math.max(0, width - spark) }} /><div className="fuse-spark" style={{ left: spark }} aria-hidden="true" />
           {placed.map((p) => (
             <div key={p.id} className={"fuse-mark" + (p.x < spark - 4 ? " past" : "") + (p.days <= 14 ? " hot" : "")} style={{ left: p.x }}>
-              <button aria-label={`${p.name}, closes ${fmt(p.date)}`} onClick={() => { router.push(`/programmes#${p.id}`); setTimeout(() => window.dispatchEvent(new CustomEvent("gf:scheme", { detail: p.id })), 80); }} />
+              <button aria-label={`${p.name}, ${p.country}, closes ${fmt(p.date)}`} onClick={() => { router.push(`/programmes#${p.id}`); setTimeout(() => window.dispatchEvent(new CustomEvent("gf:scheme", { detail: p.id })), 80); }} />
               <span className="stem" style={p.above ? { bottom: 0, height: p.h } : { top: 0, height: p.h }} />
-              <span className="lab" style={p.above ? { bottom: p.h } : { top: p.h }}><b>{p.name.length > 52 ? p.name.slice(0, 51) + "…" : p.name}</b><span className="mono num" style={{ color: "var(--cream-2)" }}>{fmt(p.date)} · {p.days} days</span></span>
+              <span className="lab" style={p.above ? { bottom: p.h } : { top: p.h }}><b>{p.name.length > 46 ? p.name.slice(0, 45).trimEnd() + "…" : p.name}</b><span className="mono num" style={{ color: "var(--cream-2)" }}>{fmt(p.date)} · {p.days} {p.days === 1 ? "day" : "days"}</span></span>
             </div>))}
         </div>
       </div>

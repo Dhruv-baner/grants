@@ -1,7 +1,12 @@
 "use client";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { Countdown, type FuseItem } from "@/components/Fuse";
+import { useRouter } from "next/navigation";
+import Fuse, { Countdown, type FuseItem } from "@/components/Fuse";
+import { download } from "@/lib/browser";
+import { buildPortfolio, loadClients, type Client } from "@/lib/notes/clients";
+import { SCREEN_PREFILL_KEY } from "@/lib/notes/handoff";
+import { toIcs } from "@/lib/screen/timeline";
 import SchemeDetail from "@/components/SchemeDetail";
 import { Status } from "@/components/Marks";
 import { BY_ID, META, REAL, SCHEMES } from "@/lib/data";
@@ -15,7 +20,7 @@ const RANK: Record<string, number> = { open: 0, opening_soon: 1, rolling: 2, bet
 const STATUSES = Object.keys(RANK).filter((x) => uniq((s) => s.status_clean).includes(x));
 /** Closing dates still ahead of the given day, soonest first: the deadlines at the top of the page. */
 const upFrom = (day: string) => SCHEMES.filter((s) => ["open", "opening_soon"].includes(s.status_clean) && s.closes_date && daysBetween(day, s.closes_date) >= 0).sort((a, b) => a.closes_date.localeCompare(b.closes_date));
-const ROLLING = SCHEMES.filter((s) => s.status_clean === "rolling").length; const FIRST = 8;
+const ROLLING = SCHEMES.filter((s) => s.status_clean === "rolling").length;
 /** Reverse lookup: which of the companies on the Screen page each scheme fits, using the same matcher. */
 const FITS: Record<string, { id: string; name: string; score: number }[]> = (() => {
   const m: Record<string, { id: string; name: string; score: number }[]> = {};
@@ -28,9 +33,13 @@ function Pick({ label, value, set, options, fmt = (x: string) => x }: { label: s
   return <div className="field" style={{ margin: 0 }}><label>{label}</label><select value={value} onChange={(e) => set(e.target.value)} aria-label={label}><option value="">All</option>{options.map((o) => <option key={o} value={o}>{fmt(o)}</option>)}</select></div>;
 }
 export default function Programmes() {
-  const [q, setQ] = useState(""), [country, setCountry] = useState(""), [tg, setTg] = useState(""), [sector, setSector] = useState(""), [status, setStatus] = useState(""), [open, setOpen] = useState<string | null>(null), [showAll, setShowAll] = useState(false), [today, setToday] = useState(META.as_of);
+  const [q, setQ] = useState(""), [country, setCountry] = useState(""), [tg, setTg] = useState(""), [sector, setSector] = useState(""), [status, setStatus] = useState(""), [open, setOpen] = useState<string | null>(null), [today, setToday] = useState(META.as_of), [mine, setMine] = useState<{ n: number; by: Record<string, Client[]> }>({ n: 0, by: {} }), [mineOnly, setMineOnly] = useState(false); const router = useRouter();
   useEffect(() => { setToday(new Date().toLocaleDateString("en-CA")); }, []); // days left count from today on this device; the data itself is as of META.as_of
-  const UP = useMemo(() => upFrom(today), [today]); const FUSE: FuseItem[] = useMemo(() => UP.filter((s) => daysBetween(today, s.closes_date) <= 200).map((s) => ({ id: s.id, name: s.name, date: s.closes_date, days: daysBetween(today, s.closes_date), country: s.country })), [UP, today]);
+  useEffect(() => { let st: Storage | null = null; try { st = window.localStorage; } catch { /* ignore */ } const { clients } = loadClients(st); const p = buildPortfolio(clients, SCHEMES, 1); setMine({ n: clients.length, by: Object.fromEntries(p.ranked.map((e) => [e.id, e.clients])) }); }, []); // your saved calls, matched against every programme
+  const screenClient = (c: Client) => { try { sessionStorage.setItem(SCREEN_PREFILL_KEY, JSON.stringify({ ...c.profile, signals: "" })); } catch { /* ignore */ } router.push("/screen"); };
+  const UP = useMemo(() => upFrom(today), [today]); const SHOWN = useMemo(() => (mineOnly ? UP.filter((s) => mine.by[s.id]) : UP), [UP, mineOnly, mine]);
+  const TL: FuseItem[] = useMemo(() => SHOWN.filter((s) => daysBetween(today, s.closes_date) <= 200).map((s) => ({ id: s.id, name: s.name, date: s.closes_date, days: daysBetween(today, s.closes_date), country: s.country })), [SHOWN, today]); // the timeline follows the toggle; the countdown above it always counts the next date of all
+  const ics = () => download(mineOnly ? "client-deadlines.ics" : "programme-deadlines.ics", toIcs(SHOWN.map((s) => ({ id: s.id, name: s.name, date: s.closes_date, kind: "closes" as const, note: mine.by[s.id] ? `Fits your clients: ${mine.by[s.id].map((c) => c.name).join(", ")}` : clean(s.status).slice(0, 140), urgency: "soon" as const, url: s.official_url })), mineOnly ? "your clients" : "Programme deadlines"), "text/calendar;charset=utf-8"); const FUSE: FuseItem[] = useMemo(() => UP.filter((s) => daysBetween(today, s.closes_date) <= 200).map((s) => ({ id: s.id, name: s.name, date: s.closes_date, days: daysBetween(today, s.closes_date), country: s.country })), [UP, today]);
   const filtering = !!(q || country || tg || sector || status);
   const rows = useMemo(() => SCHEMES.filter((s) => (!q || (s.name + " " + s.aliases + " " + s.summary + " " + s.id).toLowerCase().includes(q.toLowerCase())) && (!country || countryGroup(s) === country) && (!tg || s.type_group === tg) &&
     (!sector || s.sector.split(";").map((x) => x.trim()).includes(sector)) && (!status || s.status_clean === status))
@@ -49,9 +58,9 @@ export default function Programmes() {
         <div className="sec-head"><span className="mono" id="dl-h">Deadlines</span><span className="mono muted">{UP.length} known closing dates. {ROLLING} more programmes have no closing date.</span></div>
         <div className="dl-top"><div><Countdown items={FUSE} /></div>
           <p className="muted">The clock runs on your device. Dates are true as of {fmtDate(META.as_of)}. Open a programme below for its terms.</p></div>
-        <div className="dl-list" style={{ marginTop: "var(--s6)" }}>{(showAll ? UP : UP.slice(0, FIRST)).map((s) => (<div className="drow" key={s.id}><span className="mono num">{fmtDate(s.closes_date)}</span><span className="mono num muted">{daysBetween(today, s.closes_date)} days</span>
-          <span><a className="nm" href={`#${s.id}`} style={{ textDecoration: "none" }}>{s.name}</a><div className="faint" style={{ fontSize: 13.5, marginTop: 4, maxWidth: "70ch" }}>{clean(s.status)}</div></span><span className="mono">{s.country}</span><span><Status s={s.status_clean} /></span></div>))}</div>
-        {UP.length > FIRST && <button type="button" className="btn alt" style={{ marginTop: 18 }} aria-expanded={showAll} onClick={() => setShowAll((v) => !v)}>{showAll ? "Show fewer dates" : `Show all ${UP.length} dates`}</button>}
+        <div className="dl-tools">{mine.n > 0 && <label className="pf-toggle"><input type="checkbox" checked={mineOnly} onChange={(e) => setMineOnly(e.target.checked)} />Only programmes that fit my clients ({Object.keys(mine.by).filter((id) => UP.some((s) => s.id === id)).length})</label>}<button type="button" className="btn alt" disabled={!SHOWN.length} onClick={ics}>Add these dates to my calendar</button></div>
+        {TL.length > 0 ? <div className="dl-plate"><Fuse items={TL} asOf={today} /></div> : <p className="faint" style={{ marginTop: 18 }}>{SHOWN.length ? "No closing dates in the next 200 days." : "None of the programmes with a closing date ahead fits your saved clients."}</p>}
+        {TL.length > 0 && SHOWN.length > TL.length && <p className="faint dl-more">{SHOWN.length - TL.length} later {SHOWN.length - TL.length === 1 ? "date is" : "dates are"} not drawn here. {SHOWN.length - TL.length === 1 ? "It is" : "They are"} in the calendar file.</p>}
       </section>
       <section id="programmes" aria-labelledby="pr-h" style={{ marginTop: "var(--s9)" }}>
         <div className="sec-head"><span className="mono" id="pr-h">Programmes</span><span className="mono muted">{rows.length} of {SCHEMES.length}. Filter, then open any row for terms, sources and the companies it fits.</span></div>
@@ -76,7 +85,9 @@ export default function Programmes() {
           <div className="prow-detail" id={"d-" + s.id} role="region" aria-label={s.name} {...(open === s.id ? {} : { inert: true })}>
             <div><div className="detail-in"><SchemeDetail s={s} />
               <div>
-                <div className="lbl">Companies on the Screen page this fits</div>
+                <div className="lbl">Your saved clients this fits</div>
+                {mine.n === 0 ? <p className="faint" style={{ fontSize: 15 }}>No saved calls yet. <Link href="/notes">Record a call</Link> and the programmes it fits appear here.</p> : (mine.by[s.id] ?? []).length ? <ul className="srcs">{mine.by[s.id].map((c) => <li key={c.id}><button type="button" className="linkbtn" onClick={() => screenClient(c)}>{c.name}</button></li>)}</ul> : <p className="faint" style={{ fontSize: 15 }}>None of your {mine.n} saved {mine.n === 1 ? "client fits" : "clients fit"} this programme.</p>}
+                <div className="lbl" style={{ marginTop: 18 }}>Companies on the Screen page this fits</div>
                 {fits.length ? <ul className="srcs">{fits.map((f) => <li key={f.id}><Link href={`/screen#${f.id}`}>{f.name}</Link></li>)}</ul> : <p className="faint" style={{ fontSize: 15 }}>None of the five companies on the Screen page fits this scheme.</p>}
                 <dl className="dl" style={{ gridTemplateColumns: "120px minmax(0,1fr)", alignContent: "start", marginTop: 24 }}>
                   {([["Authority", s.authority], ["Legal basis", s.legal_basis], ["Period", clean(String(s["programme_period"] ?? ""))], ["Level", s.level], ["Region", s.region]] as [string, string][]).filter(([, v]) => v).map(([k, v]) => <Fragment key={k}><dt>{k}</dt><dd>{v}</dd></Fragment>)}

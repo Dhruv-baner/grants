@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SCHEMES } from "@/lib/data";
 
 // The top bar: four places. Deadlines now sit at the top of Programmes, Calls under Notes, and Method in the footer.
-const NAV = [{ href: "/screen", label: "Screen a company", short: "Screen a company" }, { href: "/programmes", label: "Programmes and deadlines", short: "Programmes" }, { href: "/assistant", label: "Ask the consultant", short: "Ask" }, { href: "/notes", label: "Notes and calls", short: "Notes" }];
+const NAV = [{ href: "/screen", label: "Screen a company", short: "Screen a company" }, { href: "/programmes", label: "Programmes and deadlines", short: "Programmes" }, { href: "/assistant", label: "Ask the grantbot", short: "Ask" }, { href: "/notes", label: "Notes and calls", short: "Notes" }];
 const PAGES = [...NAV, { href: "/programmes#deadlines", label: "Deadlines", short: "" }, { href: "/notes/calls", label: "Calls table", short: "" }, { href: "/method", label: "How fit is judged", short: "" }];
 const isActive = (href: string, path: string) => path === href || path.startsWith(href + "/");
 
@@ -43,13 +43,13 @@ export default function Nav() {
   return (
     <>
       <header className="nav"><div className="wrap">
-        <Link href="/" className="brand" aria-label="Grants & Funding, home">Grants <b>{"&"}</b> Funding</Link>
+        <Link href="/" className="brand" aria-label="Consulting Toolkit, home">Consulting <b>Toolkit</b></Link>
         <nav className="nav-links mono" aria-label="Main">{NAV.map((p) => <Link key={p.href} href={p.href} aria-current={isActive(p.href, path) ? "page" : undefined}>{p.short}</Link>)}</nav>
         {live && <span className="live mono">Live</span>}
         <button className="kbd mono" onClick={openPal} aria-label="Search (Ctrl or Command K)">Search <span style={{ opacity: .6 }}>⌘K</span></button>
         <button className="menu-btn mono" onClick={() => setMenu(true)} aria-expanded={menu}>Menu</button>
       </div></header>
-      {menu && <div className="menu" role="dialog" aria-modal="true" aria-label="Menu"><div className="top"><span className="brand">Grants <b>{"&"}</b> Funding</span><button className="menu-btn mono" style={{ display: "inline-flex", borderColor: "var(--cream)", color: "var(--cream)" }} onClick={() => setMenu(false)}>Close</button></div>
+      {menu && <div className="menu" role="dialog" aria-modal="true" aria-label="Menu"><div className="top"><span className="brand">Consulting <b>Toolkit</b></span><button className="menu-btn mono" style={{ display: "inline-flex", borderColor: "var(--cream)", color: "var(--cream)" }} onClick={() => setMenu(false)}>Close</button></div>
         {NAV.map((p) => <Link key={p.href} href={p.href}>{p.label}<span className="mono">→</span></Link>)}<button className="mono" style={{ all: "unset", cursor: "pointer", marginTop: 28, color: "var(--cream-2)" }} onClick={openPal}>Search all programmes ⌘K</button></div>}
       {pal && <Palette onClose={() => setPal(false)} />}
     </>

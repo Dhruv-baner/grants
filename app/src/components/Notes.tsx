@@ -10,6 +10,9 @@ import { extractNotes } from "@/lib/notes/extract";
 import { profileFromNote, SCREEN_PREFILL_KEY } from "@/lib/notes/handoff";
 import { noteToMarkdown } from "@/lib/notes/markdown";
 import { findInTranscript } from "@/lib/notes/quote";
+import { SAMPLE_TITLE, sampleText, tidyLine } from "@/lib/notes/sample";
+import Companion from "./Companion";
+import Recap from "./Recap";
 import { ruleCheck } from "@/lib/notes/rules";
 import { deleteNote, loadNotes, saveNotes, upsertNote, type SavedNote } from "@/lib/notes/store";
 import type { NoteResult } from "@/lib/notes/types";
@@ -20,7 +23,6 @@ const MIC = "M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.
 const STOP = "M6 6h12v12H6z";
 const uid = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 const mmss = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-const tidyLine = (s: string) => { const t = s.replace(/\s+/g, " ").trim(); if (!t) return ""; const c = t.charAt(0).toUpperCase() + t.slice(1); return /[.!?]$/.test(c) ? c : c + "."; };
 const COUNTRY: Record<string, string> = { NL: "Netherlands", DE: "Germany", EU: "EU (other member state)", OTHER: "Outside the EU" };
 const FACT_ROWS: [keyof NoteResult["facts"], string][] = [["company", "Company"], ["country", "Country"], ["region", "Region"], ["size", "Size"], ["sector", "Sector"], ["activity", "What they do"], ["project", "Project"], ["amount", "Budget"], ["timing", "Timing"], ["ordered", "Ordered or started"], ["previous", "Previous funding"], ["decision", "Decision-maker"]];
 const Ico = ({ d }: { d: string }) => <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={d} /></svg>;
@@ -51,6 +53,7 @@ export default function Notes() {
   const [toNotes, setToNotes] = useState(false); const [hoverQ, setHoverQ] = useState<string | null>(null); const [crmOpen, setCrmOpen] = useState(false); const [quote, setQuote] = useState<string | null>(null); const [copied, setCopied] = useState("");
   const [status, setStatus] = useState<{ live: boolean; needsCode: boolean } | null>(null); const [code, setCode] = useState("");
   const [enh, setEnh] = useState<{ note: NoteResult; kept: number; dropped: number } | null>(null); const [enhState, setEnhState] = useState<"idle" | "busy" | "failed">("idle"); const [enhMsg, setEnhMsg] = useState("");
+  const [manual, setManual] = useState<Record<string, boolean>>({}); const [recapOpen, setRecapOpen] = useState(false); const playTimer = useRef(0);
   const store = useRef<Store | null>(null); const savedRef = useRef<SavedNote[]>([]); const trRef = useRef(""); const inRef = useRef(""); const markRef = useRef<HTMLElement>(null); const liveRef = useRef<HTMLDivElement>(null); const crmRef = useRef<HTMLDivElement>(null); const docRef = useRef<HTMLDivElement>(null);
   trRef.current = transcript; inRef.current = interim;
 
@@ -70,6 +73,7 @@ export default function Notes() {
     fetch("/api/status").then((r) => r.json()).then(setStatus).catch(() => setStatus({ live: false, needsCode: false }));
   }, []);
   const note = useMemo(() => (analysed.trim().length >= 15 ? extractNotes(analysed) : null), [analysed]);
+  const liveNote = useMemo(() => extractNotes(transcript.trim().length >= 12 ? transcript : ""), [transcript]); // the call companion follows the transcript as it grows
   useEffect(() => { setEnh(null); setEnhState("idle"); setEnhMsg(""); setQuote(null); }, [analysed]);
   const shown = enh?.note ?? note; const when = created ? fmtDay(created) : "";
   const rules = useMemo(() => (shown ? ruleCheck(shown) : null), [shown]);
@@ -94,9 +98,10 @@ export default function Notes() {
   const toggleRec = () => { setErr(null); if (recording) rec.stop(); else if (rec.state === "idle") { setCrmOpen(false); void rec.start(); setAnnounce("Recording started."); } };
   toggleRef.current = toggleRec;
   const goCalls = () => { try { sessionStorage.setItem("gf-calls-focus", activeId); } catch { /* ignore */ } };
-  const reset = () => { setTitle(""); setTranscript(""); setInterim(""); setAnalysed(""); setJot(""); setEdits({}); setCrmOpen(false); setEditing(false); setErr(null); setActiveId(uid()); setCreated(Date.now()); setQuote(null); };
-  const useSample = () => { reset(); setTitle("Sample call: heat pump project"); const lines = [tidyLine("we're a 40 person manufacturer in gelderland we want to replace our gas heating with heat pumps around 300 thousand euros"), tidyLine("we haven't ordered anything yet they'd like to start in spring and the decision sits with the finance director"), tidyLine("next step is a follow up call on thursday")]; const full = lines.join("\n"); setTranscript(full); setAnalysed(full); setToNotes(true); setAnnounce("Sample call loaded. Your notes are ready."); };
-  const openSaved = (n: SavedNote) => { setActiveId(n.id); setCreated(n.created); setTitle(n.title === "Untitled call" ? "" : n.title); setTranscript(n.transcript); setAnalysed(n.transcript); setJot(n.jottings); setEdits(n.edits); setCrmOpen(false); setEditing(false); setErr(null); };
+  const stopPlay = () => window.clearInterval(playTimer.current);
+  const reset = () => { setTitle(""); setTranscript(""); setInterim(""); setAnalysed(""); setJot(""); setEdits({}); setCrmOpen(false); setEditing(false); setErr(null); setActiveId(uid()); setCreated(Date.now()); setQuote(null); setManual({}); setRecapOpen(false); stopPlay(); };
+  const useSample = () => { reset(); setTitle(SAMPLE_TITLE); const full = sampleText(); setTranscript(full); setAnalysed(full); setToNotes(true); setAnnounce("Sample call loaded. Your notes are ready."); };
+  const openSaved = (n: SavedNote) => { setActiveId(n.id); setCreated(n.created); setTitle(n.title === "Untitled call" ? "" : n.title); setTranscript(n.transcript); setAnalysed(n.transcript); setJot(n.jottings); setEdits(n.edits); setCrmOpen(false); setEditing(false); setErr(null); setManual({}); setRecapOpen(false); stopPlay(); };
   const removeSaved = (id: string) => { const next = deleteNote(savedRef.current, id); savedRef.current = next; setSaved(next); saveNotes(next, store.current); if (id === activeId) reset(); };
   const clearAll = () => { if (!window.confirm("Delete all saved notes from this browser?")) return; savedRef.current = []; setSaved([]); saveNotes([], store.current); reset(); };
   const flash = (k: string) => { setCopied(k); window.setTimeout(() => setCopied((c) => (c === k ? "" : c)), 1800); };
@@ -106,6 +111,20 @@ export default function Notes() {
   useEffect(() => { // while typing or pasting, the notes follow after a short pause
     if (!showEdit) return; const id = window.setTimeout(() => { const t = transcript.trim(); setAnalysed(t.length >= 15 ? t : ""); }, 600); return () => window.clearTimeout(id);
   }, [showEdit, transcript]);
+  const playSample = (instant = false) => { // the guided demo plays the sample call at speaking pace, so the checklist ticks as it is said
+    reset(); setTitle(SAMPLE_TITLE); setActiveId("sample-demo-live"); const full = sampleText(); const finish = () => { setTranscript(full); setAnalysed(full); setToNotes(true); setAnnounce("Sample call loaded. Your notes are ready."); };
+    if (instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { finish(); return; }
+    const parts = full.match(/\S+\s*/g) ?? [full]; let k = 0; playTimer.current = window.setInterval(() => { k += 2; if (k >= parts.length) { window.clearInterval(playTimer.current); finish(); } else setTranscript(parts.slice(0, k).join("").trimEnd()); }, 140);
+  };
+  const playRef = useRef(playSample); playRef.current = playSample;
+  useEffect(() => { // the guided demo can ask this page to play the sample call and to open the follow-up email
+    const take = (name: string) => { try { const v = sessionStorage.getItem("gf-sig-" + name); sessionStorage.removeItem("gf-sig-" + name); return v; } catch { return null; } };
+    const first = take("demo-sample"); if (first) playRef.current(first === "instant"); if (take("demo-recap")) setRecapOpen(true);
+    const a = (e: Event) => { take("demo-sample"); playRef.current((e as CustomEvent<string>).detail === "instant"); }, b = () => { take("demo-recap"); setRecapOpen(true); };
+    window.addEventListener("gf:demo-sample", a); window.addEventListener("gf:demo-recap", b); return () => { window.removeEventListener("gf:demo-sample", a); window.removeEventListener("gf:demo-recap", b); window.clearInterval(playTimer.current); };
+  }, []);
+  const hasShown = !!shown;
+  useEffect(() => { if (recapOpen && hasShown) document.getElementById("recap")?.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }, [recapOpen, hasShown]);
   const goScreen = () => { if (!profile) return; try { sessionStorage.setItem(SCREEN_PREFILL_KEY, JSON.stringify({ ...profile, signals: "" })); } catch { /* ignore */ } router.push("/screen"); };
   const enhance = useCallback(async () => {
     setEnhState("busy"); setEnhMsg("");
@@ -167,6 +186,7 @@ export default function Notes() {
         </section>
 
         <section className="nt-doc" aria-label="Notes" ref={docRef}>
+          <Companion note={liveNote} manual={manual} onToggle={(id) => setManual((m) => ({ ...m, [id]: !m[id] }))} />
           {busy ? (
             <div className="lvp"><p className="lvp-k mono"><i className={recording ? "act" : ""} aria-hidden="true" />{rec.state === "starting" ? "Allow the microphone…" : rec.state === "stopping" ? "Finishing…" : "Live transcript"}</p>
               <div className="lvp-tx" ref={liveRef} aria-label="Live transcript">{transcript || interim ? <>{transcript}{interim && <span className="int">{transcript ? "\n" : ""}{interim}</span>}</> : <span className="nt-muted">Start speaking. Your words appear here as you say them.</span>}</div>
@@ -184,6 +204,7 @@ export default function Notes() {
                 <button type="button" className="nbtn" onClick={() => download(`${(title.trim() || "call-notes").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.md`, mdOf())}>Download</button>
                 {status?.live && <button type="button" className="nbtn" disabled={enhState === "busy" || !!enh} onClick={() => void enhance()}>{enhState === "busy" ? "Enhancing…" : "Enhance with Claude"}</button>}
                 <button type="button" className="nbtn" aria-expanded={crmOpen} onClick={() => setCrmOpen((v) => !v)}>Extract CRM fields</button>
+                <button type="button" className="nbtn" aria-expanded={recapOpen} aria-controls="recap" onClick={() => setRecapOpen((v) => !v)}>Follow-up email</button>
                 <button type="button" className="nbtn pri" disabled={!profile} onClick={goScreen} title={profile ? "Open the Screen page with this company filled in" : "The call did not say where the company is based"}>Screen this company →</button>
               </div>
               {status?.live && status.needsCode && !enh && <div className="field nt-code"><label htmlFor="ac">Access code (for Claude)</label><input id="ac" type="password" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" /></div>}
@@ -198,6 +219,7 @@ export default function Notes() {
                 {rules.likely.length > 0 && <p className="likely">Programmes that look relevant: {rules.likely.map((l, i) => <span key={l.id}>{i > 0 && ", "}<Link href={`/programmes#${l.id}`}>{l.label}</Link></span>)}. <span className="nt-muted">A readable score, not a statement of eligibility.</span></p>}</article>}
               {shown.openQuestions.length > 0 && <article className="sec rev" style={{ animationDelay: "320ms" }}><h3>Open questions</h3><ul className="oq">{shown.openQuestions.map((q, i) => <li key={i}><span className="oq-k mono">{q.kind === "said" ? "Said" : "Ask next"}</span>{q.text}{q.quote && <Quote q={q.quote} active={quote} onPick={(x) => setQuote(quote === x ? null : x)} />}</li>)}</ul></article>}
               {shown.nextSteps.length > 0 && <article className="sec rev" style={{ animationDelay: "400ms" }}><h3>Next steps</h3><ul className="oq">{shown.nextSteps.map((s, i) => <li key={i}><span className="oq-k mono">{s.when ?? "Step"}</span>{s.what}<Quote q={s.quote} active={quote} onPick={(x) => setQuote(quote === x ? null : x)} /></li>)}</ul></article>}
+              {recapOpen && <Recap note={shown} title={title.trim()} />}
               {jot.trim() && <article className="sec"><h3>Your notes</h3><p className="jot-out">{jot}</p></article>}
 
               {crmOpen && <div className="sec crm" ref={crmRef}><h3>CRM fields <span className="nt-muted">version 1 · review before you paste into your CRM</span></h3>

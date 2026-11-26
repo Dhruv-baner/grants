@@ -44,6 +44,12 @@ export default function Screen() {
   const [status, setStatus] = useState<Status | null>(null); const [url, setUrl] = useState(""); const [code, setCode] = useState("");
   const [busy, setBusy] = useState<"" | "profile" | "document" | "prose">(""); const [err, setErr] = useState(""); const [info, setInfo] = useState("");
   const [prose, setProse] = useState<Prose | null>(null); const [picked, setPicked] = useState<Scheme | null>(null); const [tab, setTab] = useState("matches"); const [calcEdits, setCalcEdits] = useState<Record<string, Record<string, Val>>>({});
+  useEffect(() => { // the guided demo opens tabs from outside
+    const take = (v?: string | null) => { if (v && ["matches", "aid", "timeline", "whatif", "report"].includes(v)) setTab(v); };
+    try { const raw = sessionStorage.getItem("gf-sig-screen-tab"); if (raw) { sessionStorage.removeItem("gf-sig-screen-tab"); take(raw); } } catch { /* ignore */ }
+    const h = (e: Event) => { try { sessionStorage.removeItem("gf-sig-screen-tab"); } catch { /* ignore */ } take((e as CustomEvent<string>).detail); };
+    window.addEventListener("gf:screen-tab", h); return () => window.removeEventListener("gf:screen-tab", h);
+  }, []);
   const [today, setToday] = useState(""); const [printNext, setPrintNext] = useState(false);
   useEffect(() => { setToday(new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })); const done = () => document.body.classList.remove("print-report"); window.addEventListener("afterprint", done); return () => window.removeEventListener("afterprint", done); }, []);
   useEffect(() => { const h = window.location.hash.slice(1); if (h && REAL.some((d) => d.id === h)) { setSel(h); setF(fromReal(h)); } }, []);
@@ -134,7 +140,7 @@ export default function Screen() {
               <div className="field"><label htmlFor="st">Planned start</label><input id="st" type="date" value={project.start ?? ""} onChange={(e) => setProject((p) => ({ ...p, start: e.target.value || undefined }))} /></div></div>
             <div className="field"><label htmlFor="os">Already ordered or started?</label><select id="os" value={project.started} onChange={(e) => setProject((p) => ({ ...p, started: e.target.value as Project["started"] }))}><option value="unknown">Not known</option><option value="no">Nothing ordered yet</option><option value="yes">Already ordered or started</option></select><span className="hint">Many programmes must be applied for before work starts.</span></div></fieldset>
           {status?.live && <><button className="btn alt" disabled={busy !== "" || !brief.matches.length} onClick={runProse}>{busy === "prose" ? "Curating" : "Curated AI brief"}</button><p className="faint" style={{ fontSize: 13.5, marginTop: 10 }}>Optional. Claude writes the short explanations for each match. Rates, caps and sources stay copied from the data, and any generated number not in the data, or any claim of eligibility, is discarded.</p></>}
-          {ready && <p className="faint" style={{ fontSize: 14, marginTop: 18 }}>Questions about this company? <button type="button" className="linkbtn" onClick={() => { try { sessionStorage.setItem("gf-chat-start", companyToText(profile, project)); } catch { /* ignore */ } router.push("/assistant"); }}>Ask the consultant about it</button>.</p>}
+          {ready && <p className="faint" style={{ fontSize: 14, marginTop: 18 }}>Questions about this company? <button type="button" className="linkbtn" onClick={() => { try { sessionStorage.setItem("gf-chat-start", companyToText(profile, project)); } catch { /* ignore */ } router.push("/assistant"); }}>Ask the grantbot about it</button>.</p>}
           <p className="faint" style={{ fontSize: 14, marginTop: 18 }}>Have a list of companies? <Link href="/screen/bulk">Screen a whole list at once</Link>.</p>
         </aside>
         {!ready ? <div className="empty-state" style={{ gridArea: "plate" }}><h2>Choose a company</h2><p>Pick one of the real companies on the left, or describe your own: select a country, then add its size, sectors and what it does. Its matches light up here.</p></div> : <>

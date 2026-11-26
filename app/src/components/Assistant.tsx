@@ -179,14 +179,14 @@ export default function Assistant() {
         </div>
         {!started ? (
           <div className="hero-chat">
-            <div className="hero-title"><h1>Ask The Consultant</h1><span className="beta-tag">Beta</span></div>
+            <div className="hero-title"><h1>Ask The Grantbot</h1><span className="beta-tag">Beta</span></div>
             {composer}
             <ul className="starters">{STARTERS.map((s) => <li key={s.q}><button type="button" onClick={() => void send(s.q)}><span className="tag mono">{s.tag}</span><span>{s.q}</span></button></li>)}</ul>
             <details className="covers"><summary>Programmes covered ({IN_SCOPE.length})</summary><dl>{covered.map((r) => <div key={r.k} style={{ display: "contents" }}><dt>{r.k}</dt><dd>{r.v}</dd></div>)}</dl></details>
           </div>
         ) : (
           <>
-            <h1 className="sr">Ask the consultant</h1>
+            <h1 className="sr">Ask the grantbot</h1>
             <div className="thread" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation">
               {msgs.map((m, i) => m.role === "me"
                 ? <div key={m.id} className="msg me" ref={i === msgs.length - 1 ? lastRef : undefined}><p>{m.text}</p></div>

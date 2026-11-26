@@ -17,7 +17,7 @@ export default function ClientReport({ brief, profile, project, checks, estimate
   const started = project.started === "yes" ? "Already ordered or started" : project.started === "no" ? "Nothing ordered yet" : "Not known";
   return (
     <article className="client-report" aria-label="Client brief">
-      <header className="cr-head"><p className="mono">Grants &amp; Funding · Funding screening</p><h2>{profile.name || "Company"}</h2><p className="cr-sub">Prepared {today}. Programme data as of {fmtDate(brief.data_as_of)}.</p></header>
+      <header className="cr-head"><p className="mono">Consulting Toolkit · Funding screening</p><h2>{profile.name || "Company"}</h2><p className="cr-sub">Prepared {today}. Programme data as of {fmtDate(brief.data_as_of)}.</p></header>
       <section className="cr-sec"><h3>The company and the project</h3>
         <dl className="cr-dl"><dt>Country</dt><dd>{COUNTRY[profile.country] ?? profile.country}{profile.region ? `, ${profile.region}` : ""}</dd><dt>Size</dt><dd>{profile.size ?? "unknown"}</dd><dt>Sectors</dt><dd>{profile.sectors?.length ? profile.sectors.join("; ") : "Not given"}</dd><dt>What it does</dt><dd>{profile.description || "Not given"}</dd>
           <dt>Project budget</dt><dd>{project.budget ? formatEur(project.budget) : "Not given"}</dd><dt>Planned start</dt><dd>{project.start ? fmtDate(project.start) : "Not given"}</dd><dt>Ordered or started</dt><dd>{started}</dd></dl></section>

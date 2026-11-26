@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DemoStart from "@/components/DemoStart";
 import { Magnetic, Rise, Spot } from "@/components/Fx";
 import Ticker from "@/components/Ticker";
 
@@ -10,7 +11,7 @@ export default function Home() {
         <Rise text="Your complete guide for *grants*" />
         <div style={{ marginTop: "var(--s7)" }}>
           <p className="hero-sub">Built for funding consultants: screen a company, check eligibility, estimate the aid and keep your call notes, on carefully sourced programmes</p>
-          <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap", marginTop: 28 }}><Magnetic><Link className="btn" href="/screen">Screen a company <span className="arr">→</span></Link></Magnetic><Link className="link-u" href="/method">How fit is judged</Link></div>
+          <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap", marginTop: 28 }}><Magnetic><Link className="btn" href="/screen">Screen a company <span className="arr">→</span></Link></Magnetic><Link className="link-u" href="/method">How fit is judged</Link><DemoStart /></div>
         </div>
       </Spot>
       <div style={{ marginTop: "var(--s8)" }}><Ticker /></div>

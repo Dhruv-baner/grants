@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const TABS = [{ href: "/notes", label: "Notes" }, { href: "/notes/calls", label: "Calls" }];
+const TABS = [{ href: "/notes", label: "Notes" }, { href: "/notes/calls", label: "Calls" }, { href: "/notes/portfolio", label: "Portfolio" }];
 /** The two parts of the Notes section: recording a call, and the table of all calls. */
 export default function NotesTabs() {
   const path = usePathname();
