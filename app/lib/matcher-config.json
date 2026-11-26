@@ -1,0 +1,129 @@
+{
+ "CONCEPTS": {
+  "rd_innovation": "\\br&d\\b|research|development|innovat|prototype|experimental|\\bwbso\\b|technolog",
+  "ai_digital": "\\bai\\b|artificial intelligence|digital|software|\\bdata\\b|\\bict\\b|machine learning",
+  "cyber": "cyber|security",
+  "energy_saving": "energy[- ]sav|energy efficien|energiebespar|\\bled\\b|lighting|insulation|heat pump|isolatie|efficien",
+  "renewable_energy": "renewable|solar|\\bwind\\b|photovolt|sde|electrif",
+  "hydrogen": "hydrogen|waterstof|wasserstoff|electroly",
+  "decarbonisation": "decarbon|co2|co₂|emission|climate|net-zero|carbon",
+  "ccus": "\\bccu\\b|\\bccs\\b|carbon capture|carbon management|capture",
+  "site_investment": "new site|new production|expansion|new jobs|jobs|investment in|investing in|capital investment|production site",
+  "startup": "start-?up|founder|pre-formation|not yet incorporated|young compan|gründung|gruendung|stipend",
+  "vessel_inland": "inland|binnen|barge",
+  "vessel_sea": "sea-going|seagoing|sea vessel|zeeschep|short-sea|sea ship",
+  "circular_plastics": "circular|recycl|plastic|feedstock|waste",
+  "games_creative": "\\bgames?\\b|creative|immersive|\\bmedia\\b",
+  "financing_gap": "collateral|guarantee|loan|credit|financ",
+  "consortium_crossborder": "consortium|cross-border|multi-country|partners in|several countries|legal entities|associated countries|member states",
+  "training_skills": "training|skills|apprentic|learning|praktijk",
+  "agri": "agricult|farm|rural|food|landbouw",
+  "health": "health|medical|medtech|pharma|clinical",
+  "heat_networks": "heat network|district heating|warmtenet|wärmenetz|waermenetz",
+  "environment_invest": "environment|milieu|sustainab|green invest|duurzaam|umwelt",
+  "social_enterprise": "gemeinwohl|social enterprise|boost4impact|social impact",
+  "industrial_large": "industrial site|chemical|steel|large[- ]scale|scale[- ]up|very large|eur \\d+m"
+ },
+ "GATE": [
+  "agri",
+  "ccus",
+  "circular_plastics",
+  "games_creative",
+  "health",
+  "heat_networks",
+  "hydrogen",
+  "social_enterprise",
+  "startup",
+  "vessel_inland",
+  "vessel_sea"
+ ],
+ "CONCEPT_SECTOR": {
+  "energy_saving": "Energy & climate",
+  "renewable_energy": "Energy & climate",
+  "hydrogen": "Energy & climate",
+  "decarbonisation": "Energy & climate",
+  "heat_networks": "Energy & climate",
+  "ai_digital": "Digital, AI & ICT",
+  "cyber": "Digital, AI & ICT",
+  "vessel_inland": "Transport & maritime",
+  "vessel_sea": "Transport & maritime",
+  "circular_plastics": "Circular economy & environment",
+  "games_creative": "Creative, media & games",
+  "health": "Health & life sciences",
+  "agri": "Agriculture & food"
+ },
+ "ADJACENT": [
+  [
+   "Buildings & real estate",
+   "Energy & climate"
+  ],
+  [
+   "Circular economy & environment",
+   "Energy & climate"
+  ],
+  [
+   "Circular economy & environment",
+   "Industry & manufacturing"
+  ],
+  [
+   "Defence & security",
+   "Digital, AI & ICT"
+  ],
+  [
+   "Energy & climate",
+   "Industry & manufacturing"
+  ],
+  [
+   "Energy & climate",
+   "Transport & maritime"
+  ]
+ ],
+ "REGIONS": {
+  "Lower Saxony": [
+   "lower saxony",
+   "niedersachsen"
+  ],
+  "North Rhine-Westphalia": [
+   "north rhine-westphalia",
+   "nordrhein-westfalen",
+   "nrw"
+  ],
+  "Baden-Württemberg": [
+   "baden-württemberg",
+   "baden-wuerttemberg"
+  ],
+  "Saxony": [
+   "saxony",
+   "sachsen"
+  ],
+  "Bavaria": [
+   "bavaria",
+   "bayern"
+  ],
+  "Berlin": [
+   "berlin"
+  ],
+  "Gelderland": [
+   "gelderland"
+  ],
+  "Limburg": [
+   "limburg"
+  ],
+  "Noord-Brabant": [
+   "noord-brabant",
+   "brabant"
+  ],
+  "Zeeland": [
+   "zeeland"
+  ],
+  "Drenthe": [
+   "drenthe"
+  ],
+  "Fryslân": [
+   "fryslân",
+   "friesland"
+  ]
+ },
+ "MIN_SCORE": 50,
+ "TOP_N": 12
+}
