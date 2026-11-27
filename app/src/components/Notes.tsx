@@ -131,7 +131,7 @@ export default function Notes() {
     try {
       const res = await fetch("/api/notes", { method: "POST", headers: { "content-type": "application/json", ...(code ? { "x-access-code": code } : {}) }, body: JSON.stringify({ transcript: analysed, jottings: jot }) }); const d = await res.json().catch(() => ({}));
       if (!res.ok) { setEnhState("failed"); setEnhMsg(typeof d.error === "string" ? d.error : "Could not enhance the notes."); return; }
-      if (d.reason === "unreadable" || !d.note) { setEnhState("failed"); setEnhMsg("Claude's reply could not be used, so the instant notes stay."); return; }
+      if (d.reason === "unreadable" || !d.note) { setEnhState("failed"); setEnhMsg(`Claude's reply could not be used (${d.why === "cut_off" ? "it was cut off" : "it was not in the expected format"}), so the instant notes stay. Try again.`); return; }
       if (d.kept === 0) { setEnhState("failed"); setEnhMsg("Nothing Claude wrote could be verified against the transcript, so the instant notes stay."); return; }
       setEnh({ note: d.note, kept: d.kept, dropped: d.dropped }); setEnhState("idle");
     } catch { setEnhState("failed"); setEnhMsg("Could not reach the server."); }
