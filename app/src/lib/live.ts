@@ -8,7 +8,7 @@ import { match } from "./matcher";
 import { DocumentError, extractDocumentText, MAX_DOC_BYTES } from "./document";
 import { buildProfile } from "./profiler";
 import { llmProse } from "./prose";
-import { fetchCompany, type Site } from "./site";
+import { classify, fetchCompany, type SiteErrorCode, type Site } from "./site";
 import { UnsafeUrl } from "./ssrf";
 import { askAbout } from "./assistant/followup";
 import { enhanceNotes } from "./notes/enhance";
@@ -35,6 +35,13 @@ async function guard(req: Request, d: Deps): Promise<{ body: any } | Response> {
 }
 export function handleStatus(d: Deps) { return json({ live: !!d.llm, needsCode: !!d.accessCode, limits: d.limiter.snapshot() }); }
 
+const SITE_MSG: Record<SiteErrorCode, string> = {
+  blocked: "That site blocks automated reading (it refused the request). Upload its annual report or another file, or enter the profile by hand.", not_found: "That page was not found. Check the website address.",
+  timeout: "The site took too long to answer. Try again, or enter the profile by hand.", dns: "That website address could not be found. Check the spelling.", tls: "The site's security certificate could not be verified, so it was not read.",
+  server: "The site is having problems and did not answer. Try again later, or enter the profile by hand.", robots: "The site's robots.txt does not allow automated reading. Enter the profile by hand.",
+  too_little_text: "That site shows almost no text without running its scripts, so there is nothing to read. Upload its annual report or another file, or enter the profile by hand.",
+  not_html: "That address is a file, not a web page. Upload the file instead.", other: "Could not read that website. Enter the profile by hand.",
+};
 export async function handleProfile(req: Request, d: Deps) {
   const g = await guard(req, d); if (g instanceof Response) return g;
   const url = String(g.body?.url ?? "").trim(); if (!url || url.length > 300) return json({ error: "Provide a company website URL." }, 400);
@@ -50,8 +57,7 @@ export async function handleProfile(req: Request, d: Deps) {
   } catch (e: any) {
     if (e instanceof UnsafeUrl) return json({ error: `That URL cannot be fetched: ${e.message}.` }, 400);
     if (e instanceof LlmError) return json({ error: e.message }, e.status);
-    if (/robots/i.test(String(e?.message))) return json({ error: "The site's robots.txt does not allow automated reading. Enter the profile by hand." }, 422);
-    return json({ error: "Could not read that website. Enter the profile by hand." }, 422);
+    const se = classify(e); return json({ error: SITE_MSG[se.code], code: se.code }, 422);
   }
 }
 export async function handleProse(req: Request, d: Deps) {

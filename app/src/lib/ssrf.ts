@@ -53,15 +53,15 @@ export const safeLookup: Lookup = (hostname, options, cb) => {
 };
 
 export interface GetOpts { allowPrivateForTests?: boolean; maxBytes?: number; timeoutMs?: number; maxRedirects?: number; }
-export const UA = "GrantsAndFundingBot/0.1 (funding screening tool; respects robots.txt)";
+export const UA = "Mozilla/5.0 (compatible; ConsultingToolkitBot/0.1; funding screening tool; respects robots.txt)"; // says who it is, in the form polite crawlers use; many sites refuse a bare unknown name
 
 export function httpGet(raw: string, o: GetOpts = {}): Promise<{ text: string; finalUrl: string }> {
-  const { maxBytes = 1_500_000, timeoutMs = 10_000, maxRedirects = 3 } = o;
+  const { maxBytes = 1_500_000, timeoutMs = 8_000, maxRedirects = 5 } = o;
   const step = (url: string, left: number): Promise<{ text: string; finalUrl: string }> => new Promise((resolve, reject) => {
     let u: URL;
     try { u = o.allowPrivateForTests ? new URL(url) : validateUrl(url); } catch (e) { return reject(e); }
     const mod = u.protocol === "https:" ? https : http;
-    const req = mod.request(u, { method: "GET", headers: { "User-Agent": UA, "Accept": "text/html,text/plain;q=0.9", "Accept-Encoding": "identity" },
+    const req = mod.request(u, { method: "GET", headers: { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.5", "Accept-Language": "en,nl;q=0.8,de;q=0.7", "Accept-Encoding": "identity" },
       timeout: timeoutMs, lookup: o.allowPrivateForTests ? undefined : safeLookup }, (res) => {
       const code = res.statusCode ?? 0;
       if (code >= 300 && code < 400 && res.headers.location) {

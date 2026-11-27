@@ -31,14 +31,41 @@ function quoteNumbers(quote: string): Set<number> {
   const w = wordsToNumber(quote.replace(/[^a-z\s-]/gi, " ").replace(/\s+/g, " ").trim()); if (w !== null) out.add(w); for (const m of quote.matchAll(/\b(?:[a-z]+[\s-]){0,4}(?:hundred|thousand|million|[a-z]*ty|[a-z]*teen|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b/gi)) { const v = wordsToNumber(m[0]); if (v !== null) out.add(v); }
   return out;
 }
+/** The first complete top-level object in the text, or null when it never closes (a reply that was cut off). */
+function balanced(s: string): string | null {
+  let depth = 0, inStr = false, esc = false;
+  for (let i = 0; i < s.length; i++) { const c = s[i]; if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+    if (c === '"') inStr = true; else if (c === "{") depth++; else if (c === "}" && --depth === 0) return s.slice(0, i + 1); }
+  return null;
+}
+/** A line break or tab inside a quoted string is not valid JSON, and a model sometimes leaves one in a quote. */
+function fixStrings(s: string): string {
+  let out = "", inStr = false, esc = false;
+  for (const c of s) { if (inStr) { if (esc) { esc = false; out += c; } else if (c === "\\") { esc = true; out += c; } else if (c === '"') { inStr = false; out += c; } else out += c === "\n" || c === "\r" || c === "\t" ? " " : c; } else { if (c === '"') inStr = true; out += c; } }
+  return out;
+}
+/** A reply that stopped part-way: cut back to the last complete item and close what is open, so the finished items can still be checked and used. */
+function closeJson(s: string): string | null {
+  let inStr = false, esc = false; const stack: string[] = [], cuts: { i: number; closers: string }[] = [];
+  for (let i = 0; i < s.length; i++) { const c = s[i]; if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+    if (c === '"') inStr = true; else if (c === "{") stack.push("}"); else if (c === "[") stack.push("]"); else if (c === "}" || c === "]") stack.pop(); else if (c === ",") cuts.push({ i, closers: [...stack].reverse().join("") }); }
+  const tries: string[] = []; if (!inStr) tries.push(s.replace(/[\s,]+$/, "") + [...stack].reverse().join(""));
+  for (let k = cuts.length - 1; k >= 0 && tries.length < 80; k--) tries.push(s.slice(0, cuts[k].i) + cuts[k].closers);
+  for (const t of tries) { try { const v = JSON.parse(t); if (v && typeof v === "object" && !Array.isArray(v)) return t; } catch { /* try the next cut */ } }
+  return null;
+}
+const asObject = (x: string): Record<string, unknown> | null => { try { const v = JSON.parse(x); return v && typeof v === "object" && !Array.isArray(v) && Object.keys(v).length > 0 ? (v as Record<string, unknown>) : null; } catch { return null; } };
+/** Reads the JSON object in a model reply, whatever surrounds it: fences, a lead-in, trailing notes, trailing commas, a stray line break, or a reply cut off part-way. */
 export function parseJson(text: string): Record<string, unknown> | null {
-  const t = text.replace(/```(?:json)?/gi, ""); const a = t.indexOf("{"), b = t.lastIndexOf("}"); if (a < 0 || b <= a) return null;
-  try { const v = JSON.parse(t.slice(a, b + 1)); return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : null; } catch { return null; }
+  const t = text.replace(/```(?:json)?/gi, ""); const a = t.indexOf("{"); if (a < 0) return null;
+  const rest = t.slice(a), b = t.lastIndexOf("}"), base = balanced(rest) ?? (b > a ? t.slice(a, b + 1) : rest);
+  for (const x of [base, fixStrings(base), fixStrings(base).replace(/,\s*([}\]])/g, "$1")]) { const v = asObject(x); if (v) return v; }
+  const c = closeJson(fixStrings(rest)); return c ? asObject(c) : null;
 }
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, max) : "");
 const arr = (v: unknown): Record<string, unknown>[] => (Array.isArray(v) ? v.filter((x): x is Record<string, unknown> => !!x && typeof x === "object") : []);
 
-export interface Enhanced { note: NoteResult; kept: number; dropped: number; reason?: "unreadable" | "nothing_verified"; }
+export interface Enhanced { note: NoteResult; kept: number; dropped: number; reason?: "unreadable" | "nothing_verified"; why?: "cut_off" | "not_json"; }
 /** Checks Claude's answer against the transcript and merges what holds up into the rule-based notes. */
 export function validateEnhanced(raw: Record<string, unknown> | null, transcript: string, base: NoteResult): Enhanced {
   if (!raw) return { note: base, kept: 0, dropped: 0, reason: "unreadable" };
@@ -64,8 +91,12 @@ export function validateEnhanced(raw: Record<string, unknown> | null, transcript
   if (!base.facts.size) { const f = F.employees; if (f && typeof f === "object") { const o = f as Record<string, unknown>; const n = Number(o.value), q = str(o.quote, 300); if (Number.isFinite(n) && n >= 1 && quoteInTranscript(transcript, q) && quoteNumbers(q).has(n)) { kept++; note.nums.employees = n; note.facts.size = { value: n < 10 ? "micro" : n < 50 ? "small" : n < 250 ? "medium" : "large", quote: q, how: "inferred" }; } else dropped++; } }
   return { note, kept, dropped, ...(kept === 0 ? { reason: "nothing_verified" as const } : {}) };
 }
-export async function enhanceNotes(transcript: string, llm: Llm, jottings = ""): Promise<Enhanced & { usage: { in: number; out: number } }> {
-  const t = transcript.slice(0, MAX_CHARS); const base = extractNotes(t);
-  const res = await llm.complete({ system: NOTES_SYSTEM, task: "profile", maxTokens: 1500, user: `<transcript>\n${t}\n</transcript>\n<consultant_notes>\n${jottings.slice(0, 3000)}\n</consultant_notes>` });
-  return { ...validateEnhanced(parseJson(res.text), t, base), usage: { in: res.inputTokens, out: res.outputTokens } };
+export async function enhanceNotes(transcript: string, llm: Llm, jottings = ""): Promise<Enhanced & { usage: { in: number; out: number }; stop?: string }> {
+  const t = transcript.slice(0, MAX_CHARS); const base = extractNotes(t); const usage = { in: 0, out: 0 }; let last: Enhanced | null = null, stop = "";
+  for (let attempt = 0; attempt < 2; attempt++) { // a reply that cannot be read gets one more try
+    const res = await llm.complete({ system: NOTES_SYSTEM, task: "profile", maxTokens: 4000, user: `<transcript>\n${t}\n</transcript>\n<consultant_notes>\n${jottings.slice(0, 3000)}\n</consultant_notes>` });
+    usage.in += res.inputTokens; usage.out += res.outputTokens; stop = res.stopReason ?? ""; last = validateEnhanced(parseJson(res.text), t, base);
+    if (last.reason !== "unreadable") break; last.why = stop === "max_tokens" ? "cut_off" : "not_json";
+  }
+  return { ...last!, usage, ...(stop ? { stop } : {}) };
 }
